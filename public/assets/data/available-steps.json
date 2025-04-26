@@ -1,0 +1,99 @@
+[
+    {
+      "id": "step-001",
+      "name": "Glass Cutting",
+      "description": "Precision cutting of glass sheets to specified dimensions",
+      "duration": 30,
+      "equipmentRequired": ["cutting table", "glass cutter"],
+      "skillsRequired": ["precision cutting"],
+      "predecessors": [],
+      "successors": ["step-002"],
+      "createdAt": "2023-01-01T08:00:00.000Z",
+      "updatedAt": "2023-03-15T10:30:00.000Z"
+    },
+    {
+      "id": "step-002",
+      "name": "Washing",
+      "description": "Cleaning glass to remove dust and residue",
+      "duration": 20,
+      "equipmentRequired": ["washing machine"],
+      "skillsRequired": ["machine operation"],
+      "predecessors": ["step-001"],
+      "successors": ["step-003", "step-004", "step-005"],
+      "createdAt": "2023-01-01T08:00:00.000Z",
+      "updatedAt": "2023-03-15T10:30:00.000Z"
+    },
+    {
+      "id": "step-003",
+      "name": "Tempering",
+      "description": "Heat treatment to increase strength and safety",
+      "duration": 60,
+      "equipmentRequired": ["tempering furnace"],
+      "skillsRequired": ["heat treatment", "quality control"],
+      "predecessors": ["step-002"],
+      "successors": ["step-006"],
+      "createdAt": "2023-01-01T08:00:00.000Z",
+      "updatedAt": "2023-03-15T10:30:00.000Z"
+    },
+    {
+      "id": "step-004",
+      "name": "Lamination",
+      "description": "Bonding multiple glass layers with interlayer",
+      "duration": 90,
+      "equipmentRequired": ["lamination press", "autoclave"],
+      "skillsRequired": ["precision assembly"],
+      "predecessors": ["step-002"],
+      "successors": ["step-006"],
+      "createdAt": "2023-01-01T08:00:00.000Z",
+      "updatedAt": "2023-03-15T10:30:00.000Z"
+    },
+    {
+      "id": "step-005",
+      "name": "Coating",
+      "description": "Application of special coatings (Low-E, reflective)",
+      "duration": 45,
+      "equipmentRequired": ["coating machine"],
+      "skillsRequired": ["coating application"],
+      "predecessors": ["step-002"],
+      "successors": ["step-006"],
+      "createdAt": "2023-01-01T08:00:00.000Z",
+      "updatedAt": "2023-03-15T10:30:00.000Z"
+    },
+    {
+      "id": "step-006",
+      "name": "Edge Processing",
+      "description": "Grinding, polishing, or seaming glass edges",
+      "duration": 25,
+      "equipmentRequired": ["edge grinder", "polisher"],
+      "skillsRequired": ["edge finishing"],
+      "predecessors": ["step-003", "step-004", "step-005"],
+      "successors": ["step-007"],
+      "createdAt": "2023-01-01T08:00:00.000Z",
+      "updatedAt": "2023-03-15T10:30:00.000Z"
+    },
+    {
+      "id": "step-007",
+      "name": "Quality Inspection",
+      "description": "Visual and automated inspection for defects",
+      "duration": 15,
+      "equipmentRequired": ["inspection station", "defect scanner"],
+      "skillsRequired": ["quality assessment", "defect identification"],
+      "predecessors": ["step-006"],
+      "successors": ["step-008"],
+      "createdAt": "2023-01-01T08:00:00.000Z",
+      "updatedAt": "2023-03-15T10:30:00.000Z"
+    },
+    {
+      "id": "step-008",
+      "name": "Packaging",
+      "description": "Secure packaging for storage or shipping",
+      "duration": 20,
+      "equipmentRequired": ["packaging station"],
+      "skillsRequired": ["safe handling", "packaging"],
+      "predecessors": ["step-007"],
+      "successors": [],
+      "createdAt": "2023-01-01T08:00:00.000Z",
+      "updatedAt": "2023-03-15T10:30:00.000Z"
+    }
+  ]
+  

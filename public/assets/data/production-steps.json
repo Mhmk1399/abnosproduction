@@ -1,0 +1,67 @@
+[
+    {
+      "id": "step-001",
+      "name": "Cutting",
+      "description": "Cut glass sheets to specified dimensions",
+      "duration": 30,
+      "requiredTools": ["glass cutter", "measuring tape"],
+      "requiredSkills": ["precision cutting"]
+    },
+    {
+      "id": "step-002",
+      "name": "Washing",
+      "description": "Clean glass surfaces to remove debris and oils",
+      "duration": 20,
+      "requiredTools": ["washing machine", "detergent"],
+      "requiredSkills": ["machine operation"]
+    },
+    {
+      "id": "step-003",
+      "name": "Tempering",
+      "description": "Heat treatment to increase strength",
+      "duration": 45,
+      "requiredTools": ["tempering furnace"],
+      "requiredSkills": ["heat treatment", "quality control"]
+    },
+    {
+      "id": "step-004",
+      "name": "Lamination",
+      "description": "Bond multiple glass layers with interlayer",
+      "duration": 60,
+      "requiredTools": ["lamination press", "PVB sheets"],
+      "requiredSkills": ["precision assembly"]
+    },
+    {
+      "id": "step-005",
+      "name": "Coating",
+      "description": "Apply special coatings for solar control or low-e properties",
+      "duration": 40,
+      "requiredTools": ["coating machine", "coating materials"],
+      "requiredSkills": ["coating application"]
+    },
+    {
+      "id": "step-006",
+      "name": "Edge Processing",
+      "description": "Grind and polish glass edges",
+      "duration": 25,
+      "requiredTools": ["edge grinder", "polishing tools"],
+      "requiredSkills": ["edge finishing"]
+    },
+    {
+      "id": "step-007",
+      "name": "Quality Inspection",
+      "description": "Check for defects and ensure quality standards",
+      "duration": 15,
+      "requiredTools": ["inspection light", "measuring tools"],
+      "requiredSkills": ["quality assessment"]
+    },
+    {
+      "id": "step-008",
+      "name": "Packaging",
+      "description": "Prepare glass for shipping and storage",
+      "duration": 20,
+      "requiredTools": ["packaging materials", "tape dispenser"],
+      "requiredSkills": ["safe handling"]
+    }
+  ]
+  

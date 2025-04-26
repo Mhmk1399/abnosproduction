@@ -1,24 +1,20 @@
 "use client";
 import { Ref } from "react";
 import { useDrag } from "react-dnd";
-import { ProductionStep } from "../types/production";
+import { Inventory } from "../types/production";
 
-export default function StepItem({
-  step,
+export default function InventoryItem({
+  inventory,
   isInLine,
   onRemove,
-  
 }: {
-  step: ProductionStep;
+  inventory: Inventory;
   isInLine: boolean;
   onRemove?: () => void;
 }) {
   const [{ isDragging }, drag] = useDrag(() => ({
-    type: "step",
-    item: { 
-      id: step.id,
-      // Don't set isReordering flag here - this is for new steps from the palette
-    },
+    type: "inventory", // Different type from "step"
+    item: { id: inventory.id },
     collect: (monitor) => ({
       isDragging: !!monitor.isDragging(),
     }),
@@ -31,15 +27,15 @@ export default function StepItem({
         isDragging ? "opacity-50" : "opacity-100"
       } ${
         isInLine
-          ? "bg-blue-100 border border-blue-300"
+          ? "bg-green-100 border border-green-300" // Green color for inventories
           : "bg-gray-100 border border-gray-300"
       }`}
     >
       <div className="flex justify-between items-center">
         <div>
-          <h3 className="font-medium">{step.name}</h3>
-          {step.description && (
-            <p className="text-sm text-gray-600">{step.description}</p>
+          <h3 className="font-medium">{inventory.name}</h3>
+          {inventory.quantity && (
+            <p className="text-sm text-gray-600">Quantity: {inventory.quantity}</p>
           )}
         </div>
         {isInLine && onRemove && (

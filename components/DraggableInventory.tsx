@@ -1,25 +1,26 @@
 "use client";
 import { useDrag, useDrop } from "react-dnd";
-import StepItem from "./StepItem";
-import { ProductionStep } from "../types/production";
+import InventoryItem from "./InventoryItem";
+import { Inventory } from "../types/production";
 
-export default function DraggableStep({
-  step,
+export default function DraggableInventory({
+  inventory,
   index,
   onReorder,
   onRemove,
 }: {
-  step: ProductionStep;
+  inventory: Inventory;
   index: number;
   onReorder: (from: number, to: number) => void;
   onRemove: () => void;
 }) {
   // Set up drag for reordering
   const [{ isDragging }, drag] = useDrag(() => ({
-    type: "step",
+    type: "inventory",
     item: { 
-      id: step.id,
+      id: inventory.id,
       index, // Include index for reordering
+      isReordering: true,
     },
     collect: (monitor) => ({
       isDragging: monitor.isDragging(),
@@ -28,7 +29,7 @@ export default function DraggableStep({
 
   // Set up drop for reordering
   const [, drop] = useDrop(() => ({
-    accept: "step",
+    accept: "inventory",
     hover: (draggedItem: { id: string; index: number }) => {
       // Skip if dragging over itself
       if (draggedItem.index === index) {
@@ -54,8 +55,8 @@ export default function DraggableStep({
       ref={ref}
       className={`mb-2 ${isDragging ? "opacity-50" : "opacity-100"}`}
     >
-      <StepItem 
-        step={step} 
+      <InventoryItem 
+        inventory={inventory} 
         isInLine={true} 
         onRemove={onRemove} 
       />

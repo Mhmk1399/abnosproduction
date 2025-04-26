@@ -1,0 +1,168 @@
+[
+    {
+      "id": "line-001",
+      "name": "Standard Glass Production",
+      "steps": [
+        {
+          "id": "step-001-1628156789",
+          "name": "Cutting",
+          "description": "Cut glass sheets to specified dimensions",
+          "duration": 30,
+          "requiredTools": ["glass cutter", "measuring tape"],
+          "requiredSkills": ["precision cutting"]
+        },
+        {
+          "id": "step-002-1628156790",
+          "name": "Washing",
+          "description": "Clean glass surfaces to remove debris and oils",
+          "duration": 20,
+          "requiredTools": ["washing machine", "detergent"],
+          "requiredSkills": ["machine operation"]
+        },
+        {
+          "id": "step-007-1628156791",
+          "name": "Quality Inspection",
+          "description": "Check for defects and ensure quality standards",
+          "duration": 15,
+          "requiredTools": ["inspection light", "measuring tools"],
+          "requiredSkills": ["quality assessment"]
+        },
+        {
+          "id": "step-008-1628156792",
+          "name": "Packaging",
+          "description": "Prepare glass for shipping and storage",
+          "duration": 20,
+          "requiredTools": ["packaging materials", "tape dispenser"],
+          "requiredSkills": ["safe handling"]
+        }
+      ],
+      "order": [
+        "step-001-1628156789",
+        "step-002-1628156790",
+        "step-007-1628156791",
+        "step-008-1628156792"
+      ],
+      "createdAt": "2023-01-15T10:30:00.000Z",
+      "updatedAt": "2023-01-15T10:30:00.000Z"
+    },
+    {
+      "id": "line-002",
+      "name": "Tempered Glass Production",
+      "steps": [
+        {
+          "id": "step-001-1628156793",
+          "name": "Cutting",
+          "description": "Cut glass sheets to specified dimensions",
+          "duration": 30,
+          "requiredTools": ["glass cutter", "measuring tape"],
+          "requiredSkills": ["precision cutting"]
+        },
+        {
+          "id": "step-002-1628156794",
+          "name": "Washing",
+          "description": "Clean glass surfaces to remove debris and oils",
+          "duration": 20,
+          "requiredTools": ["washing machine", "detergent"],
+          "requiredSkills": ["machine operation"]
+        },
+        {
+          "id": "step-003-1628156795",
+          "name": "Tempering",
+          "description": "Heat treatment to increase strength",
+          "duration": 45,
+          "requiredTools": ["tempering furnace"],
+          "requiredSkills": ["heat treatment", "quality control"]
+        },
+        {
+          "id": "step-006-1628156796",
+          "name": "Edge Processing",
+          "description": "Grind and polish glass edges",
+          "duration": 25,
+          "requiredTools": ["edge grinder", "polishing tools"],
+          "requiredSkills": ["edge finishing"]
+        },
+        {
+          "id": "step-007-1628156797",
+          "name": "Quality Inspection",
+          "description": "Check for defects and ensure quality standards",
+          "duration": 15,
+          "requiredTools": ["inspection light", "measuring tools"],
+          "requiredSkills": ["quality assessment"]
+        },
+        {
+          "id": "step-008-1628156798",
+          "name": "Packaging",
+          "description": "Prepare glass for shipping and storage",
+          "duration": 20,
+          "requiredTools": ["packaging materials", "tape dispenser"],
+          "requiredSkills": ["safe handling"]
+        }
+      ],
+      "order": [
+        "step-001-1628156793",
+        "step-002-1628156794",
+        "step-003-1628156795",
+        "step-006-1628156796",
+        "step-007-1628156797",
+        "step-008-1628156798"
+      ],
+      "createdAt": "2023-02-10T14:45:00.000Z",
+      "updatedAt": "2023-02-10T14:45:00.000Z"
+    },
+    {
+      "id": "line-003",
+      "name": "Laminated Glass Production",
+      "steps": [
+        {
+          "id": "step-001-1628156799",
+          "name": "Cutting",
+          "description": "Cut glass sheets to specified dimensions",
+          "duration": 30,
+          "requiredTools": ["glass cutter", "measuring tape"],
+          "requiredSkills": ["precision cutting"]
+        },
+        {
+          "id": "step-002-1628156800",
+          "name": "Washing",
+          "description": "Clean glass surfaces to remove debris and oils",
+          "duration": 20,
+          "requiredTools": ["washing machine", "detergent"],
+          "requiredSkills": ["machine operation"]
+        },
+        {
+          "id": "step-004-1628156801",
+          "name": "Lamination",
+          "description": "Bond multiple glass layers with interlayer",
+          "duration": 60,
+          "requiredTools": ["lamination press", "PVB sheets"],
+          "requiredSkills": ["precision assembly"]
+        },
+        {
+          "id": "step-007-1628156802",
+          "name": "Quality Inspection",
+          "description": "Check for defects and ensure quality standards",
+          "duration": 15,
+          "requiredTools": ["inspection light", "measuring tools"],
+          "requiredSkills": ["quality assessment"]
+        },
+        {
+          "id": "step-008-1628156803",
+          "name": "Packaging",
+          "description": "Prepare glass for shipping and storage",
+          "duration": 20,
+          "requiredTools": ["packaging materials", "tape dispenser"],
+          "requiredSkills": ["safe handling"]
+        }
+      ],
+      "order": [
+        "step-001-1628156799",
+        "step-002-1628156800",
+        "step-004-1628156801",
+        "step-007-1628156802",
+        "step-008-1628156803"
+      ],
+      "createdAt": "2023-03-05T09:15:00.000Z",
+      "updatedAt": "2023-03-05T09:15:00.000Z"
+    }
+  ]
+  

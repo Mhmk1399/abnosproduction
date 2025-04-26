@@ -1,0 +1,278 @@
+[
+    {
+      "id": "ph-001",
+      "layerId": "L-1001",
+      "stepId": "step-001-1628156789",
+      "workerId": "W-001",
+      "startTime": "2023-04-10T08:30:00.000Z",
+      "endTime": "2023-04-10T09:00:00.000Z",
+      "status": "completed",
+      "notes": "Cut to specifications without issues",
+      "defects": null
+    },
+    {
+      "id": "ph-002",
+      "layerId": "L-1001",
+      "stepId": "step-002-1628156790",
+      "workerId": "W-002",
+      "startTime": "2023-04-10T10:15:00.000Z",
+      "endTime": "2023-04-10T10:35:00.000Z",
+      "status": "completed",
+      "notes": "Washing completed successfully",
+      "defects": null
+    },
+    {
+      "id": "ph-003",
+      "layerId": "L-1002",
+      "stepId": "step-001-1628156789",
+      "workerId": "W-001",
+      "startTime": "2023-04-10T09:05:00.000Z",
+      "endTime": "2023-04-10T09:35:00.000Z",
+      "status": "completed",
+      "notes": "Standard cut completed",
+      "defects": null
+    },
+    {
+      "id": "ph-004",
+      "layerId": "L-1002",
+      "stepId": "step-002-1628156790",
+      "workerId": "W-002",
+      "startTime": "2023-04-10T10:40:00.000Z",
+      "endTime": null,
+      "status": "in-progress",
+      "notes": null,
+      "defects": null
+    },
+    {
+      "id": "ph-005",
+      "layerId": "L-1003",
+      "stepId": "step-001-1628156789",
+      "workerId": "W-001",
+      "startTime": "2023-04-10T09:40:00.000Z",
+      "endTime": "2023-04-10T10:10:00.000Z",
+      "status": "completed",
+      "notes": "Cut completed with minor adjustments",
+      "defects": null
+    },
+    {
+      "id": "ph-006",
+      "layerId": "L-1003",
+      "stepId": "step-002-1628156790",
+      "workerId": "W-002",
+      "startTime": "2023-04-10T11:00:00.000Z",
+      "endTime": "2023-04-10T11:20:00.000Z",
+      "status": "completed",
+      "notes": "Washing completed successfully",
+      "defects": null
+    },
+    {
+      "id": "ph-007",
+      "layerId": "L-1003",
+      "stepId": "step-003-1628156795",
+      "workerId": "W-003",
+      "startTime": "2023-04-10T11:30:00.000Z",
+      "endTime": "2023-04-10T12:30:00.000Z",
+      "status": "completed",
+      "notes": "Tempering completed to specifications",
+      "defects": null
+    },
+    {
+      "id": "ph-008",
+      "layerId": "L-1003",
+      "stepId": "step-006-1628156796",
+      "workerId": "W-005",
+      "startTime": "2023-04-10T12:45:00.000Z",
+      "endTime": "2023-04-10T13:10:00.000Z",
+      "status": "completed",
+      "notes": "Edges polished to specifications",
+      "defects": null
+    },
+    {
+      "id": "ph-009",
+      "layerId": "L-1003",
+      "stepId": "step-007-1628156797",
+      "workerId": "W-006",
+      "startTime": "2023-04-10T13:30:00.000Z",
+      "endTime": "2023-04-10T13:45:00.000Z",
+      "status": "completed",
+      "notes": "Passed quality inspection",
+      "defects": null
+    },
+    {
+      "id": "ph-010",
+      "layerId": "L-1003",
+      "stepId": "step-008-1628156798",
+      "workerId": "W-007",
+      "startTime": "2023-04-10T14:00:00.000Z",
+      "endTime": "2023-04-10T14:20:00.000Z",
+      "status": "completed",
+      "notes": "Packaged for shipping",
+      "defects": null
+    },
+    {
+      "id": "ph-011",
+      "layerId": "L-1004",
+      "stepId": "step-001-1628156789",
+      "workerId": "W-001",
+      "startTime": "2023-04-11T09:15:00.000Z",
+      "endTime": "2023-04-11T09:45:00.000Z",
+      "status": "completed",
+      "notes": "Cut to specifications without issues",
+      "defects": null
+    },
+    {
+      "id": "ph-012",
+      "layerId": "L-1004",
+      "stepId": "step-002-1628156790",
+      "workerId": "W-002",
+      "startTime": "2023-04-11T10:00:00.000Z",
+      "endTime": "2023-04-11T10:20:00.000Z",
+      "status": "completed",
+      "notes": "Washing completed successfully",
+      "defects": null
+    },
+    {
+      "id": "ph-013",
+      "layerId": "L-1004",
+      "stepId": "step-003-1628156795",
+      "workerId": "W-003",
+      "startTime": "2023-04-11T10:30:00.000Z",
+      "endTime": null,
+      "status": "in-progress",
+      "notes": null,
+      "defects": null
+    },
+    {
+      "id": "ph-014",
+      "layerId": "L-1005",
+      "stepId": "step-001-1628156789",
+      "workerId": "W-001",
+      "startTime": "2023-04-11T09:50:00.000Z",
+      "endTime": "2023-04-11T10:20:00.000Z",
+      "status": "completed",
+      "notes": "Cut completed with minor adjustments",
+      "defects": null
+    },
+    {
+      "id": "ph-015",
+      "layerId": "L-1005",
+      "stepId": "step-002-1628156790",
+      "workerId": "W-002",
+      "startTime": "2023-04-11T10:30:00.000Z",
+      "endTime": "2023-04-11T10:50:00.000Z",
+      "status": "completed",
+      "notes": "Washing completed successfully",
+      "defects": null
+    },
+    {
+      "id": "ph-016",
+      "layerId": "L-1005",
+      "stepId": "step-003-1628156795",
+      "workerId": "W-003",
+      "startTime": "2023-04-11T11:00:00.000Z",
+      "endTime": "2023-04-11T11:50:00.000Z",
+      "status": "defective",
+      "notes": "Glass cracked during tempering process",
+      "defects": "Crack in center, approximately 30cm long"
+    },
+    {
+      "id": "ph-017",
+      "layerId": "L-1006",
+      "stepId": "step-001-1628156789",
+      "workerId": "W-001",
+      "startTime": "2023-04-12T08:00:00.000Z",
+      "endTime": "2023-04-12T08:30:00.000Z",
+      "status": "completed",
+      "notes": "Cut to specifications without issues",
+      "defects": null
+    },
+    {
+      "id": "ph-018",
+      "layerId": "L-1006",
+      "stepId": "step-002-1628156790",
+      "workerId": "W-002",
+      "startTime": "2023-04-12T09:00:00.000Z",
+      "endTime": "2023-04-12T09:20:00.000Z",
+      "status": "completed",
+      "notes": "Washing completed successfully",
+      "defects": null
+    },
+    {
+      "id": "ph-019",
+      "layerId": "L-1006",
+      "stepId": "step-004-1628156801",
+      "workerId": "W-004",
+      "startTime": "2023-04-12T10:00:00.000Z",
+      "endTime": null,
+      "status": "in-progress",
+      "notes": null,
+      "defects": null
+    },
+    {
+      "id": "ph-020",
+      "layerId": "L-1007",
+      "stepId": "step-001-1628156789",
+      "workerId": "W-001",
+      "startTime": "2023-04-12T08:30:00.000Z",
+      "endTime": "2023-04-12T09:00:00.000Z",
+      "status": "completed",
+      "notes": "Cut to specifications without issues",
+      "defects": null
+    },
+    {
+      "id": "ph-021",
+      "layerId": "L-1007",
+      "stepId": "step-002-1628156790",
+      "workerId": "W-002",
+      "startTime": "2023-04-12T09:30:00.000Z",
+      "endTime": "2023-04-12T09:50:00.000Z",
+      "status": "completed",
+      "notes": "Washing completed successfully",
+      "defects": null
+    },
+    {
+      "id": "ph-022",
+      "layerId": "L-1007",
+      "stepId": "step-004-1628156801",
+      "workerId": "W-004",
+      "startTime": "2023-04-12T10:30:00.000Z",
+      "endTime": null,
+      "status": "in-progress",
+      "notes": null,
+      "defects": null
+    },
+    {
+      "id": "ph-023",
+      "layerId": "L-1008",
+      "stepId": "step-001-1628156789",
+      "workerId": "W-001",
+      "startTime": "2023-04-13T09:00:00.000Z",
+      "endTime": null,
+      "status": "in-progress",
+      "notes": null,
+      "defects": null
+    },
+    {
+      "id": "ph-024",
+      "layerId": "L-1009",
+      "stepId": "step-001-1628156789",
+      "workerId": "W-001",
+      "startTime": "2023-04-13T09:15:00.000Z",
+      "endTime": null,
+      "status": "in-progress",
+      "notes": null,
+      "defects": null
+    },
+    {
+      "id": "ph-025",
+      "layerId": "L-1010",
+      "stepId": "step-001-1628156789",
+      "workerId": "W-001",
+      "startTime": "2023-04-13T09:30:00.000Z",
+      "endTime": null,
+      "status": "in-progress",
+      "notes": null,
+      "defects": null
+    }
+  ]
+  

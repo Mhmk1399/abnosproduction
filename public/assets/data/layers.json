@@ -1,0 +1,123 @@
+[
+    {
+      "id": "L-1001",
+      "batchId": "batch-001",
+      "dimensions": "1000x2000",
+      "thickness": 6,
+      "material": "Clear Float Glass",
+      "status": "in-progress",
+      "currentStep": "step-001-1628156789",
+      "inventoryId": "inv-002",
+      "createdAt": "2023-04-10T08:30:00.000Z",
+      "updatedAt": "2023-04-10T09:15:00.000Z"
+    },
+    {
+      "id": "L-1002",
+      "batchId": "batch-001",
+      "dimensions": "1000x2000",
+      "thickness": 6,
+      "material": "Clear Float Glass",
+      "status": "in-progress",
+      "currentStep": "step-002-1628156790",
+      "inventoryId": "inv-002",
+      "createdAt": "2023-04-10T08:30:00.000Z",
+      "updatedAt": "2023-04-10T10:00:00.000Z"
+    },
+    {
+      "id": "L-1003",
+      "batchId": "batch-001",
+      "dimensions": "1000x2000",
+      "thickness": 6,
+      "material": "Clear Float Glass",
+      "status": "completed",
+      "currentStep": "step-008-1628156792",
+      "inventoryId": "inv-003",
+      "createdAt": "2023-04-10T08:30:00.000Z",
+      "updatedAt": "2023-04-10T14:30:00.000Z"
+    },
+    {
+      "id": "L-1004",
+      "batchId": "batch-002",
+      "dimensions": "1500x3000",
+      "thickness": 8,
+      "material": "Tinted Glass",
+      "status": "in-progress",
+      "currentStep": "step-003-1628156795",
+      "inventoryId": "inv-005",
+      "createdAt": "2023-04-11T09:15:00.000Z",
+      "updatedAt": "2023-04-11T11:45:00.000Z"
+    },
+    {
+      "id": "L-1005",
+      "batchId": "batch-002",
+      "dimensions": "1500x3000",
+      "thickness": 8,
+      "material": "Tinted Glass",
+      "status": "defective",
+      "currentStep": "step-003-1628156795",
+      "inventoryId": "inv-004",
+      "createdAt": "2023-04-11T09:15:00.000Z",
+      "updatedAt": "2023-04-11T11:50:00.000Z"
+    },
+    {
+      "id": "L-1006",
+      "batchId": "batch-003",
+      "dimensions": "2000x4000",
+      "thickness": 10,
+      "material": "Low-E Glass",
+      "status": "in-progress",
+      "currentStep": "step-004-1628156801",
+      "inventoryId": "inv-006",
+      "createdAt": "2023-04-12T08:00:00.000Z",
+      "updatedAt": "2023-04-12T11:30:00.000Z"
+    },
+    {
+      "id": "L-1007",
+      "batchId": "batch-003",
+      "dimensions": "2000x4000",
+      "thickness": 10,
+      "material": "Low-E Glass",
+      "status": "in-progress",
+      "currentStep": "step-004-1628156801",
+      "inventoryId": "inv-006",
+      "createdAt": "2023-04-12T08:00:00.000Z",
+      "updatedAt": "2023-04-12T11:30:00.000Z"
+    },
+    {
+      "id": "L-1008",
+      "batchId": "batch-004",
+      "dimensions": "1200x2400",
+      "thickness": 12,
+      "material": "Reflective Glass",
+      "status": "in-progress",
+      "currentStep": "step-001-1628156789",
+      "inventoryId": "inv-002",
+      "createdAt": "2023-04-13T09:00:00.000Z",
+      "updatedAt": "2023-04-13T09:45:00.000Z"
+    },
+    {
+      "id": "L-1009",
+      "batchId": "batch-004",
+      "dimensions": "1200x2400",
+      "thickness": 12,
+      "material": "Reflective Glass",
+      "status": "in-progress",
+      "currentStep": "step-001-1628156789",
+      "inventoryId": "inv-002",
+      "createdAt": "2023-04-13T09:00:00.000Z",
+      "updatedAt": "2023-04-13T09:45:00.000Z"
+    },
+    {
+      "id": "L-1010",
+      "batchId": "batch-004",
+      "dimensions": "1200x2400",
+      "thickness": 12,
+      "material": "Reflective Glass",
+      "status": "in-progress",
+      "currentStep": "step-001-1628156789",
+      "inventoryId": "inv-002",
+      "createdAt": "2023-04-13T09:00:00.000Z",
+      "updatedAt": "2023-04-13T09:45:00.000Z"
+    }
+  ]
+  
