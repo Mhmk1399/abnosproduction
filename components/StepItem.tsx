@@ -7,7 +7,6 @@ export default function StepItem({
   step,
   isInLine,
   onRemove,
-  
 }: {
   step: ProductionStep;
   isInLine: boolean;
@@ -17,7 +16,8 @@ export default function StepItem({
     type: "step",
     item: { 
       id: step.id,
-      // Don't set isReordering flag here - this is for new steps from the palette
+      type: "step",
+      isNew: !isInLine // Flag to indicate if this is a new item being dragged
     },
     collect: (monitor) => ({
       isDragging: !!monitor.isDragging(),
@@ -26,8 +26,8 @@ export default function StepItem({
 
   return (
     <div
-      ref={isInLine ? null : (drag as unknown as Ref<HTMLDivElement>)}
-      className={`p-4 mb-2 rounded-lg ${!isInLine ? "cursor-move" : ""} ${
+      ref={drag as unknown as Ref<HTMLDivElement>}
+      className={`p-4 mb-2 rounded-lg cursor-move ${
         isDragging ? "opacity-50" : "opacity-100"
       } ${
         isInLine

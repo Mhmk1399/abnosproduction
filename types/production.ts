@@ -1,18 +1,20 @@
-export type ProductionStep = {
-  id: string;
-  name: string;
-  description?: string;
-  defaultDuration?: number;
-  items?: (ProductionStep | Inventory)[];
-  // Add more fields as needed
-};
 
+
+export interface LineItem{
+  id: string;
+  originalId: string;
+  name: string;
+  type: "step" | "inventory";
+  description?: string;
+  quantity?: number;
+}
 
 // Add this to your existing types
 export interface Inventory {
   id: string;
   name: string;
   quantity?: number;
+  description:string;
   type?: "inventory"; // Add this to help with type discrimination
 }
 
@@ -62,4 +64,50 @@ export interface ProcessStep {
   endTime?: Date;
   status: 'in-progress' | 'completed' | 'defective';
   notes?: string;
+}
+
+export interface ProductionStep {
+  _id: string;
+  stepId: {
+    _id: string;
+    name: string;
+    code: string;
+    description: string;
+  };
+  order: number;
+}
+export interface ProductionInventory {
+  _id: string;
+  inventoryId: {
+    _id: string;
+    name: string;
+    code: string;
+    quantity: number;
+    description: string;
+  };
+  order: number;
+}
+export interface FlowOrderItem {
+  _id: string;
+  itemId: {
+    _id: string;
+    name: string;
+    code: string;
+    description?: string;
+    quantity?: number;
+  };
+  itemType: 'steps' | 'productionInventory';
+  order: number;
+}
+export interface ProductionLine {
+  _id: string;
+  name: string;
+  code: string;
+  description: string;
+  steps: ProductionStep[];
+  inventories: ProductionInventory[];
+  flowOrder: FlowOrderItem[];
+  active: boolean;
+  createdAt: string;
+  updatedAt: string;
 }

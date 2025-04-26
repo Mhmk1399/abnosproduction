@@ -1,11 +1,6 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
-import { ReactNode } from "react";
-import { LayerProvider } from "../contexts/LayerContext";
-import { ProductionProvider } from "../contexts/ProductionContext";
-import { WorkerProvider } from "../contexts//WorkerContext";
-import { InventoryProvider } from "../contexts//InventoryContext";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -32,13 +27,7 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <ProductionProvider>
-          <LayerProvider>
-            <WorkerProvider>
-              <InventoryProvider>{children}</InventoryProvider>
-            </WorkerProvider>
-          </LayerProvider>
-        </ProductionProvider>
+        {children}
       </body>
     </html>
   );

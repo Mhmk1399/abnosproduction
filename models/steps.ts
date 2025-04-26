@@ -20,4 +20,5 @@ const stepsSchema = new mongoose.Schema({
 
 
 
-export default mongoose.models.Steps || mongoose.model("Steps", stepsSchema);
+export default mongoose.models.steps || mongoose.model("steps", stepsSchema);
+
