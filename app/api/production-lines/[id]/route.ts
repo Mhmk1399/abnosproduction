@@ -10,7 +10,8 @@ export async function GET(
   try {
     await connect();
     
-    const line = await productionLine.findById(params.id)
+    const id = await params.id;
+    const line = await productionLine.findById(id)
       .populate({
         path: 'steps.stepId',
         model: 'steps'
@@ -46,6 +47,7 @@ export async function PUT(
     await connect();
     
     const body = await request.json();
+    const id = await params.id;
     
     // Validate required fields
     if (!body.name) {
@@ -56,7 +58,7 @@ export async function PUT(
     }
     
     const updatedLine = await productionLine.findByIdAndUpdate(
-      params.id,
+      id,
       {
         name: body.name,
         description: body.description,
@@ -93,7 +95,8 @@ export async function DELETE(
   try {
     await connect();
     
-    const deletedLine = await productionLine.findByIdAndDelete(params.id);
+    const id = await params.id;
+    const deletedLine = await productionLine.findByIdAndDelete(id);
     
     if (!deletedLine) {
       return NextResponse.json(
