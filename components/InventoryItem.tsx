@@ -1,7 +1,7 @@
 "use client";
 import { Ref } from "react";
 import { useDrag } from "react-dnd";
-import { Inventory } from "../types/production";
+import { Inventory } from "./types/production";
 
 export default function InventoryItem({
   inventory,

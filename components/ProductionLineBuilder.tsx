@@ -8,7 +8,7 @@ import InventoryItem from "./InventoryItem";
 import { useSteps, Step } from "../hooks/useSteps";
 import { useInventories, Inventory } from "../hooks/useInventories";
 import { v4 as uuidv4 } from "uuid";
-import { LineItem } from "../types/production";
+import { LineItem } from "./types/production";
 
 interface ProductionLineBuilderProps {
   initialConfig?: any;

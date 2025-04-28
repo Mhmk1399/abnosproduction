@@ -3,7 +3,7 @@ import { useDrag, useDrop } from "react-dnd";
 import { useRef } from "react";
 import StepItem from "./StepItem";
 import InventoryItem from "./InventoryItem";
-import { ProductionStep, Inventory } from "../types/production";
+import { ProductionStep, Inventory } from "./types/production";
 
 interface DraggableItemProps {
   item: ProductionStep | Inventory;

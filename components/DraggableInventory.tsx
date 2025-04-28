@@ -1,7 +1,7 @@
 "use client";
 import { useDrag, useDrop } from "react-dnd";
 import InventoryItem from "./InventoryItem";
-import { Inventory } from "../types/production";
+import { Inventory } from "./types/production";
 
 export default function DraggableInventory({
   inventory,

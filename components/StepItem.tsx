@@ -1,7 +1,7 @@
 "use client";
 import { Ref } from "react";
 import { useDrag } from "react-dnd";
-import { ProductionStep } from "../types/production";
+import { ProductionStep } from "./types/production";
 
 export default function StepItem({
   step,

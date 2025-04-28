@@ -1,7 +1,7 @@
 "use client";
 import { Ref } from "react";
 import { useDrop } from "react-dnd";
-import { ProductionStep, Inventory } from "../types/production";
+import { ProductionStep, Inventory } from "./types/production";
 import DraggableItem from "./DraggableStep";
 
 interface LineAreaProps {
