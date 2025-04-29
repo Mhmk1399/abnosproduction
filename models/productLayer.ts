@@ -41,10 +41,6 @@ const productLayerSchema = new mongoose.Schema(
       type: mongoose.Schema.Types.ObjectId,
       ref: "Invoice",
     },
-    diliveryDate: {
-      type: Date,
-      required: true,
-    },
     productionCode: {
       type: String,
       required: true,
@@ -65,7 +61,7 @@ const productLayerSchema = new mongoose.Schema(
     productionNotes: {
       type: String,
     },
-    designId: {
+    designNumber: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Design",
       required: true,

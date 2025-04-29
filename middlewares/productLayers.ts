@@ -1,4 +1,4 @@
-import { NextResponse,NextRequest } from "next/server";
+import { NextResponse, NextRequest } from "next/server";
 import connect from "@/lib/data";
 import ProductLayer from "@/models/productLayer";
 
@@ -23,12 +23,45 @@ export const getProductLayers = async () => {
 export const updateProductLayer = async (req: NextRequest) => {
     await connect();
     try {
-        const { _id, name, customer, glass , treatments ,width,height,invoice,diliveryDate,productionCode} = await req.json();
+        const {
+            _id,
+            customer,
+            code,
+            glass,
+            treatments,
+            width,
+            height,
+            product,
+            invoice,
+            productionCode,
+            productionLine,
+            productionDate,
+            currentStep,
+            productionNotes,
+            designNumber
+        } = await req.json();
+
         const updatedProductLayer = await ProductLayer.findByIdAndUpdate(
             _id,
-            { name, customer, glass , treatments ,width,height,invoice,diliveryDate,productionCode},
+            {
+                customer,
+                code,
+                glass,
+                treatments,
+                width,
+                height,
+                product,
+                invoice,
+                productionCode,
+                productionLine,
+                productionDate,
+                currentStep,
+                productionNotes,
+                designNumber
+            },
             { new: true }
         );
+
         return NextResponse.json(
             { message: "Product layer updated successfully", updatedProductLayer },
             { status: 200 }
@@ -42,8 +75,9 @@ export const updateProductLayer = async (req: NextRequest) => {
 };
 
 
+
 export const deleteProductLayer = async (req: NextRequest) => {
-    
+
     try {
         const { id } = await req.json();
         await ProductLayer.findByIdAndDelete(id);

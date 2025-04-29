@@ -34,14 +34,16 @@ export function useLayerProcessing({ stepId, workerId }: UseLayerProcessingProps
     useLayerTracking(stepId);
 
   // Use SWR to fetch layer data when layerId changes
-  const { data: layerData, error: layerError } = useSWR(
-    layerId ? `/api/layers/${layerId}` : null,
-    fetcher,
-    { 
-      revalidateOnFocus: false,
-      shouldRetryOnError: false
-    }
-  );
+// Use SWR to fetch layer data when layerId changes
+const { data: layerData, error: layerError } = useSWR(
+  layerId ? `/api/productLayer/${layerId}` : null,
+  fetcher,
+  { 
+    revalidateOnFocus: false,
+    shouldRetryOnError: false
+  }
+);
+
 
   // Set error from layer tracking if it exists
   useEffect(() => {
@@ -86,7 +88,7 @@ export function useLayerProcessing({ stepId, workerId }: UseLayerProcessingProps
       const layer = layerData;
 
       // Check if this layer is already in this step or needs to be started
-      const isInCurrentStep = layer.currentStep?.stepId === stepId;
+      const isInCurrentStep = layer.currentStep?._id === stepId;
 
       if (!isInCurrentStep) {
         // Start the layer in this step

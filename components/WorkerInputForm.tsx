@@ -1,6 +1,62 @@
 "use client";
 import { useLayerProcessing } from "../hooks/useLayerProcessing";
 import { Layer } from "./types/production";
+import { useState, useEffect } from "react";
+
+// Fake data for testing
+const fakeLayer = {
+  _id: "test-id-123456",
+  code: "TEST-001",
+  batchId: "BATCH-2023-001",
+  status: "in-progress",
+  dimensions: {
+    width: 120,
+    height: 80,
+    thickness: 10,
+  },
+  customer: {
+    name: "Test Customer Inc.",
+  },
+  glass: {
+    name: "Tempered Glass",
+  },
+  productionCode: "PROD-TEST-001",
+  currentStep: {
+    stepId: "680cb6e4d5a9cadc24acd5b4",
+    startTime: new Date().toISOString(),
+  },
+  processHistory: [],
+};
+
+const fakeStepsLayers = [
+  {
+    _id: "test-layer-1",
+    code: "TEST-001",
+    batchId: "BATCH-2023-001",
+    status: "in-progress",
+    currentStep: {
+      startTime: new Date().toISOString(),
+    },
+  },
+  {
+    _id: "test-layer-2",
+    code: "TEST-002",
+    batchId: "BATCH-2023-001",
+    status: "waiting",
+    currentStep: {
+      startTime: new Date(Date.now() - 3600000).toISOString(),
+    },
+  },
+  {
+    _id: "test-layer-3",
+    code: "TEST-003",
+    batchId: "BATCH-2023-002",
+    status: "completed",
+    currentStep: {
+      startTime: new Date(Date.now() - 7200000).toISOString(),
+    },
+  },
+];
 
 export default function WorkerInputForm({
   stepId = "680cb6e4d5a9cadc24acd5b4",
@@ -30,17 +86,108 @@ export default function WorkerInputForm({
     inputRef,
     handleSubmit,
     handleProcessComplete,
-  } = useLayerProcessing({ stepId:"680cb6e4d5a9cadc24acd5b4", workerId });
+  } = useLayerProcessing({ stepId, workerId });
+
+  // State for fake data
+  const [useFakeData, setUseFakeData] = useState(false);
+  const [fakeCurrentLayer, setFakeCurrentLayer] = useState<any>(null);
+  const [fakeRecentLayers, setFakeRecentLayers] = useState<any[]>([]);
+  const [fakeError, setFakeError] = useState("");
+  const [fakeSuccess, setFakeSuccess] = useState("");
+  const [fakeIsLoading, setFakeIsLoading] = useState(false);
+  const [fakeIsProcessComplete, setFakeIsProcessComplete] = useState(false);
+  const [fakeIsDefective, setFakeIsDefective] = useState(false);
+  const [fakeNotes, setFakeNotes] = useState("");
+
+  // Custom submit handler to check for test-id
+  const customHandleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+
+    // Check if the input is test-id
+    if (layerId.toLowerCase() === "test-id") {
+      setUseFakeData(true);
+      setFakeIsLoading(true);
+
+      // Simulate loading
+      setTimeout(() => {
+        setFakeCurrentLayer(fakeLayer);
+        setFakeIsLoading(false);
+        setFakeError("");
+      }, 800);
+
+      return;
+    }
+
+    // If not test-id, use the real handler
+    setUseFakeData(false);
+    handleSubmit(e);
+  };
+
+  // Custom process complete handler for fake data
+  const customHandleProcessComplete = () => {
+    if (useFakeData) {
+      setFakeIsLoading(true);
+
+      // Simulate processing
+      setTimeout(() => {
+        // Add to fake recent layers
+        setFakeRecentLayers([
+          {
+            ...fakeCurrentLayer,
+            status: fakeIsDefective ? "defective" : "completed",
+            processedAt: new Date(),
+          },
+          ...fakeRecentLayers,
+        ]);
+
+        setFakeSuccess(`Layer ${fakeCurrentLayer.code} processed successfully`);
+        setFakeCurrentLayer(null);
+        setFakeIsProcessComplete(false);
+        setFakeIsDefective(false);
+        setFakeNotes("");
+        setFakeIsLoading(false);
+        setLayerId("");
+
+        // Clear success message after 3 seconds
+        setTimeout(() => {
+          setFakeSuccess("");
+        }, 3000);
+      }, 1000);
+
+      return;
+    }
+
+    // If not using fake data, use the real handler
+    handleProcessComplete();
+  };
 
   // If no step is selected, show a message
   if (!stepId || !stepName) {
     return (
       <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-6 text-center">
-        <h3 className="text-lg font-medium text-yellow-800 mb-2">No Production Step Selected</h3>
-        <p className="text-yellow-600">Please select a production step to continue</p>
+        <h3 className="text-lg font-medium text-yellow-800 mb-2">
+          No Production Step Selected
+        </h3>
+        <p className="text-yellow-600">
+          Please select a production step to continue
+        </p>
       </div>
     );
   }
+
+  // Determine which data to use
+  const displayCurrentLayer = useFakeData ? fakeCurrentLayer : currentLayer;
+  const displayRecentLayers = useFakeData ? fakeRecentLayers : recentLayers;
+  const displayError = useFakeData ? fakeError : error;
+  const displaySuccess = useFakeData ? fakeSuccess : success;
+  const displayIsLoading = useFakeData ? fakeIsLoading : isLoading;
+  const displayIsProcessComplete = useFakeData
+    ? fakeIsProcessComplete
+    : isProcessComplete;
+  const displayIsDefective = useFakeData ? fakeIsDefective : isDefective;
+  const displayNotes = useFakeData ? fakeNotes : notes;
+  const displayStepsLayers = useFakeData ? fakeStepsLayers : stepsLayers;
+  const displayIsLayersLoading = useFakeData ? false : isLayersLoading;
 
   return (
     <div className="bg-white rounded-xl shadow-lg overflow-hidden max-w-4xl mx-auto">
@@ -60,14 +207,17 @@ export default function WorkerInputForm({
 
       <div className="p-6">
         {/* Layer ID Input Form */}
-        <form onSubmit={handleSubmit} className="mb-6">
+        <form onSubmit={customHandleSubmit} className="mb-6">
           <div className="flex items-center gap-3">
             <div className="flex-1">
               <label
                 htmlFor="layerId"
                 className="block text-sm font-medium text-gray-700 mb-1"
               >
-                Enter Layer ID
+                Enter Layer ID{" "}
+                {useFakeData && (
+                  <span className="text-blue-500">(Using Test Data)</span>
+                )}
               </label>
               <input
                 ref={inputRef}
@@ -76,29 +226,29 @@ export default function WorkerInputForm({
                 value={layerId}
                 onChange={(e) => setLayerId(e.target.value)}
                 className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                placeholder="Scan or type layer ID..."
+                placeholder="Scan or type layer ID (or 'test-id' for demo)..."
                 required
-                disabled={isLoading}
+                disabled={displayIsLoading}
               />
             </div>
             <button
               type="submit"
               className="mt-6 px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors disabled:bg-blue-400"
-              disabled={isLoading}
+              disabled={displayIsLoading}
             >
-              {isLoading ? "Loading..." : "Check"}
+              {displayIsLoading ? "Loading..." : "Check"}
             </button>
           </div>
 
-          {error && (
+          {displayError && (
             <div className="mt-2 text-sm text-red-600 bg-red-50 p-2 rounded-md">
-              {error}
+              {displayError}
             </div>
           )}
         </form>
 
         {/* Current Layer Details */}
-        {currentLayer && (
+        {displayCurrentLayer && (
           <div className="bg-gray-50 rounded-lg p-6 mb-6 border border-gray-200">
             <h3 className="text-lg font-medium text-gray-900 mb-4">
               Layer Details
@@ -107,17 +257,17 @@ export default function WorkerInputForm({
             <div className="grid grid-cols-2 gap-4 mb-6">
               <div>
                 <p className="text-sm text-gray-500">Layer ID</p>
-                <p className="font-medium">{currentLayer.code}</p>
+                <p className="font-medium">{displayCurrentLayer.code}</p>
               </div>
               <div>
                 <p className="text-sm text-gray-500">Batch</p>
-                <p className="font-medium">{currentLayer.batchId}</p>
+                <p className="font-medium">{displayCurrentLayer.batchId}</p>
               </div>
               <div>
                 <p className="text-sm text-gray-500">Dimensions</p>
                 <p className="font-medium">
-                  {currentLayer.dimensions
-                    ? `${currentLayer.dimensions.width}x${currentLayer.dimensions.height}x${currentLayer.dimensions.thickness}`
+                  {displayCurrentLayer.dimensions
+                    ? `${displayCurrentLayer.dimensions.width}x${displayCurrentLayer.dimensions.height}x${displayCurrentLayer.dimensions.thickness}`
                     : "N/A"}
                 </p>
               </div>
@@ -126,16 +276,16 @@ export default function WorkerInputForm({
                 <p className="font-medium">
                   <span
                     className={`inline-block px-2 py-1 text-xs rounded-full ${
-                      currentLayer.status === "completed"
+                      displayCurrentLayer.status === "completed"
                         ? "bg-green-100 text-green-800"
-                        : currentLayer.status === "in-progress"
+                        : displayCurrentLayer.status === "in-progress"
                         ? "bg-yellow-100 text-yellow-800"
-                        : currentLayer.status === "defective"
+                        : displayCurrentLayer.status === "defective"
                         ? "bg-red-100 text-red-800"
                         : "bg-gray-100 text-gray-800"
                     }`}
                   >
-                    {currentLayer.status}
+                    {displayCurrentLayer.status}
                   </span>
                 </p>
               </div>
@@ -146,8 +296,12 @@ export default function WorkerInputForm({
                 <input
                   id="processComplete"
                   type="checkbox"
-                  checked={isProcessComplete}
-                  onChange={(e) => setIsProcessComplete(e.target.checked)}
+                  checked={displayIsProcessComplete}
+                  onChange={(e) =>
+                    useFakeData
+                      ? setFakeIsProcessComplete(e.target.checked)
+                      : setIsProcessComplete(e.target.checked)
+                  }
                   className="h-5 w-5 text-blue-600 rounded border-gray-300 focus:ring-blue-500"
                 />
                 <label htmlFor="processComplete" className="ml-2 text-gray-700">
@@ -159,10 +313,14 @@ export default function WorkerInputForm({
                 <input
                   id="isDefective"
                   type="checkbox"
-                  checked={isDefective}
-                  onChange={(e) => setIsDefective(e.target.checked)}
+                  checked={displayIsDefective}
+                  onChange={(e) =>
+                    useFakeData
+                      ? setFakeIsDefective(e.target.checked)
+                      : setIsDefective(e.target.checked)
+                  }
                   className="h-5 w-5 text-red-600 rounded border-gray-300 focus:ring-red-500"
-                  disabled={!isProcessComplete}
+                  disabled={!displayIsProcessComplete}
                 />
                 <label htmlFor="isDefective" className="ml-2 text-gray-700">
                   Mark as defective
@@ -178,28 +336,32 @@ export default function WorkerInputForm({
                 </label>
                 <textarea
                   id="notes"
-                  value={notes}
-                  onChange={(e) => setNotes(e.target.value)}
+                  value={displayNotes}
+                  onChange={(e) =>
+                    useFakeData
+                      ? setFakeNotes(e.target.value)
+                      : setNotes(e.target.value)
+                  }
                   rows={2}
                   className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                   placeholder="Add any notes about this process..."
-                  disabled={!isProcessComplete}
+                  disabled={!displayIsProcessComplete}
                 />
               </div>
 
               <button
-                onClick={handleProcessComplete}
-                disabled={!isProcessComplete || isLoading}
+                onClick={customHandleProcessComplete}
+                disabled={!displayIsProcessComplete || displayIsLoading}
                 className="w-full px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors disabled:bg-gray-300 disabled:cursor-not-allowed"
               >
-                {isLoading ? "Processing..." : "Complete & Continue"}
+                {displayIsLoading ? "Processing..." : "Complete & Continue"}
               </button>
             </div>
           </div>
         )}
 
         {/* Success Message */}
-        {success && (
+        {displaySuccess && (
           <div className="mb-6 p-4 bg-green-50 border border-green-200 rounded-lg text-green-800 flex items-center">
             <svg
               className="w-5 h-5 mr-2"
@@ -213,7 +375,7 @@ export default function WorkerInputForm({
                 clipRule="evenodd"
               />
             </svg>
-            {success}
+            {displaySuccess}
           </div>
         )}
 
@@ -222,12 +384,12 @@ export default function WorkerInputForm({
           <h3 className="text-lg font-medium text-gray-900 mb-3">
             Layers in this Step
           </h3>
-          {isLayersLoading ? (
+          {displayIsLayersLoading ? (
             <div className="text-center py-8">
               <div className="inline-block animate-spin rounded-full h-8 w-8 border-4 border-blue-500 border-t-transparent"></div>
               <p className="mt-2 text-gray-600">Loading layers...</p>
             </div>
-          ) : stepsLayers.length > 0 ? (
+          ) : displayStepsLayers && displayStepsLayers.length > 0 ? (
             <div className="bg-white border border-gray-200 rounded-lg overflow-hidden">
               <table className="min-w-full divide-y divide-gray-200">
                 <thead className="bg-gray-50">
@@ -243,11 +405,11 @@ export default function WorkerInputForm({
                     </th>
                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                       Start Time
-                      </th>
+                    </th>
                   </tr>
                 </thead>
                 <tbody className="bg-white divide-y divide-gray-200">
-                  {stepsLayers.map((layer: any) => (
+                  {displayStepsLayers.map((layer: any) => (
                     <tr key={layer._id} className="hover:bg-gray-50">
                       <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
                         {layer.code}
@@ -271,8 +433,10 @@ export default function WorkerInputForm({
                         </span>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                        {layer.currentStep?.startTime 
-                          ? new Date(layer.currentStep.startTime).toLocaleString()
+                        {layer.currentStep?.startTime
+                          ? new Date(
+                              layer.currentStep.startTime
+                            ).toLocaleString()
                           : "N/A"}
                       </td>
                     </tr>
@@ -288,7 +452,7 @@ export default function WorkerInputForm({
         </div>
 
         {/* Recently Processed Layers */}
-        {recentLayers.length > 0 && (
+        {displayRecentLayers && displayRecentLayers.length > 0 && (
           <div>
             <h3 className="text-lg font-medium text-gray-900 mb-3">
               Recently Processed
@@ -312,7 +476,7 @@ export default function WorkerInputForm({
                   </tr>
                 </thead>
                 <tbody className="bg-white divide-y divide-gray-200">
-                  {recentLayers.map((layer, index) => (
+                  {displayRecentLayers.map((layer, index) => (
                     <tr key={index} className="hover:bg-gray-50">
                       <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
                         {layer.code}
@@ -334,7 +498,7 @@ export default function WorkerInputForm({
                         </span>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                        {layer.processedAt 
+                        {layer.processedAt
                           ? new Date(layer.processedAt).toLocaleTimeString()
                           : "N/A"}
                       </td>
@@ -343,6 +507,31 @@ export default function WorkerInputForm({
                 </tbody>
               </table>
             </div>
+          </div>
+        )}
+
+        {/* Test Mode Indicator */}
+        {useFakeData && (
+          <div className="mt-6 p-3 bg-blue-50 border border-blue-200 rounded-lg text-blue-800 text-sm">
+            <div className="flex items-center">
+              <svg
+                className="w-5 h-5 mr-2"
+                fill="currentColor"
+                viewBox="0 0 20 20"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  fillRule="evenodd"
+                  d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2h-1V9a1 1 0 00-1-1z"
+                  clipRule="evenodd"
+                />
+              </svg>
+              <span className="font-medium">Test Mode Active</span>
+            </div>
+            <p className="mt-1 ml-7">
+              You're currently using test data. Enter any other ID to switch
+              back to real data.
+            </p>
           </div>
         )}
       </div>
