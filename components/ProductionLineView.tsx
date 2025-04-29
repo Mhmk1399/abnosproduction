@@ -2,6 +2,7 @@
 import { useState } from 'react';
 import { useProductionLine } from '../hooks/useProductionLines';
 import TrackingModal from './TrackingModal';
+import toast from 'react-hot-toast';
 
 export default function ProductionLineView({
   lineId,
@@ -10,7 +11,7 @@ export default function ProductionLineView({
   lineId: string;
   onStepClick?: (stepId: string, stepName: string, stepDescription: string) => void;
 }) {
-  const { line, isLoading, error } = useProductionLine(lineId);
+  const { line, isLoading, error, deleteLine } = useProductionLine(lineId);
   const [expandedStepId, setExpandedStepId] = useState<string | null>(null);
   const [selectedStep, setSelectedStep] = useState<{
     id: string;
@@ -70,8 +71,23 @@ export default function ProductionLineView({
     <div className="bg-white rounded-lg shadow-md p-6 transition-all hover:shadow-lg mb-6">
       <div className="flex justify-between items-center mb-4">
         <h2 className="text-2xl font-semibold text-gray-800">{line.name}</h2>
-        <div className="text-sm text-gray-500">
-          Last updated: {new Date(line.updatedAt).toLocaleDateString()}
+        <div className="flex items-center gap-4">
+          <div className="text-sm text-gray-500">
+            Last updated: {new Date(line.updatedAt).toLocaleDateString()}
+          </div>
+          <button
+            onClick={async () => {
+              if (window.confirm('Are you sure you want to delete this production line?')) {
+                const success = await deleteLine();
+                if (success) {
+               toast.success('Production line deleted successfully!');
+                }
+              }
+            }}
+            className="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded text-sm"
+          >
+            Delete Line
+          </button>
         </div>
       </div>
       
@@ -185,7 +201,7 @@ export default function ProductionLineView({
           stepId={selectedStep.id}
           stepName={selectedStep.name}
           stepDescription={selectedStep.description}
-          glasses={[]} // We'll implement this later
+          
           onClose={closeModal}
         />
       )}

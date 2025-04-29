@@ -1,9 +1,18 @@
-"use client";
-import { useDrag, useDrop } from "react-dnd";
-import { useRef } from "react";
-import StepItem from "./StepItem";
-import InventoryItem from "./InventoryItem";
-import { ProductionStep, Inventory } from "./types/production";
+import React from 'react';
+import { useDrag, useDrop } from 'react-dnd';
+
+interface ProductionStep {
+  _id: string;
+  name: string;
+  code: string;
+  // Add other properties as needed
+}
+
+interface Inventory {
+  _id: string;
+  name: string;
+  // Add other inventory properties
+}
 
 interface DraggableItemProps {
   item: ProductionStep | Inventory;
@@ -12,73 +21,44 @@ interface DraggableItemProps {
   onRemove: () => void;
 }
 
-export default function DraggableItem({
-  item,
-  index,
-  onReorder,
-  onRemove,
-}: DraggableItemProps) {
-  const ref = useRef<HTMLDivElement>(null);
-  
-  // Determine if this is a step or inventory
-  const isStep = 'description' in item;
-  const itemType = isStep ? "step" : "inventory";
-
-  // Set up drag for reordering
-  const [{ isDragging }, drag] = useDrag(() => ({
-    type: itemType,
-    item: { 
-      id: item.id,
-      type: itemType,
-      index, // Include index for reordering
-      isReordering: true // Flag to indicate this is a reordering operation
-    },
+const DraggableStep: React.FC<DraggableItemProps> = ({ item, index, onReorder, onRemove }) => {
+  const [{ isDragging }, drag] = useDrag({
+    type: 'STEP',
+    item: { index },
     collect: (monitor) => ({
       isDragging: monitor.isDragging(),
     }),
-  }));
+  });
 
-  // Set up drop for reordering
-  const [, drop] = useDrop(() => ({
-    accept: ["step", "inventory"],
-    hover: (draggedItem: { id: string; index: number; isReordering: boolean }) => {
-      // Skip if dragging over itself
-      if (draggedItem.index === index) {
-        return;
-      }
-      
-      // Only handle reordering operations here
-      if (draggedItem.isReordering) {
-        // Call reorder function
+  const [, drop] = useDrop({
+    accept: 'STEP',
+    hover(draggedItem: { index: number }) {
+      if (draggedItem.index !== index) {
         onReorder(draggedItem.index, index);
-        
-        // Update the index in the dragged item
         draggedItem.index = index;
       }
     },
-  }));
-
-  // Combine drag and drop refs
-  drag(drop(ref));
+  });
 
   return (
-    <div
-      ref={ref}
-      className={`mb-2 ${isDragging ? "opacity-50" : "opacity-100"}`}
+    <div 
+      ref={(node) => drag(drop(node))} 
+      className={`p-4 mb-2 bg-white rounded shadow ${isDragging ? 'opacity-50' : ''}`}
     >
-      {isStep ? (
-        <StepItem 
-          step={item as ProductionStep} 
-          isInLine={true} 
-          onRemove={onRemove} 
-        />
-      ) : (
-        <InventoryItem 
-          inventory={item as Inventory} 
-          isInLine={true} 
-          onRemove={onRemove} 
-        />
-      )}
+      <div className="flex justify-between items-center">
+        <div>
+          <h3 className="font-medium">{item.name}</h3>
+          <p className="text-sm text-gray-500">{item.code}</p>
+        </div>
+        <button 
+          onClick={onRemove}
+          className="text-red-500 hover:text-red-700"
+        >
+          Remove
+        </button>
+      </div>
     </div>
   );
-}
+};
+
+export default DraggableStep;

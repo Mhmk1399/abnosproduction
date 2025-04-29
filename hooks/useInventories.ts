@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import useSWR from 'swr';
 
 export interface Inventory {
   _id: string;
@@ -10,31 +10,20 @@ export interface Inventory {
   updatedAt: string;
 }
 
+// Fetcher function for SWR
+const fetcher = async (url: string) => {
+  const response = await fetch(url);
+  if (!response.ok) {
+    throw new Error('Failed to fetch inventories');
+  }
+  return response.json();
+};
+
 export function useInventories() {
-  const [inventories, setInventories] = useState<Inventory[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-
-  useEffect(() => {
-    async function fetchInventories() {
-      setIsLoading(true);
-      try {
-        const response = await fetch('/api/productionInventory');
-        if (!response.ok) {
-          throw new Error('Failed to fetch inventories');
-        }
-        const data = await response.json();
-        setInventories(data);
-      } catch (err) {
-        console.error('Error fetching inventories:', err);
-        setError(err instanceof Error ? err.message : 'An error occurred');
-      } finally {
-        setIsLoading(false);
-      }
-    }
-
-    fetchInventories();
-  }, []);
-
-  return { inventories, isLoading, error };
+  const { data, error, isLoading } = useSWR<Inventory[]>('/api/productionInventory', fetcher);
+  return {
+    inventories: data || [],
+    isLoading,
+    error: error ? error.message : null
+  };
 }

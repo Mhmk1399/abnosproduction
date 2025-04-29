@@ -1,145 +1,46 @@
 "use client";
-import { useState, useRef, useEffect } from "react";
-import { useLayerTracking } from "../hooks/useLayerTracking";
+import { useLayerProcessing } from "../hooks/useLayerProcessing";
+import { Layer } from "./types/production";
 
 export default function WorkerInputForm({
-  stepId,
+  stepId = "680cb6e4d5a9cadc24acd5b4",
   stepName,
   workerId = "W-12345",
 }: {
-  stepId: string;
-  stepName: string;
+  stepId?: string;
+  stepName?: string;
   workerId?: string;
 }) {
-  const [layerId, setLayerId] = useState("");
-  const [currentLayer, setCurrentLayer] = useState<any | null>(null);
-  const [isProcessComplete, setIsProcessComplete] = useState(false);
-  const [isDefective, setIsDefective] = useState(false);
-  const [notes, setNotes] = useState("");
-  const [recentLayers, setRecentLayers] = useState<any[]>([]);
-  const [error, setError] = useState("");
-  const [success, setSuccess] = useState("");
-  const [isLoading, setIsLoading] = useState(false);
-  const inputRef = useRef<HTMLInputElement>(null);
+  const {
+    layerId,
+    setLayerId,
+    currentLayer,
+    isProcessComplete,
+    setIsProcessComplete,
+    isDefective,
+    setIsDefective,
+    notes,
+    setNotes,
+    recentLayers,
+    error,
+    success,
+    isLoading,
+    isLayersLoading,
+    stepsLayers,
+    inputRef,
+    handleSubmit,
+    handleProcessComplete,
+  } = useLayerProcessing({ stepId:"680cb6e4d5a9cadc24acd5b4", workerId });
 
-  // Get real-time layer data for this step
-  const { layers: stepsLayers } = useLayerTracking(stepId);
-
-  // Focus the input field when the component mounts or after submission
-  useEffect(() => {
-    if (inputRef.current) {
-      inputRef.current.focus();
-    }
-  }, [currentLayer]);
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setError("");
-    setIsLoading(true);
-
-    try {
-      // Fetch the layer data from your API
-      const response = await fetch(`/api/layers/${layerId}`);
-
-      if (!response.ok) {
-        throw new Error(`Layer ID ${layerId} not found`);
-      }
-
-      const layer = await response.json();
-
-      // Check if this layer is already in this step or needs to be started
-      const isInCurrentStep = layer.currentStep?.stepId === stepId;
-
-      if (!isInCurrentStep) {
-        // Start the layer in this step
-        await fetch(`/api/layers/${layer._id}/process`, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            stepId,
-            eventType: "start",
-            workerId,
-          }),
-        });
-
-        // Refetch the layer to get updated data
-        const updatedResponse = await fetch(`/api/layers/${layerId}`);
-        const updatedLayer = await updatedResponse.json();
-        setCurrentLayer(updatedLayer);
-      } else {
-        setCurrentLayer(layer);
-      }
-
-      setIsProcessComplete(false);
-      setIsDefective(false);
-      setNotes("");
-    } catch (err) {
-      console.error("Error fetching layer:", err);
-      setError(err instanceof Error ? err.message : "An error occurred");
-      setCurrentLayer(null);
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  const handleProcessComplete = async () => {
-    if (!currentLayer) return;
-
-    setIsLoading(true);
-    try {
-      // Send the process completion to the API
-      const response = await fetch(`/api/layers/${currentLayer._id}/process`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          stepId,
-          eventType: isDefective ? "defect" : "complete",
-          workerId,
-          notes,
-        }),
-      });
-
-      if (!response.ok) {
-        throw new Error("Failed to update layer status");
-      }
-
-      // Add to recent layers
-      setRecentLayers((prev) =>
-        [
-          {
-            ...currentLayer,
-            status: isDefective ? "defective" : "completed",
-            processedAt: new Date(),
-          },
-          ...prev,
-        ].slice(0, 5)
-      );
-
-      // Show success message
-      setSuccess(`Layer ${currentLayer.code} processed successfully`);
-
-      // Reset form for next entry
-      setCurrentLayer(null);
-      setLayerId("");
-      setIsProcessComplete(false);
-      setIsDefective(false);
-      setNotes("");
-
-      // Clear success message after 3 seconds
-      setTimeout(() => {
-        setSuccess("");
-      }, 3000);
-    } catch (err) {
-      console.error("Error completing process:", err);
-      setError(err instanceof Error ? err.message : "An error occurred");
-    } finally {
-      setIsLoading(false);
-    }
-  };
+  // If no step is selected, show a message
+  if (!stepId || !stepName) {
+    return (
+      <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-6 text-center">
+        <h3 className="text-lg font-medium text-yellow-800 mb-2">No Production Step Selected</h3>
+        <p className="text-yellow-600">Please select a production step to continue</p>
+      </div>
+    );
+  }
 
   return (
     <div className="bg-white rounded-xl shadow-lg overflow-hidden max-w-4xl mx-auto">
@@ -321,7 +222,12 @@ export default function WorkerInputForm({
           <h3 className="text-lg font-medium text-gray-900 mb-3">
             Layers in this Step
           </h3>
-          {stepsLayers.length > 0 ? (
+          {isLayersLoading ? (
+            <div className="text-center py-8">
+              <div className="inline-block animate-spin rounded-full h-8 w-8 border-4 border-blue-500 border-t-transparent"></div>
+              <p className="mt-2 text-gray-600">Loading layers...</p>
+            </div>
+          ) : stepsLayers.length > 0 ? (
             <div className="bg-white border border-gray-200 rounded-lg overflow-hidden">
               <table className="min-w-full divide-y divide-gray-200">
                 <thead className="bg-gray-50">
@@ -337,11 +243,11 @@ export default function WorkerInputForm({
                     </th>
                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                       Start Time
-                    </th>
+                      </th>
                   </tr>
                 </thead>
                 <tbody className="bg-white divide-y divide-gray-200">
-                  {stepsLayers.map((layer:any) => (
+                  {stepsLayers.map((layer: any) => (
                     <tr key={layer._id} className="hover:bg-gray-50">
                       <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
                         {layer.code}
@@ -365,9 +271,9 @@ export default function WorkerInputForm({
                         </span>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                        {new Date(
-                          layer.currentStep?.startTime
-                        ).toLocaleString()}
+                        {layer.currentStep?.startTime 
+                          ? new Date(layer.currentStep.startTime).toLocaleString()
+                          : "N/A"}
                       </td>
                     </tr>
                   ))}
@@ -428,7 +334,9 @@ export default function WorkerInputForm({
                         </span>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                        {new Date(layer.processedAt).toLocaleTimeString()}
+                        {layer.processedAt 
+                          ? new Date(layer.processedAt).toLocaleTimeString()
+                          : "N/A"}
                       </td>
                     </tr>
                   ))}

@@ -40,9 +40,11 @@ export interface Glass {
 
 // Layer represents a glass layer in production
 export interface Layer {
+  processedAt: string | number | Date;
+  _id: any;
+  code: any;
   id: string;
   batchId: string;
-  dimensions: string;
   thickness: number;
   material: string;
   quality: number;
@@ -53,6 +55,20 @@ export interface Layer {
   createdAt: Date;
   updatedAt: Date;
   processHistory: ProcessStep[];
+  layerHistory: Layer[];
+  glassId: string;
+  glass: Glass;
+  dimensions?: Dimensions;
+
+
+  layerId: string;
+  layer: Layer;
+  inventory: Inventory;
+}
+export interface Dimensions {
+  width: number;
+  height: number;
+  thickness: number;
 }
 
 // Represents a step in the layer's processing history

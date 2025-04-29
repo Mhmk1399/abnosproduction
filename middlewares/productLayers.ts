@@ -1,0 +1,88 @@
+import { NextResponse,NextRequest } from "next/server";
+import connect from "@/lib/data";
+import ProductLayer from "@/models/productLayer";
+
+
+
+export const getProductLayers = async () => {
+    await connect();
+    try {
+        const productLayers = await ProductLayer.find();
+        return NextResponse.json({ productLayers }, { status: 200 });
+    } catch (error) {
+        return NextResponse.json(
+            { error: "Failed to fetch product layers" },
+            { status: 500 }
+        );
+    }
+};
+
+
+
+
+export const updateProductLayer = async (req: NextRequest) => {
+    await connect();
+    try {
+        const { _id, name, customer, glass , treatments ,width,height,invoice,diliveryDate,productionCode} = await req.json();
+        const updatedProductLayer = await ProductLayer.findByIdAndUpdate(
+            _id,
+            { name, customer, glass , treatments ,width,height,invoice,diliveryDate,productionCode},
+            { new: true }
+        );
+        return NextResponse.json(
+            { message: "Product layer updated successfully", updatedProductLayer },
+            { status: 200 }
+        );
+    } catch (error) {
+        return NextResponse.json(
+            { error: "Failed to update product layer", details: error },
+            { status: 500 }
+        );
+    }
+};
+
+
+export const deleteProductLayer = async (req: NextRequest) => {
+    
+    try {
+        const { id } = await req.json();
+        await ProductLayer.findByIdAndDelete(id);
+        return NextResponse.json(
+            { message: "Product layer deleted successfully" },
+            { status: 200 }
+        );
+    } catch (error) {
+        return NextResponse.json(
+            { error: "Failed to delete product layer", details: error },
+            { status: 500 }
+        );
+    }
+};
+
+
+export const getProductLayerById = async (id: string) => {
+    try {
+        if (!id) {
+            return NextResponse.json(
+                { error: "Product layer ID is required" },
+                { status: 400 }
+            );
+        }
+        const productLayer = await ProductLayer.findById(id);
+        if (!productLayer) {
+            return NextResponse.json(
+                { error: "Product layer not found" },
+                { status: 404 }
+            );
+        }
+        return NextResponse.json(
+            { productLayer },
+            { status: 200 }
+        );
+    } catch (error) {
+        return NextResponse.json(
+            { error: "Failed to fetch product layer", details: error },
+            { status: 500 }
+        );
+    }
+};

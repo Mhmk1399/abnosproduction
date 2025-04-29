@@ -1,72 +1,64 @@
-import { useState, useEffect } from 'react';
+import useSWR, { mutate as globalMutate } from 'swr';
 import { ProductionLine } from '@/components/types/production';
 
-
-
-
-
-
+// Fetcher function for SWR
+const fetcher = async (url: string) => {
+  const response = await fetch(url);
+  if (!response.ok) {
+    throw new Error(`Failed to fetch data from ${url}`);
+  }
+  return response.json();
+};
 
 export function useProductionLines() {
-    const [lines, setLines] = useState<ProductionLine[]>([]);
-    const [isLoading, setIsLoading] = useState(true);
-    const [error, setError] = useState<string | null>(null);
+  const { data, error, isValidating } = useSWR<ProductionLine[]>(
+    '/api/production-lines',
+    fetcher
+  );
 
-    useEffect(() => {
-        async function fetchProductionLines() {
-            setIsLoading(true);
-            try {
-                const response = await fetch('/api/production-lines');
-                if (!response.ok) {
-                    throw new Error('Failed to fetch production lines');
-                }
-                const data = await response.json();
-                setLines(data);
-            } catch (err) {
-                console.error('Error fetching production lines:', err);
-                setError(err instanceof Error ? err.message : 'An error occurred');
-            } finally {
-                setIsLoading(false);
-            }
-        }
-
-        fetchProductionLines();
-    }, []);
-
-    return { lines, isLoading, error };
+  return {
+    lines: data || [],
+    isLoading: isValidating,
+    error: error ? error.message : null
+  };
 }
 
 // Hook for fetching a single production line by ID
 export function useProductionLine(id: string) {
-    const [line, setLine] = useState<ProductionLine | null>(null);
-    const [isLoading, setIsLoading] = useState(true);
-    const [error, setError] = useState<string | null>(null);
+  const { data, error, isValidating, mutate } = useSWR<ProductionLine>(
+    id ? `/api/production-lines/${id}` : null,
+    fetcher
+  );
 
-    useEffect(() => {
-        async function fetchProductionLine() {
-            if (!id) {
-                setIsLoading(false);
-                return;
-            }
-
-            setIsLoading(true);
-            try {
-                const response = await fetch(`/api/production-lines/${id}`);
-                if (!response.ok) {
-                    throw new Error('Failed to fetch production line');
-                }
-                const data = await response.json();
-                setLine(data);
-            } catch (err) {
-                console.error(`Error fetching production line ${id}:`, err);
-                setError(err instanceof Error ? err.message : 'An error occurred');
-            } finally {
-                setIsLoading(false);
-            }
+  const deleteLine = async () => {
+    try {
+      const response = await fetch(`/api/production-lines/${id}`, {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json',
+          "id": id
         }
+      });
+      
+      if (!response.ok) {
+        throw new Error('Failed to delete production line');
+      }
+      
+      // Invalidate the cache for this production line and the list
+      mutate(undefined, false); // Update the current resource cache
+      globalMutate('/api/production-lines'); // Revalidate the list
+      
+      return true;
+    } catch (err) {
+      console.error(`Error deleting production line ${id}:`, err);
+      return false;
+    }
+  };
 
-        fetchProductionLine();
-    }, [id]);
-
-    return { line, isLoading, error };
+  return {
+    line: data || null,
+    isLoading: isValidating,
+    error: error ? error.message : null,
+    deleteLine
+  };
 }

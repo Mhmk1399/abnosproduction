@@ -11,15 +11,16 @@
   "dependencies": {
     "@dnd-kit/sortable": "^10.0.0",
     "mongodb": "^6.16.0",
-    "mongoose": "^8.13.2",
+    "mongoose": "^8.14.0",
     "next": "15.3.1",
     "react": "^19.0.0",
     "react-dnd": "^16.0.1",
     "react-dnd-html5-backend": "^16.0.1",
     "react-dom": "^19.0.0",
+    "react-hook-form": "^7.56.1",
+    "react-hot-toast": "^2.5.2",
     "react-useanimations": "^2.10.0",
-    "socket.io": "^4.8.1",
-    "socket.io-client": "^4.8.1",
+    "swr": "^2.3.3",
     "uuid": "^11.1.0"
   },
   "devDependencies": {
