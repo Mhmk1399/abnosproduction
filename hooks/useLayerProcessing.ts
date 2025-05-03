@@ -201,6 +201,47 @@ const { data: layerData, error: layerError } = useSWR(
     }
   };
 
+  const [productionLine, setProductionLine] = useState<any>(null);
+  const [allSteps, setAllSteps] = useState<any[]>([]);
+  const [currentStepIndex, setCurrentStepIndex] = useState<number>(-1);
+
+  const fetchLayerDetails = async (id: string) => {
+    setIsLoading(true);
+    try {
+      // Fetch the layer first
+      const response = await fetch(`/api/layers/${id}`);
+      if (!response.ok) {
+        throw new Error('Layer not found');
+      }
+      
+      const layerData = await response.json();
+      setCurrentLayer(layerData);
+      
+      // Now fetch the production line and steps information
+      const lineResponse = await fetch(`/api/layers/${id}/production-info`);
+      if (lineResponse.ok) {
+        const productionInfo = await lineResponse.json();
+        setProductionLine(productionInfo.productionLine);
+        setAllSteps(productionInfo.allSteps);
+        
+        // Find the current step index
+        if (productionInfo.allSteps && layerData.currentStep) {
+          const index = productionInfo.allSteps.findIndex(
+            (step: any) => step._id === layerData.currentStep.stepId
+          );
+          setCurrentStepIndex(index);
+        }
+      }
+      
+      setError('');
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Failed to load layer');
+      setCurrentLayer(null);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   return {
     layerId,
     setLayerId,
@@ -220,5 +261,8 @@ const { data: layerData, error: layerError } = useSWR(
     inputRef,
     handleSubmit,
     handleProcessComplete,
+    productionLine,
+    allSteps,
+    currentStepIndex,
   };
 }

@@ -14,7 +14,7 @@ const productionLineSchema = new mongoose.Schema({
   description: {
     type: String
   },
-  steps: [{
+  currentStepIndex: [{
     stepId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'steps'

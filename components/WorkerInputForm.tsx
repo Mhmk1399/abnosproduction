@@ -58,6 +58,10 @@ const fakeStepsLayers = [
   },
 ];
 
+// Add fake production line and steps data
+
+
+
 export default function WorkerInputForm({
   stepId = "680cb6e4d5a9cadc24acd5b4",
   stepName,
@@ -86,6 +90,10 @@ export default function WorkerInputForm({
     inputRef,
     handleSubmit,
     handleProcessComplete,
+    // New properties from the hook
+    productionLine,
+    allSteps,
+    currentStepIndex,
   } = useLayerProcessing({ stepId, workerId });
 
   // State for fake data
@@ -98,6 +106,10 @@ export default function WorkerInputForm({
   const [fakeIsProcessComplete, setFakeIsProcessComplete] = useState(false);
   const [fakeIsDefective, setFakeIsDefective] = useState(false);
   const [fakeNotes, setFakeNotes] = useState("");
+  // Add these new state variables
+  const [fakeProductionLine, setFakeProductionLine] = useState<any>(null);
+  const [fakeAllSteps, setFakeAllSteps] = useState<any[]>([]);
+  const [fakeCurrentStepIndex, setFakeCurrentStepIndex] = useState<number>(-1);
 
   // Custom submit handler to check for test-id
   const customHandleSubmit = (e: React.FormEvent) => {
@@ -111,6 +123,9 @@ export default function WorkerInputForm({
       // Simulate loading
       setTimeout(() => {
         setFakeCurrentLayer(fakeLayer);
+        setFakeProductionLine(fakeProductionLine);
+        setFakeAllSteps(fakeAllSteps);
+        setFakeCurrentStepIndex(fakeCurrentStepIndex);
         setFakeIsLoading(false);
         setFakeError("");
       }, 800);
@@ -188,6 +203,69 @@ export default function WorkerInputForm({
   const displayNotes = useFakeData ? fakeNotes : notes;
   const displayStepsLayers = useFakeData ? fakeStepsLayers : stepsLayers;
   const displayIsLayersLoading = useFakeData ? false : isLayersLoading;
+
+  // Add this new section to display production line and steps information
+  const renderProductionInfo = () => {
+    if (!displayCurrentLayer) return null;
+    
+    return (
+      <div className="bg-gray-50 rounded-lg p-6 mb-6 border border-gray-200">
+        <h3 className="text-lg font-medium text-gray-900 mb-4">
+          Production Information
+        </h3>
+        
+        {/* Production Line Info */}
+        {productionLine ? (
+          <div className="mb-4">
+            <p className="text-sm text-gray-500">Production Line</p>
+            <p className="font-medium">{productionLine.name} ({productionLine.code})</p>
+          </div>
+        ) : (
+          <p className="text-sm text-gray-500 mb-4">No production line assigned</p>
+        )}
+        
+        {/* Steps Progress */}
+        {allSteps && allSteps.length > 0 && (
+          <div>
+            <p className="text-sm text-gray-500 mb-2">Production Flow</p>
+            <div className="relative">
+              {/* Progress bar */}
+              <div className="h-2 bg-gray-200 rounded-full overflow-hidden">
+                <div 
+                  className="h-full bg-blue-500 rounded-full"
+                  style={{ width: `${((currentStepIndex + 1) / allSteps.length) * 100}%` }}
+                ></div>
+              </div>
+              
+              {/* Steps */}
+              <div className="flex justify-between mt-2">
+                {allSteps.map((step: { _id: string; name: string }, index: number) => (
+                  <div 
+                    key={step._id} 
+                    className={`flex flex-col items-center ${
+                      index <= displayCurrentStepIndex ? 'text-blue-600' : 'text-gray-400'
+                    }`}
+                    style={{ width: `${100 / displayAllSteps.length}%` }}
+                  >
+                    <div 
+                      className={`w-4 h-4 rounded-full mb-1 ${
+                        index < displayCurrentStepIndex 
+                          ? 'bg-blue-600' 
+                          : index === displayCurrentStepIndex 
+                            ? 'bg-blue-500 animate-pulse' 
+                            : 'bg-gray-300'
+                      }`}
+                    ></div>
+                    <span className="text-xs text-center">{step.name}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        )}
+      </div>
+    );
+  };
 
   return (
     <div className="bg-white rounded-xl shadow-lg overflow-hidden max-w-4xl mx-auto">
