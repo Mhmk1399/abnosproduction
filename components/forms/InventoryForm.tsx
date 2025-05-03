@@ -63,14 +63,14 @@ export default function InventoryForm({ onSuccess }: InventoryFormProps) {
         quantity: 0,
         description: "",
       });
-      
+
       setSuccess("Inventory created successfully!");
-      
+
       // Call onSuccess callback if provided
       if (onSuccess) {
         onSuccess();
       }
-      
+
       // Refresh the page data
       router.refresh();
     } catch (err) {
@@ -83,22 +83,25 @@ export default function InventoryForm({ onSuccess }: InventoryFormProps) {
   return (
     <div className="bg-white rounded-lg shadow-md p-6 max-w-2xl mx-auto">
       <h2 className="text-xl font-bold mb-6">Add New Inventory Item</h2>
-      
+
       {error && (
         <div className="mb-4 p-3 bg-red-50 border border-red-200 text-red-700 rounded">
           {error}
         </div>
       )}
-      
+
       {success && (
         <div className="mb-4 p-3 bg-green-50 border border-green-200 text-green-700 rounded">
           {success}
         </div>
       )}
-      
+
       <form onSubmit={handleSubmit}>
         <div className="mb-4">
-          <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-1">
+          <label
+            htmlFor="name"
+            className="block text-sm font-medium text-gray-700 mb-1"
+          >
             Inventory Name*
           </label>
           <input
@@ -112,9 +115,12 @@ export default function InventoryForm({ onSuccess }: InventoryFormProps) {
             placeholder="Enter inventory name"
           />
         </div>
-        
+
         <div className="mb-4">
-          <label htmlFor="code" className="block text-sm font-medium text-gray-700 mb-1">
+          <label
+            htmlFor="code"
+            className="block text-sm font-medium text-gray-700 mb-1"
+          >
             Inventory Code (Optional)
           </label>
           <input
@@ -130,9 +136,12 @@ export default function InventoryForm({ onSuccess }: InventoryFormProps) {
             If left blank, a unique code will be generated automatically.
           </p>
         </div>
-        
+
         <div className="mb-4">
-          <label htmlFor="quantity" className="block text-sm font-medium text-gray-700 mb-1">
+          <label
+            htmlFor="quantity"
+            className="block text-sm font-medium text-gray-700 mb-1"
+          >
             Quantity*
           </label>
           <input
@@ -147,9 +156,12 @@ export default function InventoryForm({ onSuccess }: InventoryFormProps) {
             placeholder="Enter quantity"
           />
         </div>
-        
+
         <div className="mb-6">
-          <label htmlFor="description" className="block text-sm font-medium text-gray-700 mb-1">
+          <label
+            htmlFor="description"
+            className="block text-sm font-medium text-gray-700 mb-1"
+          >
             Description
           </label>
           <textarea
@@ -162,7 +174,7 @@ export default function InventoryForm({ onSuccess }: InventoryFormProps) {
             placeholder="Enter inventory description (optional)"
           />
         </div>
-        
+
         <div className="flex justify-end">
           <button
             type="submit"

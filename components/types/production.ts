@@ -1,6 +1,4 @@
-
-
-export interface LineItem{
+export interface LineItem {
   id: string;
   originalId: string;
   name: string;
@@ -14,7 +12,7 @@ export interface Inventory {
   id: string;
   name: string;
   quantity?: number;
-  description:string;
+  description: string;
   type?: "inventory"; // Add this to help with type discrimination
 }
 
@@ -34,7 +32,7 @@ export interface Glass {
   id: string;
   batchId: string;
   dimensions: string;
-  status: 'in-progress' | 'completed' | 'defective';
+  status: "in-progress" | "completed" | "defective";
   // Add any other properties you need
 }
 
@@ -48,7 +46,7 @@ export interface Layer {
   thickness: number;
   material: string;
   quality: number;
-  status: 'pending' | 'in-progress' | 'completed' | 'defective';
+  status: "pending" | "in-progress" | "completed" | "defective";
   currentLineId: string;
   currentStepId: string;
   inventoryId?: string;
@@ -59,7 +57,6 @@ export interface Layer {
   glassId: string;
   glass: Glass;
   dimensions?: Dimensions;
-
 
   layerId: string;
   layer: Layer;
@@ -78,7 +75,7 @@ export interface ProcessStep {
   workerId?: string;
   startTime: Date;
   endTime?: Date;
-  status: 'in-progress' | 'completed' | 'defective';
+  status: "in-progress" | "completed" | "defective";
   notes?: string;
 }
 
@@ -112,7 +109,7 @@ export interface FlowOrderItem {
     description?: string;
     quantity?: number;
   };
-  itemType: 'steps' | 'productionInventory';
+  itemType: "steps" | "productionInventory";
   order: number;
 }
 export interface ProductionLine {
