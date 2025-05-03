@@ -1,8 +1,46 @@
 import mongoose from "mongoose";
 
-const productionLineSchema = new mongoose.Schema(
-  {
-    name: {
+const productionLineSchema = new mongoose.Schema({
+  name: {
+    type: String,
+    required: true,
+    unique: true
+  },
+  code: {
+    type: String,
+    unique: true,
+    required: true
+  },
+  description: {
+    type: String
+  },
+  currentStepIndex: [{
+    stepId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'steps'
+    },
+    order: {
+      type: Number,
+      required: true
+    }
+  }],
+  inventories: [{
+    inventoryId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'productionInventory'
+    },
+    order: {
+      type: Number,
+      required: true
+    }
+  }],
+  // This array represents the complete order of steps and inventories
+  flowOrder: [{
+    itemId: {
+      type: mongoose.Schema.Types.ObjectId,
+      refPath: 'flowOrder.itemType'
+    },
+    itemType: {
       type: String,
       required: true,
       unique: true,
