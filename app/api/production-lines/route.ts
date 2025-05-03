@@ -1,5 +1,8 @@
 import { NextRequest } from "next/server";
-import { getAllProductionLines, createProductionLine } from "@/middlewares/productionLines";
+import {
+  getAllProductionLines,
+  createProductionLine,
+} from "@/middlewares/productionLines";
 
 // GET all production lines
 export async function GET() {

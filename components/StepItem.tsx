@@ -14,10 +14,10 @@ export default function StepItem({
 }) {
   const [{ isDragging }, drag] = useDrag(() => ({
     type: "step",
-    item: { 
+    item: {
       id: step.id,
       type: "step",
-      isNew: !isInLine // Flag to indicate if this is a new item being dragged
+      isNew: !isInLine, // Flag to indicate if this is a new item being dragged
     },
     collect: (monitor) => ({
       isDragging: !!monitor.isDragging(),

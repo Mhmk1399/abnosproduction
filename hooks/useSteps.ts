@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect } from "react";
 
 export interface Step {
   _id: string;
@@ -18,15 +18,15 @@ export function useSteps() {
     async function fetchSteps() {
       setIsLoading(true);
       try {
-        const response = await fetch('/api/steps');
+        const response = await fetch("/api/steps");
         if (!response.ok) {
-          throw new Error('Failed to fetch steps');
+          throw new Error("Failed to fetch steps");
         }
         const data = await response.json();
         setSteps(data);
       } catch (err) {
-        console.error('Error fetching steps:', err);
-        setError(err instanceof Error ? err.message : 'An error occurred');
+        console.error("Error fetching steps:", err);
+        setError(err instanceof Error ? err.message : "An error occurred");
       } finally {
         setIsLoading(false);
       }

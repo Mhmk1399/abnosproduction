@@ -11,7 +11,7 @@ const glassSchema = new mongoose.Schema(
       required: true,
       unique: true,
     },
-   
+
     thickness: {
       type: Number,
       required: true,

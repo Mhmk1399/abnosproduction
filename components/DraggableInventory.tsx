@@ -17,7 +17,7 @@ export default function DraggableInventory({
   // Set up drag for reordering
   const [{ isDragging }, drag] = useDrag(() => ({
     type: "inventory",
-    item: { 
+    item: {
       id: inventory.id,
       index, // Include index for reordering
       isReordering: true,
@@ -35,10 +35,10 @@ export default function DraggableInventory({
       if (draggedItem.index === index) {
         return;
       }
-      
+
       // Call reorder function
       onReorder(draggedItem.index, index);
-      
+
       // Update the index in the dragged item
       draggedItem.index = index;
     },
@@ -55,10 +55,10 @@ export default function DraggableInventory({
       ref={ref}
       className={`mb-2 ${isDragging ? "opacity-50" : "opacity-100"}`}
     >
-      <InventoryItem 
-        inventory={inventory} 
-        isInLine={true} 
-        onRemove={onRemove} 
+      <InventoryItem
+        inventory={inventory}
+        isInLine={true}
+        onRemove={onRemove}
       />
     </div>
   );

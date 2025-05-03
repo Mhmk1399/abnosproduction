@@ -1,5 +1,5 @@
-import useSWR, { mutate as globalMutate } from 'swr';
-import { ProductionLine } from '@/components/types/production';
+import useSWR, { mutate as globalMutate } from "swr";
+import { ProductionLine } from "@/components/types/production";
 
 // Fetcher function for SWR
 const fetcher = async (url: string) => {
@@ -12,14 +12,14 @@ const fetcher = async (url: string) => {
 
 export function useProductionLines() {
   const { data, error, isValidating } = useSWR<ProductionLine[]>(
-    '/api/production-lines',
+    "/api/production-lines",
     fetcher
   );
 
   return {
     lines: data || [],
     isLoading: isValidating,
-    error: error ? error.message : null
+    error: error ? error.message : null,
   };
 }
 
@@ -33,21 +33,21 @@ export function useProductionLine(id: string) {
   const deleteLine = async () => {
     try {
       const response = await fetch(`/api/production-lines/${id}`, {
-        method: 'DELETE',
+        method: "DELETE",
         headers: {
-          'Content-Type': 'application/json',
-          "id": id
-        }
+          "Content-Type": "application/json",
+          id: id,
+        },
       });
-      
+
       if (!response.ok) {
-        throw new Error('Failed to delete production line');
+        throw new Error("Failed to delete production line");
       }
-      
+
       // Invalidate the cache for this production line and the list
       mutate(undefined, false); // Update the current resource cache
-      globalMutate('/api/production-lines'); // Revalidate the list
-      
+      globalMutate("/api/production-lines"); // Revalidate the list
+
       return true;
     } catch (err) {
       console.error(`Error deleting production line ${id}:`, err);
@@ -59,6 +59,6 @@ export function useProductionLine(id: string) {
     line: data || null,
     isLoading: isValidating,
     error: error ? error.message : null,
-    deleteLine
+    deleteLine,
   };
 }

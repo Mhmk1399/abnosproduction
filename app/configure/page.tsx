@@ -4,13 +4,13 @@ import { useRouter } from "next/navigation";
 
 export default function ConfigurePage() {
   const router = useRouter();
-  
+
   const handleSave = (config: any) => {
     console.log("Production line saved:", config);
-    
+
     // Redirect to the production lines list after a short delay
     setTimeout(() => {
-      router.push('/');
+      router.push("/");
     }, 2000);
   };
 
@@ -19,7 +19,7 @@ export default function ConfigurePage() {
       <h1 className="text-3xl font-bold text-center my-8">
         Production Line Configuration
       </h1>
-      <ProductionLineBuilder  onSave={handleSave} />
+      <ProductionLineBuilder onSave={handleSave} />
     </div>
   );
 }

@@ -13,20 +13,20 @@ const glassTreatmentSchema = new mongoose.Schema(
     },
     ServiceFee: {
       serviceFeeType: {
-          type: String,
-          enum: ["percentage", "number"],
-          required: true,
-          default: "percentage",
+        type: String,
+        enum: ["percentage", "number"],
+        required: true,
+        default: "percentage",
       },
       serviceFeeValue: {
-          type: Number,
-          required: true,
+        type: Number,
+        required: true,
       },
-  },
+    },
     invoice: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Invoice",
-    }
+    },
   },
   { timestamps: true }
 );

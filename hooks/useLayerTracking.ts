@@ -13,15 +13,15 @@ const fetcher = async (url: string) => {
 export function useLayerTracking(stepId?: string) {
   // Only create the URL if stepId is provided
   const queryParams = new URLSearchParams();
-  queryParams.append('status', 'in-progress');
-  
+  queryParams.append("status", "in-progress");
+
   // Make sure stepId is a valid ObjectId (24 character hex string)
   const shouldFetch = stepId && /^[0-9a-fA-F]{24}$/.test(stepId);
-  
+
   if (shouldFetch) {
-    queryParams.append('stepId', stepId);
+    queryParams.append("stepId", stepId);
   }
-  
+
   // Use SWR for data fetching with a polling interval
   const { data, error, isValidating } = useSWR(
     shouldFetch ? `/api/layers?${queryParams.toString()}` : null,
@@ -36,6 +36,6 @@ export function useLayerTracking(stepId?: string) {
   return {
     layers: data?.layers || [],
     isLoading: isValidating,
-    error: error ? error.message : ""
+    error: error ? error.message : "",
   };
 }
