@@ -17,7 +17,10 @@ const fetcher = async (url: string) => {
   return response.json();
 };
 
-export function useLayerProcessing({ stepId, workerId }: UseLayerProcessingProps) {
+export function useLayerProcessing({
+  stepId,
+  workerId,
+}: UseLayerProcessingProps) {
   const [layerId, setLayerId] = useState("");
   const [currentLayer, setCurrentLayer] = useState<Layer | null>(null);
   const [isProcessComplete, setIsProcessComplete] = useState(false);
@@ -30,20 +33,22 @@ export function useLayerProcessing({ stepId, workerId }: UseLayerProcessingProps
   const inputRef = useRef<HTMLInputElement>(null);
 
   // Only track layers if stepId is provided
-  const { layers: stepsLayers, isLoading: isLayersLoading, error: layersError } = 
-    useLayerTracking(stepId);
+  const {
+    layers: stepsLayers,
+    isLoading: isLayersLoading,
+    error: layersError,
+  } = useLayerTracking(stepId);
 
   // Use SWR to fetch layer data when layerId changes
-// Use SWR to fetch layer data when layerId changes
-const { data: layerData, error: layerError } = useSWR(
-  layerId ? `/api/productLayer/${layerId}` : null,
-  fetcher,
-  { 
-    revalidateOnFocus: false,
-    shouldRetryOnError: false
-  }
-);
-
+  // Use SWR to fetch layer data when layerId changes
+  const { data: layerData, error: layerError } = useSWR(
+    layerId ? `/api/productLayer/${layerId}` : null,
+    fetcher,
+    {
+      revalidateOnFocus: false,
+      shouldRetryOnError: false,
+    }
+  );
 
   // Set error from layer tracking if it exists
   useEffect(() => {
@@ -69,13 +74,13 @@ const { data: layerData, error: layerError } = useSWR(
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     // Validate stepId before proceeding
     if (!stepId) {
       setError("No step selected. Please select a production step first.");
       return;
     }
-    
+
     setError("");
     setIsLoading(true);
 
@@ -110,13 +115,13 @@ const { data: layerData, error: layerError } = useSWR(
 
         // Trigger revalidation of the layer data
         mutate(`/api/layers/${layerId}`);
-        
+
         // Wait for the updated data
         const updatedResponse = await fetch(`/api/layers/${layerId}`);
         if (!updatedResponse.ok) {
           throw new Error("Failed to fetch updated layer data");
         }
-        
+
         const updatedLayer = await updatedResponse.json();
         setCurrentLayer(updatedLayer);
       } else {
@@ -163,7 +168,9 @@ const { data: layerData, error: layerError } = useSWR(
         [
           {
             ...currentLayer,
-            status: isDefective ? ("defective" as const) : ("completed" as const),
+            status: isDefective
+              ? ("defective" as const)
+              : ("completed" as const),
             processedAt: new Date(),
           },
           ...prev,
@@ -184,8 +191,8 @@ const { data: layerData, error: layerError } = useSWR(
       mutate(`/api/layers/${currentLayer._id}`);
       if (stepId) {
         const queryParams = new URLSearchParams();
-        queryParams.append('status', 'in-progress');
-        queryParams.append('stepId', stepId);
+        queryParams.append("status", "in-progress");
+        queryParams.append("stepId", stepId);
         mutate(`/api/layers?${queryParams.toString()}`);
       }
 

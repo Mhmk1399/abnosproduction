@@ -39,7 +39,7 @@ const customerSchema = new mongoose.Schema(
       type: mongoose.Schema.Types.ObjectId,
       ref: "CustomerType",
       required: true,
-    }
+    },
   },
   { timestamps: true }
 );

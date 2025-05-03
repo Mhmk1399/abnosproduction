@@ -129,7 +129,6 @@ export default function ProductionLineBuilder({
         ...(initialConfig?.id && { _id: initialConfig.id }),
       };
 
-      
       // Send the data to the API
       const url = initialConfig?.id
         ? `/api/production-lines/${initialConfig.id}`

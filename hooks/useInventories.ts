@@ -1,4 +1,4 @@
-import useSWR from 'swr';
+import useSWR from "swr";
 
 export interface Inventory {
   _id: string;
@@ -14,16 +14,19 @@ export interface Inventory {
 const fetcher = async (url: string) => {
   const response = await fetch(url);
   if (!response.ok) {
-    throw new Error('Failed to fetch inventories');
+    throw new Error("Failed to fetch inventories");
   }
   return response.json();
 };
 
 export function useInventories() {
-  const { data, error, isLoading } = useSWR<Inventory[]>('/api/productionInventory', fetcher);
+  const { data, error, isLoading } = useSWR<Inventory[]>(
+    "/api/productionInventory",
+    fetcher
+  );
   return {
     inventories: data || [],
     isLoading,
-    error: error ? error.message : null
+    error: error ? error.message : null,
   };
 }

@@ -14,10 +14,10 @@ export default function InventoryItem({
 }) {
   const [{ isDragging }, drag] = useDrag(() => ({
     type: "inventory", // Different type from "step"
-    item: { 
-      id: inventory.id, 
+    item: {
+      id: inventory.id,
       type: "inventory",
-      isNew: !isInLine // Flag to indicate if this is a new item being dragged
+      isNew: !isInLine, // Flag to indicate if this is a new item being dragged
     },
     collect: (monitor) => ({
       isDragging: !!monitor.isDragging(),
@@ -39,7 +39,9 @@ export default function InventoryItem({
         <div>
           <h3 className="font-medium">{inventory.name}</h3>
           {inventory.quantity !== undefined && (
-            <p className="text-sm text-gray-600">Quantity: {inventory.quantity}</p>
+            <p className="text-sm text-gray-600">
+              Quantity: {inventory.quantity}
+            </p>
           )}
         </div>
         {isInLine && onRemove && (

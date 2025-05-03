@@ -8,7 +8,10 @@ interface WorkerStationProps {
   workerId?: string;
 }
 
-export default function WorkerStation({ step, workerId = "W-12345" }: WorkerStationProps) {
+export default function WorkerStation({
+  step,
+  workerId = "W-12345",
+}: WorkerStationProps) {
   const [stepData, setStepData] = useState<ProductionStep | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
@@ -55,7 +58,9 @@ export default function WorkerStation({ step, workerId = "W-12345" }: WorkerStat
   if (error) {
     return (
       <div className="bg-red-50 border border-red-200 rounded-lg p-6 text-center">
-        <h3 className="text-lg font-medium text-red-800 mb-2">Error Loading Worker Station</h3>
+        <h3 className="text-lg font-medium text-red-800 mb-2">
+          Error Loading Worker Station
+        </h3>
         <p className="text-red-600">{error}</p>
       </div>
     );
@@ -64,17 +69,21 @@ export default function WorkerStation({ step, workerId = "W-12345" }: WorkerStat
   if (!stepData) {
     return (
       <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-6 text-center">
-        <h3 className="text-lg font-medium text-yellow-800 mb-2">No Production Step Selected</h3>
-        <p className="text-yellow-600">Please select a production step to continue</p>
+        <h3 className="text-lg font-medium text-yellow-800 mb-2">
+          No Production Step Selected
+        </h3>
+        <p className="text-yellow-600">
+          Please select a production step to continue
+        </p>
       </div>
     );
   }
 
   return (
-    <WorkerInputForm 
-      stepId={stepData.stepId._id} 
-      stepName={stepData.stepId.name} 
-      workerId={workerId} 
+    <WorkerInputForm
+      stepId={stepData.stepId._id}
+      stepName={stepData.stepId.name}
+      workerId={workerId}
     />
   );
 }

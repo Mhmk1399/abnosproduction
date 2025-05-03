@@ -1,8 +1,8 @@
-'use client';
+"use client";
 
-import { useState } from 'react';
-import { useSteps } from '@/hooks/useSteps';
-import StepsForm from '@/components/forms/StepsForm';
+import { useState } from "react";
+import { useSteps } from "@/hooks/useSteps";
+import StepsForm from "@/components/forms/StepsForm";
 
 export default function StepsPage() {
   const { steps, isLoading, error } = useSteps();
@@ -25,7 +25,7 @@ export default function StepsPage() {
           onClick={() => setShowForm(!showForm)}
           className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
         >
-          {showForm ? 'Cancel' : 'Add New Step'}
+          {showForm ? "Cancel" : "Add New Step"}
         </button>
       </div>
 

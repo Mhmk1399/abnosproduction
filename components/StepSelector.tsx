@@ -7,7 +7,10 @@ interface StepSelectorProps {
   currentStepId?: string;
 }
 
-export default function StepSelector({ onSelectStep, currentStepId }: StepSelectorProps) {
+export default function StepSelector({
+  onSelectStep,
+  currentStepId,
+}: StepSelectorProps) {
   const [steps, setSteps] = useState<ProductionStep[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
