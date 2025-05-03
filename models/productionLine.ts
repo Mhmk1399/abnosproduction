@@ -1,46 +1,8 @@
 import mongoose from "mongoose";
 
-const productionLineSchema = new mongoose.Schema({
-  name: {
-    type: String,
-    required: true,
-    unique: true
-  },
-  code: {
-    type: String,
-    unique: true,
-    required: true
-  },
-  description: {
-    type: String
-  },
-  currentStepIndex: [{
-    stepId: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: 'steps'
-    },
-    order: {
-      type: Number,
-      required: true
-    }
-  }],
-  inventories: [{
-    inventoryId: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: 'productionInventory'
-    },
-    order: {
-      type: Number,
-      required: true
-    }
-  }],
-  // This array represents the complete order of steps and inventories
-  flowOrder: [{
-    itemId: {
-      type: mongoose.Schema.Types.ObjectId,
-      refPath: 'flowOrder.itemType'
-    },
-    itemType: {
+const productionLineSchema = new mongoose.Schema(
+  {
+    name: {
       type: String,
       required: true,
       unique: true,
@@ -53,7 +15,7 @@ const productionLineSchema = new mongoose.Schema({
     description: {
       type: String,
     },
-    steps: [
+    currentStepIndex: [
       {
         stepId: {
           type: mongoose.Schema.Types.ObjectId,
@@ -86,36 +48,82 @@ const productionLineSchema = new mongoose.Schema({
         },
         itemType: {
           type: String,
-          enum: ["steps", "productionInventory"],
+          required: true,
+          unique: true,
         },
-        order: {
-          type: Number,
+        code: {
+          type: String,
+          unique: true,
           required: true,
         },
-      },
-    ],
-    // Track layers currently in this production line
-    layers: [
-      {
-        layerId: {
-          type: mongoose.Schema.Types.ObjectId,
-          ref: "layer",
-        },
-        currentStepIndex: {
-          type: Number,
-          default: 0,
-        },
-        status: {
+        description: {
           type: String,
-          enum: ["waiting", "in-progress", "completed", "defective"],
-          default: "waiting",
+        },
+        steps: [
+          {
+            stepId: {
+              type: mongoose.Schema.Types.ObjectId,
+              ref: "steps",
+            },
+            order: {
+              type: Number,
+              required: true,
+            },
+          },
+        ],
+        inventories: [
+          {
+            inventoryId: {
+              type: mongoose.Schema.Types.ObjectId,
+              ref: "productionInventory",
+            },
+            order: {
+              type: Number,
+              required: true,
+            },
+          },
+        ],
+        // This array represents the complete order of steps and inventories
+        flowOrder: [
+          {
+            itemId: {
+              type: mongoose.Schema.Types.ObjectId,
+              refPath: "flowOrder.itemType",
+            },
+            itemType: {
+              type: String,
+              enum: ["steps", "productionInventory"],
+            },
+            order: {
+              type: Number,
+              required: true,
+            },
+          },
+        ],
+        // Track layers currently in this production line
+        layers: [
+          {
+            layerId: {
+              type: mongoose.Schema.Types.ObjectId,
+              ref: "layer",
+            },
+            currentStepIndex: {
+              type: Number,
+              default: 0,
+            },
+            status: {
+              type: String,
+              enum: ["waiting", "in-progress", "completed", "defective"],
+              default: "waiting",
+            },
+          },
+        ],
+        active: {
+          type: Boolean,
+          default: true,
         },
       },
     ],
-    active: {
-      type: Boolean,
-      default: true,
-    },
   },
   { timestamps: true }
 );
