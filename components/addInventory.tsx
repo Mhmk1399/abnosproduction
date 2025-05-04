@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
-import Modal from './ui/Modal'; // Assuming you have a Modal component
 
 interface InventoryFormData {
   name: string;
   type: 'holding' | 'finished';
   description?: string;
+  code?: string;
   _id?: string;
 }
 
@@ -14,6 +14,7 @@ interface Inventory {
   name: string;
   type: 'holding' | 'finished';
   description?: string;
+  code: string;
 }
 
 interface AddInventoryProps {
@@ -27,12 +28,20 @@ const AddInventory: React.FC<AddInventoryProps> = ({ onSuccess }) => {
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [currentInventory, setCurrentInventory] = useState<Inventory | null>(null);
 
+  // Create a separate form instance for the edit modal
   const {
-    register,
-    handleSubmit,
-    reset,
+    register: registerAdd,
+    handleSubmit: handleSubmitAdd,
+    reset: resetAdd,
+    formState: { errors: errorsAdd },
+  } = useForm<InventoryFormData>();
+
+  const {
+    register: registerEdit,
+    handleSubmit: handleSubmitEdit,
+    reset: resetEdit,
     setValue,
-    formState: { errors },
+    formState: { errors: errorsEdit },
   } = useForm<InventoryFormData>();
 
   // Fetch all inventories
@@ -71,7 +80,7 @@ const AddInventory: React.FC<AddInventoryProps> = ({ onSuccess }) => {
         throw new Error(errorData.error || 'Failed to create inventory');
       }
 
-      reset();
+      resetAdd();
       fetchInventories();
       if (onSuccess) onSuccess();
     } catch (err) {
@@ -83,9 +92,9 @@ const AddInventory: React.FC<AddInventoryProps> = ({ onSuccess }) => {
 
   const handleEdit = (inventory: Inventory) => {
     setCurrentInventory(inventory);
+    // Set form values for edit modal
     setValue('name', inventory.name);
     setValue('type', inventory.type);
-    setValue('description', inventory.description || '');
     setIsEditModalOpen(true);
   };
 
@@ -113,6 +122,7 @@ const AddInventory: React.FC<AddInventoryProps> = ({ onSuccess }) => {
       }
 
       setIsEditModalOpen(false);
+      resetEdit();
       fetchInventories();
       if (onSuccess) onSuccess();
     } catch (err) {
@@ -145,11 +155,17 @@ const AddInventory: React.FC<AddInventoryProps> = ({ onSuccess }) => {
     }
   };
 
+  const closeEditModal = () => {
+    setIsEditModalOpen(false);
+    setError(null);
+    resetEdit();
+  };
+
   return (
     <div className="space-y-8">
       <div className="bg-white p-6 rounded-lg shadow-md">
         <h2 className="text-xl font-semibold mb-4">Add New Inventory</h2>
-        <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+        <form onSubmit={handleSubmitAdd(onSubmit)} className="space-y-4">
           {error && (
             <div className="p-3 bg-red-100 text-red-700 rounded">{error}</div>
           )}
@@ -160,27 +176,29 @@ const AddInventory: React.FC<AddInventoryProps> = ({ onSuccess }) => {
             </label>
             <input
               type="text"
-              {...register('name', { required: 'Inventory name is required' })}
+              {...registerAdd('name', { required: 'Inventory name is required' })}
               className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
             />
-            {errors.name && (
-              <p className="mt-1 text-sm text-red-600">{errors.name.message}</p>
+            {errorsAdd.name && (
+              <p className="mt-1 text-sm text-red-600">{errorsAdd.name.message}</p>
             )}
           </div>
+
+          
 
           <div>
             <label className="block text-sm font-medium text-gray-700">
               Type *
             </label>
             <select
-              {...register('type', { required: 'Type is required' })}
+              {...registerAdd('type', { required: 'Type is required' })}
               className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
             >
               <option value="holding">Holding</option>
               <option value="finished">Finished</option>
             </select>
-            {errors.type && (
-              <p className="mt-1 text-sm text-red-600">{errors.type.message}</p>
+            {errorsAdd.type && (
+              <p className="mt-1 text-sm text-red-600">{errorsAdd.type.message}</p>
             )}
           </div>
 
@@ -189,7 +207,7 @@ const AddInventory: React.FC<AddInventoryProps> = ({ onSuccess }) => {
               Description
             </label>
             <textarea
-              {...register('description')}
+              {...registerAdd('description')}
               className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
               rows={3}
             />
@@ -220,6 +238,9 @@ const AddInventory: React.FC<AddInventoryProps> = ({ onSuccess }) => {
                     Name
                   </th>
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Code
+                  </th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                     Type
                   </th>
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
@@ -232,6 +253,9 @@ const AddInventory: React.FC<AddInventoryProps> = ({ onSuccess }) => {
                   <tr key={inventory._id}>
                     <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
                       {inventory.name}
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                      {inventory.code}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                       {inventory.type}
@@ -258,80 +282,85 @@ const AddInventory: React.FC<AddInventoryProps> = ({ onSuccess }) => {
         )}
       </div>
 
-      {/* Edit Modal */}
+      {/* Simple Edit Modal */}
       {isEditModalOpen && (
-        <Modal
-          title="Edit Inventory"
-          isOpen={isEditModalOpen}
-          onClose={() => setIsEditModalOpen(false)}
-        >
-          <form onSubmit={handleSubmit(handleUpdate)} className="space-y-4">
-            {error && (
-              <div className="p-3 bg-red-100 text-red-700 rounded">{error}</div>
-            )}
-
-            <div>
-              <label className="block text-sm font-medium text-gray-700">
-                Inventory Name *
-              </label>
-              <input
-                type="text"
-                {...register('name', { required: 'Inventory name is required' })}
-                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
-              />
-              {errors.name && (
-                <p className="mt-1 text-sm text-red-600">{errors.name.message}</p>
-              )}
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-gray-700">
-                Type *
-              </label>
-              <select
-                {...register('type', { required: 'Type is required' })}
-                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
-              >
-                <option value="holding">Holding</option>
-                <option value="finished">Finished</option>
-              </select>
-              {errors.type && (
-                <p className="mt-1 text-sm text-red-600">{errors.type.message}</p>
-              )}
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-gray-700">
-                Description
-              </label>
-              <textarea
-                {...register('description')}
-                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
-                rows={3}
-              />
-            </div>
-
-            <div className="flex justify-end space-x-3">
+        <div className="fixed inset-0 z-50 overflow-auto bg-gray-500 bg-opacity-75 flex items-center justify-center">
+          <div className="relative bg-white rounded-lg max-w-md w-full mx-auto p-6 shadow-xl">
+            <div className="flex justify-between items-center mb-4">
+              <h3 className="text-lg font-medium">Edit Inventory</h3>
               <button
-                type="button"
-                onClick={() => setIsEditModalOpen(false)}
-                className="py-2 px-4 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                onClick={closeEditModal}
+                className="text-gray-400 hover:text-gray-500"
               >
-                Cancel
-              </button>
-              <button
-                type="submit"
-                disabled={isSubmitting}
-                className="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:opacity-50"
-              >
-                {isSubmitting ? 'Updating...' : 'Update Inventory'}
+                <span className="sr-only">Close</span>
+                <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                </svg>
               </button>
             </div>
-          </form>
-        </Modal>
+            
+            <form onSubmit={handleSubmitEdit(handleUpdate)} className="space-y-4">
+              {error && (
+                <div className="p-3 bg-red-100 text-red-700 rounded">{error}</div>
+              )}
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700">
+                  Inventory Name *
+                </label>
+                <input
+                  type="text"
+                  {...registerEdit('name', { required: 'Inventory name is required' })}
+                  className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+                />
+                {errorsEdit.name && (
+                  <p className="mt-1 text-sm text-red-600">{errorsEdit.name.message}</p>
+                )}
+              </div>
+
+              
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700">
+                  Type *
+                </label>
+                <select
+                  {...registerEdit('type', { required: 'Type is required' })}
+                  className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+                >
+                  <option value="holding">Holding</option>
+                  <option value="finished">Finished</option>
+                </select>
+                {errorsEdit.type && (
+                  <p className="mt-1 text-sm text-red-600">{errorsEdit.type.message}</p>
+                )}
+              </div>
+
+              
+
+              <div className="flex justify-end space-x-3 pt-4">
+                <button
+                  type="button"
+                  onClick={closeEditModal}
+                  className="py-2 px-4 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  disabled={isSubmitting}
+                  className="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:opacity-50"
+                >
+                  {isSubmitting ? 'Updating...' : 'Update Inventory'}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
       )}
     </div>
   );
 };
 
 export default AddInventory;
+

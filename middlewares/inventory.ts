@@ -1,10 +1,10 @@
-import inventory from "@/models/inventory";
+import productionInventory from "@/models/productionInventory";
 import { generateSequentialCode } from "@/utils/codeGenerator";
 import { NextRequest, NextResponse } from "next/server";
 
 export const getAllInventories = async () => {
     try {
-        const inventories = await inventory.find({});
+        const inventories = await productionInventory.find({});
         return NextResponse.json(inventories, { status: 200 });
     } catch (error) {
         console.error("Error fetching inventories:", error);
@@ -17,9 +17,12 @@ export const getAllInventories = async () => {
 
 export const createInventory = async (request: NextRequest) => {
     try {
-        const body = await request.json();
-        const { name, description } = body;
-        const code= generateSequentialCode("inventory", "");
+        const { name, type } = await request.json();
+        console.log({ name, type }, "Inventory data:");
+        
+        // Fix: Await the code generation
+        const code = await generateSequentialCode("productionInventory", "INV");
+        
         // Validate required fields
         if (!name || !code) {
             return NextResponse.json(
@@ -28,15 +31,15 @@ export const createInventory = async (request: NextRequest) => {
             );
         }
 
-        const newInventory = new inventory({
+        const newInventory = new productionInventory({
             name,
             code,
-            description,
+            type,
         });
         await newInventory.save();
         return NextResponse.json(newInventory, { status: 201 });
     } catch (error) {
-        console.error("Error creating inventory:", error);
+        console.log("Error creating inventory:", error);
         return NextResponse.json(
             { error: "Failed to create inventory" },
             { status: 500 }
@@ -44,12 +47,18 @@ export const createInventory = async (request: NextRequest) => {
     }
 };
 
-export const updateInventory = async (request: NextRequest, _id: string) => {
-    try {
-        const body = await request.json();
-        const { name, code, description } = body;
 
+export const updateInventory = async (request:{ name: string, code: string, type: string}, _id: string) => {
+    try {
+        console.log(request, "Request body:");
+        const { name, code, type  } = request
         // Validate required fields
+        if (!_id) {
+            return NextResponse.json(
+                { error: "Inventory ID is required" },
+                { status: 400 }
+            );
+        }
         if (!name || !code) {
             return NextResponse.json(
                 { error: "Name and code are required" },
@@ -57,9 +66,9 @@ export const updateInventory = async (request: NextRequest, _id: string) => {
             );
         }
 
-        const updatedInventory = await inventory.findByIdAndUpdate(
+        const updatedInventory = await productionInventory.findByIdAndUpdate(
             _id,
-            { name, code, description },
+            { name, code , type },
             { new: true }
         );
 
@@ -82,7 +91,7 @@ export const updateInventory = async (request: NextRequest, _id: string) => {
 
 export const deleteInventory = async (_id: string) => {
     try {
-        const deletedInventory = await inventory.findByIdAndDelete(_id);
+        const deletedInventory = await productionInventory.findByIdAndDelete(_id);
 
         if (!deletedInventory) {
             return NextResponse.json(

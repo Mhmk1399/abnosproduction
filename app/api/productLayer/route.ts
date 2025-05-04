@@ -5,6 +5,7 @@ import {
   getProductLayerById,
   deleteProductLayer,
   updateProductLayer,
+  createProductLayer,
 } from "@/middlewares/productLayers";
 
 export async function GET(req: NextRequest) {
@@ -16,10 +17,17 @@ export async function GET(req: NextRequest) {
   }
   return getProductLayers();
 }
+
+export async function POST(req: NextRequest) {
+  await connect();
+  return createProductLayer(req);
+}
+
 export async function PATCH(req: NextRequest) {
   await connect();
   return updateProductLayer(req);
 }
+
 export async function DELETE(req: NextRequest) {
   await connect();
   return deleteProductLayer(req);

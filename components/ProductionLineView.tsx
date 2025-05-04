@@ -1,241 +1,367 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { useProductionLine } from "../hooks/useProductionLines";
-import TrackingModal from "./TrackingModal";
-import toast from "react-hot-toast";
+import { FiChevronRight, FiAlertCircle, FiPackage, FiLayers, FiChevronDown, FiChevronUp } from "react-icons/fi";
+import Link from "next/link";
+import ProductionLineLayers from "./ProductionLineLayers";
+
+interface ProductionLineViewProps {
+  lineId: string;
+  onStepClick?: (stepId: string, stepName: string, stepDescription: string) => void;
+}
+
+interface MicroLineStep {
+  step: {
+    _id: string;
+    name: string;
+    description: string;
+  };
+  order: number;
+}
+
+interface MicroLine {
+  _id: string;
+  name: string;
+  code: string;
+  description: string;
+  steps: MicroLineStep[];
+  inventory?: {
+    _id: string;
+    name: string;
+    type: string;
+    code: string;
+    description?: string;
+    quantity?: number;
+  } | null;
+}
+
+interface MicroLineItem {
+  microLine: MicroLine;
+  order: number;
+}
+
+interface ProductionLineData {
+  _id: string;
+  name: string;
+  code: string;
+  description: string;
+  microLines: MicroLineItem[];
+  inventory: {
+    _id: string;
+    name: string;
+    type: string;
+    code: string;
+    description?: string;
+    quantity?: number;
+  } | null;
+  active: boolean;
+  createdAt: string;
+  updatedAt: string;
+}
 
 export default function ProductionLineView({
   lineId,
   onStepClick,
-}: {
-  lineId: string;
-  onStepClick?: (
-    stepId: string,
-    stepName: string,
-    stepDescription: string
-  ) => void;
-}) {
-  const { line, isLoading, error, deleteLine } = useProductionLine(lineId);
-  const [expandedStepId, setExpandedStepId] = useState<string | null>(null);
-  const [selectedStep, setSelectedStep] = useState<{
-    id: string;
-    name: string;
-    description: string;
-  } | null>(null);
-  const [isModalOpen, setIsModalOpen] = useState(false);
+}: ProductionLineViewProps) {
+  const { line, isLoading, error } = useProductionLine(lineId);
+  const [activeStepId, setActiveStepId] = useState<string | null>(null);
+  const [expandedMicroLines, setExpandedMicroLines] = useState<Record<string, boolean>>({});
 
-  if (isLoading) {
-    return (
-      <div className="bg-white rounded-lg shadow-md p-6 animate-pulse">
-        <div className="h-6 bg-gray-200 rounded w-3/4 mb-4"></div>
-        <div className="h-4 bg-gray-200 rounded w-1/2 mb-6"></div>
-        <div className="space-y-3">
-          <div className="h-10 bg-gray-200 rounded"></div>
-          <div className="h-10 bg-gray-200 rounded"></div>
-        </div>
-      </div>
+  // Always define lineSteps, even if it's empty
+  const lineSteps = useMemo(() => {
+    if (!line || !line.microLines) return [];
+    
+    const typedLine = line as unknown as ProductionLineData;
+    return typedLine.microLines.flatMap(item => 
+      (item.microLine.steps || []).map(step => ({
+        _id: step.step._id,
+        name: step.step.name
+      }))
     );
-  }
+  }, [line]);
 
-  if (error || !line) {
-    return (
-      <div className="bg-white rounded-lg shadow-md p-6">
-        <p className="text-red-500">{error || "Production line not found"}</p>
-      </div>
-    );
-  }
+  // Initialize expanded state for all microLines when data is loaded
+  useEffect(() => {
+    if (line && line.microLines) {
+      const initialExpandState: Record<string, boolean> = {};
+      line.microLines.forEach((item) => {
+        initialExpandState[item.microLine._id] = true; // Start expanded
+      });
+      setExpandedMicroLines(initialExpandState);
+    }
+  }, [line]);
 
-  const toggleStepExpand = (stepId: string) => {
-    setExpandedStepId(expandedStepId === stepId ? null : stepId);
-  };
-
+  // Function to handle step click
   const handleStepClick = (
     stepId: string,
     stepName: string,
     stepDescription: string
   ) => {
-    setSelectedStep({
-      id: stepId,
-      name: stepName,
-      description: stepDescription,
-    });
-    setIsModalOpen(true);
-
-    // Also call the parent's onStepClick if provided
+    setActiveStepId(stepId);
     if (onStepClick) {
       onStepClick(stepId, stepName, stepDescription);
     }
   };
 
-  const closeModal = () => {
-    setIsModalOpen(false);
-    setSelectedStep(null);
+  // Function to toggle microLine expansion
+  const toggleMicroLineExpansion = (microLineId: string) => {
+    setExpandedMicroLines(prev => ({
+      ...prev,
+      [microLineId]: !prev[microLineId]
+    }));
   };
 
-  // Sort steps by order
-  const sortedSteps = [...line.steps].sort((a, b) => a.order - b.order);
+  if (isLoading) {
+    return (
+      <div className="bg-white rounded-xl shadow-lg p-6 animate-pulse">
+        <div className="flex items-center gap-3 mb-4">
+          <div className="h-10 w-10 rounded-full bg-gray-200"></div>
+          <div className="h-6 bg-gray-200 rounded w-3/4"></div>
+        </div>
+        <div className="h-4 bg-gray-200 rounded w-1/2 mb-8"></div>
+        <div className="space-y-4">
+          <div className="h-12 bg-gray-200 rounded-lg"></div>
+          <div className="h-12 bg-gray-200 rounded-lg"></div>
+        </div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="bg-red-50 border border-red-200 text-red-700 p-5 rounded-lg">
+        <div className="flex items-center gap-2">
+          <FiAlertCircle className="text-xl" />
+          <p className="font-bold">Error:</p>
+        </div>
+        <p className="mt-2 pr-7">{error}</p>
+      </div>
+    );
+  }
+
+  if (!line) {
+    return (
+      <div className="bg-yellow-50 border border-yellow-200 text-yellow-700 p-5 rounded-lg">
+        <div className="flex items-center gap-2">
+          <FiAlertCircle className="text-xl" />
+          <p className="font-bold">Notice:</p>
+        </div>
+        <p className="mt-2 pr-7">Production line not found</p>
+      </div>
+    );
+  }
+
+  const typedLine = line as unknown as ProductionLineData;
 
   return (
-    <div className="bg-white rounded-lg shadow-md p-6 transition-all hover:shadow-lg mb-6">
-      <div className="flex justify-between items-center mb-4">
-        <h2 className="text-2xl font-semibold text-gray-800">{line.name}</h2>
-        <div className="flex items-center gap-4">
-          <div className="text-sm text-gray-500">
-            Last updated: {new Date(line.updatedAt).toLocaleDateString()}
+    <div className="bg-white rounded-xl shadow-lg overflow-hidden">
+      <div className="p-6">
+        <div className="flex justify-between items-start mb-4">
+          <div>
+            <div className="flex items-center gap-2">
+              <div className="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center">
+                <FiLayers className="text-blue-600 text-xl" />
+              </div>
+              <h2 className="text-2xl font-bold text-gray-800 mb-1 font-vazir">
+                {typedLine.name}
+              </h2>
+            </div>
+            {typedLine.description && (
+              <p className="text-gray-600 font-vazir mt-2">{typedLine.description}</p>
+            )}
+            <div className="mt-2">
+              <span className="inline-block bg-gray-100 text-gray-600 text-xs px-2 py-1 rounded font-vazir">
+                کد: {typedLine.code}
+              </span>
+            </div>
           </div>
-          <button
-            onClick={async () => {
-              if (
-                window.confirm(
-                  "Are you sure you want to delete this production line?"
-                )
-              ) {
-                const success = await deleteLine();
-                if (success) {
-                  toast.success("Production line deleted successfully!");
-                }
-              }
-            }}
-            className="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded text-sm"
+          <Link
+            href={`/configure/${typedLine._id}`}
+            className="px-4 py-2 bg-blue-100 text-blue-700 rounded-lg hover:bg-blue-200 transition-colors duration-300 text-sm font-vazir flex items-center gap-1"
           >
-            Delete Line
-          </button>
+            <span>ویرایش</span>
+          </Link>
         </div>
-      </div>
 
-      {line.description && (
-        <p className="text-gray-600 mb-4">{line.description}</p>
-      )}
-
-      {/* Production Line Flow Visualization */}
-      <div className="mb-6">
-        <h3 className="text-lg font-medium mb-3">Production Flow</h3>
-        <div className="flex flex-wrap items-center gap-2">
-          {line.flowOrder
-            .sort((a, b) => a.order - b.order)
-            .map((item, index) => (
-              <div key={item._id} className="flex items-center">
-                {/* Arrow between items */}
-                {index > 0 && <div className="mx-2 text-gray-400">→</div>}
-
-                {/* Item box */}
-                <div
-                  className={`
-                  p-3 rounded-lg transition-all cursor-pointer
-                  ${
-                    item.itemType === "steps"
-                      ? "bg-blue-100 border border-blue-300 hover:bg-blue-200"
-                      : "bg-green-100 border border-green-300 hover:bg-green-200"
-                  }
-                `}
-                  onClick={() => {
-                    if (item.itemType === "steps") {
-                      handleStepClick(
-                        item.itemId._id,
-                        item.itemId.name,
-                        item.itemId.description || ""
-                      );
-                    }
-                  }}
-                >
-                  <div className="font-medium">{item.itemId.name}</div>
-                  {item.itemId.description && (
-                    <div className="text-xs text-gray-600">
-                      {item.itemId.description}
+        <div className="mt-6">
+          <h3 className="text-lg font-semibold text-gray-700 mb-3 font-vazir flex items-center gap-2">
+            <FiLayers className="text-blue-600" />
+            مراحل تولید
+          </h3>
+          
+          {typedLine.microLines && typedLine.microLines.length > 0 ? (
+            <div className="space-y-4">
+              {typedLine.microLines.map((microLineItem, microIndex) => {
+                const microLine = microLineItem.microLine;
+                const isExpanded = expandedMicroLines[microLine._id];
+                
+                return (
+                  <div key={microLine._id} className="border border-gray-200 rounded-lg overflow-hidden">
+                    <div 
+                      className="bg-gray-50 p-4 flex justify-between items-center cursor-pointer"
+                      onClick={() => toggleMicroLineExpansion(microLine._id)}
+                    >
+                      <div className="flex items-center gap-2">
+                        <div className="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center">
+                          <span className="text-blue-600 font-medium">{microIndex + 1}</span>
+                        </div>
+                        <h4 className="font-medium text-gray-800 font-vazir">
+                          {microLine.name}
+                        </h4>
+                      </div>
+                      <button className="text-gray-500 hover:text-gray-700 transition-colors">
+                        {isExpanded ? <FiChevronUp /> : <FiChevronDown />}
+                      </button>
                     </div>
-                  )}
-                  {item.itemType === "productionInventory" &&
-                    item.itemId.quantity !== undefined && (
-                      <div className="text-xs text-gray-600">
-                        Qty: {item.itemId.quantity}
+                    
+                    {isExpanded && (
+                      <div className="p-4">
+                        {microLine.description && (
+                          <p className="text-sm text-gray-600 mb-3 font-vazir border-b border-gray-100 pb-3">
+                            {microLine.description}
+                          </p>
+                        )}
+                        
+                        {/* Display MicroLine Inventory (Holding) */}
+                        {microLine.inventory && (
+                          <div className="mb-4">
+                            <div className="bg-amber-50 border border-amber-200 rounded-lg p-3">
+                              <div className="flex items-center gap-2">
+                                <div className="w-8 h-8 rounded-full bg-amber-100 flex items-center justify-center">
+                                  <FiPackage className="text-amber-600 text-lg" />
+                                </div>
+                                <div>
+                                  <h5 className="font-medium text-gray-800 font-vazir text-sm">
+                                    موجودی میانی: {microLine.inventory.name}
+                                  </h5>
+                                  <span className="text-xs text-gray-500 font-vazir">
+                                    کد: {microLine.inventory.code}
+                                  </span>
+                                  {microLine.inventory.quantity !== undefined && (
+                                    <div className="mt-1">
+                                      <span className="inline-block bg-amber-100 text-amber-700 text-xs px-2 py-1 rounded font-vazir">
+                                        تعداد: {microLine.inventory.quantity}
+                                      </span>
+                                    </div>
+                                  )}
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        )}
+                        
+                        {microLine.steps && microLine.steps.length > 0 ? (
+                          <div className="space-y-2 mt-3">
+                            {microLine.steps.map((stepItem, stepIndex) => {
+                              const step = stepItem.step;
+                              const isActive = activeStepId === step._id;
+                              
+                              return (
+                                <button
+                                  key={step._id}
+                                  onClick={() => handleStepClick(
+                                    step._id,
+                                    step.name,
+                                    step.description || ""
+                                  )}
+                                  className={`w-full text-right p-3 rounded-lg transition-colors duration-200 flex items-center justify-between ${
+                                    isActive
+                                      ? "bg-blue-50 border border-blue-200"
+                                      : "bg-gray-50 border border-gray-200 hover:bg-gray-100"
+                                  }`}
+                                >
+                                  <div className="flex items-center gap-2">
+                                    <div className="w-6 h-6 rounded-full bg-gray-200 flex items-center justify-center">
+                                      <span className="text-gray-600 text-xs">{stepIndex + 1}</span>
+                                    </div>
+                                    <div className="text-right">
+                                      <span className="font-medium text-gray-800 block font-vazir">
+                                        {step.name}
+                                      </span>
+                                      {step.description && (
+                                        <span className="text-sm text-gray-500 block mt-1 font-vazir">
+                                          {step.description}
+                                        </span>
+                                      )}
+                                    </div>
+                                  </div>
+                                  <FiChevronRight className={`text-lg ${
+                                    isActive ? "text-blue-500" : "text-gray-400"
+                                  }`} />
+                                </button>
+                              );
+                            })}
+                          </div>
+                        ) : (
+                          <p className="text-gray-500 text-center py-2 font-vazir">
+                            بدون مرحله
+                          </p>
+                        )}
                       </div>
                     )}
-                </div>
-              </div>
-            ))}
+                  </div>
+                );
+              })}
+            </div>
+          ) : (
+            <p className="text-gray-500 text-center py-4 border border-gray-200 rounded-lg font-vazir">
+              هیچ مرحله‌ای تعریف نشده است
+            </p>
+          )}
         </div>
-      </div>
 
-      {/* Production Line Steps Detail */}
-      <div className="space-y-4">
-        <h3 className="text-lg font-medium">Production Steps</h3>
-        {sortedSteps.map((step, index) => (
-          <div key={step._id} className="border rounded-lg overflow-hidden">
-            <div
-              className={`flex justify-between items-center p-4 cursor-pointer ${
-                expandedStepId === step.stepId._id ? "bg-blue-50" : "bg-gray-50"
-              }`}
-              onClick={() => toggleStepExpand(step.stepId._id)}
-            >
-              <div className="flex items-center">
-                <div className="bg-blue-100 text-blue-800 rounded-full w-8 h-8 flex items-center justify-center mr-3">
-                  {index + 1}
+        {/* Display Production Line Inventory (Finished) */}
+        {typedLine.inventory && (
+          <div className="mt-6">
+            <h3 className="text-lg font-semibold text-gray-700 mb-3 font-vazir flex items-center gap-2">
+              <FiPackage className="text-green-600" />
+              موجودی نهایی
+            </h3>
+            <div className="bg-green-50 border border-green-200 rounded-lg p-4">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-full bg-green-100 flex items-center justify-center">
+                  <FiPackage className="text-green-600 text-xl" />
                 </div>
                 <div>
-                  <h3 className="font-medium">{step.stepId.name}</h3>
-                  {step.stepId.description && (
-                    <p className="text-sm text-gray-600">
-                      {step.stepId.description}
+                  <h4 className="font-medium text-gray-800 font-vazir">
+                    {typedLine.inventory.name}
+                  </h4>
+                  {typedLine.inventory.description && (
+                    <p className="text-sm text-gray-600 mt-1 font-vazir">
+                      {typedLine.inventory.description}
                     </p>
+                  )}
+                  <div className="mt-1">
+                    <span className="inline-block bg-gray-100 text-gray-600 text-xs px-2 py-1 rounded font-vazir">
+                      کد: {typedLine.inventory.code}
+                    </span>
+                    {typedLine.inventory.type && (
+                      <span className="inline-block bg-green-100 text-green-700 text-xs px-2 py-1 rounded font-vazir ml-2">
+                        نوع: {typedLine.inventory.type === "finished" ? "محصول نهایی" : "میانی"}
+                      </span>
+                    )}
+                  </div>
+                  {typedLine.inventory.quantity !== undefined && (
+                    <div className="mt-2">
+                      <span className="inline-block bg-green-100 text-green-700 text-xs px-2 py-1 rounded font-vazir">
+                        موجودی: {typedLine.inventory.quantity}
+                      </span>
+                    </div>
                   )}
                 </div>
               </div>
-
-              <div className="flex items-center">
-                <button
-                  className="bg-blue-500 hover:bg-blue-600 text-white px-3 py-1 rounded text-sm"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    handleStepClick(
-                      step.stepId._id,
-                      step.stepId.name,
-                      step.stepId.description || ""
-                    );
-                  }}
-                >
-                  View
-                </button>
-                <svg
-                  className={`ml-2 w-5 h-5 transition-transform ${
-                    expandedStepId === step.stepId._id
-                      ? "transform rotate-180"
-                      : ""
-                  }`}
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth="2"
-                    d="M19 9l-7 7-7-7"
-                  />
-                </svg>
-              </div>
             </div>
-
-            {/* Expanded content - we'll implement this later when we have layer data */}
-            {expandedStepId === step.stepId._id && (
-              <div className="p-4 border-t">
-                <p className="text-gray-500 text-center py-4">
-                  Layer tracking will be implemented in the next phase
-                </p>
-              </div>
-            )}
           </div>
-        ))}
-      </div>
+        )}
 
-      {/* Tracking Modal */}
-      {isModalOpen && selectedStep && (
-        <TrackingModal
-          stepId={selectedStep.id}
-          stepName={selectedStep.name}
-          stepDescription={selectedStep.description}
-          onClose={closeModal}
-        />
-      )}
+        {/* Add ProductionLineLayers component */}
+        {typedLine._id && (
+          <ProductionLineLayers 
+            lineId={typedLine._id} 
+            steps={lineSteps} 
+          />
+        )}
+      </div>
     </div>
   );
 }

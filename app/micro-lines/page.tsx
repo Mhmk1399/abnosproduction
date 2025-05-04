@@ -131,6 +131,9 @@ export default function MicroLinesPage() {
                 Description
               </th>
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                Inventory
+              </th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                 Steps
               </th>
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
@@ -149,6 +152,13 @@ export default function MicroLinesPage() {
                 </td>
                 <td className="px-6 py-4 text-sm text-gray-500">
                   {line.description || "-"}
+                </td>
+                <td className="px-6 py-4 text-sm text-gray-500">
+                  {line.inventory ? (
+                    typeof line.inventory === 'object' ? 
+                      line.inventory.name : 
+                      "Assigned"
+                  ) : "-"}
                 </td>
                 <td className="px-6 py-4 text-sm text-gray-500">
                   {line.steps ? line.steps.length : 0}
@@ -171,7 +181,7 @@ export default function MicroLinesPage() {
             ))}
             {filteredLines.length === 0 && (
               <tr>
-                <td colSpan={5} className="px-6 py-4 text-center text-gray-500">
+                <td colSpan={6} className="px-6 py-4 text-center text-gray-500">
                   No micro lines found
                 </td>
               </tr>

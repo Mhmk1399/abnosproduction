@@ -2,7 +2,7 @@ import connect from "@/lib/data";
 import { NextRequest , NextResponse} from "next/server";
 import { createInventory, getAllInventories, updateInventory, deleteInventory } from "@/middlewares/inventory";
 
-export const GET = async (request: NextRequest) => {
+export const GET = async () => {
     await connect();
     return getAllInventories();
 }
@@ -22,7 +22,7 @@ export const PUT = async (request: NextRequest) => {
             { status: 400 }
         );
     }
-    return updateInventory(request, _id);
+    return updateInventory(body, _id);
 
 }
 

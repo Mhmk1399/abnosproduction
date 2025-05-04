@@ -5,6 +5,7 @@ import { HTML5Backend } from "react-dnd-html5-backend";
 import LineArea from "./LineArea";
 import StepItem from "./StepItem";
 import { useSteps } from "../hooks/useSteps";
+import { useInventories } from "../hooks/useInventories";
 import { v4 as uuidv4 } from "uuid";
 import { LineItem } from "./types/production";
 
@@ -17,8 +18,9 @@ export default function MicroLineBuilder({
   initialConfig,
   onSave,
 }: MicroLineBuilderProps) {
-  // Use our custom hooks to fetch steps
+  // Use our custom hooks to fetch steps and inventories
   const { steps, isLoading: stepsLoading, error: stepsError } = useSteps();
+  const { inventories, isLoading: inventoriesLoading, error: inventoriesError } = useInventories();
 
   // State for the micro line being built
   const [lineItems, setLineItems] = useState<LineItem[]>(
@@ -45,6 +47,7 @@ export default function MicroLineBuilder({
   const [lineDescription, setLineDescription] = useState(
     initialConfig?.description || ""
   );
+  const [selectedInventory, setSelectedInventory] = useState(initialConfig?.inventory || "");
   const [isSaving, setIsSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
@@ -114,6 +117,7 @@ export default function MicroLineBuilder({
       const microLineData = {
         name: lineName,
         description: lineDescription,
+        inventory: selectedInventory ,
         steps: stepsData,
         ...(initialConfig?._id && { _id: initialConfig._id }),
       };
@@ -152,7 +156,7 @@ export default function MicroLineBuilder({
   };
 
   // Loading state
-  const isLoading = stepsLoading;
+  const isLoading = stepsLoading || inventoriesLoading;
 
   if (isLoading) {
     return (
@@ -163,11 +167,11 @@ export default function MicroLineBuilder({
   }
 
   // Error state
-  if (stepsError) {
+  if (stepsError || inventoriesError) {
     return (
       <div className="bg-red-50 border border-red-200 text-red-700 p-4 rounded-lg">
         <p className="font-bold">Error:</p>
-        <p>{stepsError}</p>
+        <p>{stepsError || inventoriesError}</p>
       </div>
     );
   }
@@ -222,6 +226,28 @@ export default function MicroLineBuilder({
               className="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
             />
           </div>
+
+          <div>
+            <label
+              htmlFor="inventory"
+              className="block text-sm font-medium text-gray-700 mb-1"
+            >
+              Inventory
+            </label>
+            <select
+              id="inventory"
+              value={selectedInventory}
+              onChange={(e) => setSelectedInventory(e.target.value)}
+              className="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+            >
+              <option value="">Select an inventory (optional)</option>
+              {inventories.map((inventory) => (
+                <option key={inventory._id} value={inventory._id}>
+                  {inventory.name}
+                </option>
+              ))}
+            </select>
+          </div>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -252,12 +278,13 @@ export default function MicroLineBuilder({
           <div>
             <h2 className="text-xl font-bold mb-4">Micro Line</h2>
             <div className="bg-white p-4 rounded-lg shadow-md">
-              <LineArea
-                items={lineItems}
-                onDrop={handleDrop}
-                onReorder={handleReorder}
-                onRemove={handleRemove}
-              />
+            <LineArea
+  items={lineItems}
+  onDrop={handleDrop}
+  onReorder={handleReorder}
+  onRemove={handleRemove}
+/>
+
 
               <button
                 onClick={handleSave}

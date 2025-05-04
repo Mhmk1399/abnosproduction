@@ -25,8 +25,15 @@ const microLineSchema = new mongoose.Schema(
                 required: true,
                     },
                 }
-            ]
+            ],
+            inventory: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Inventory",
     },
+    
+},
+
+
     { timestamps: true }
 );
 

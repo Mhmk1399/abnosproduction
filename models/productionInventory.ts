@@ -3,19 +3,17 @@ import mongoose from "mongoose";
 const productionInventorySchema = new mongoose.Schema({
   name: {
     type: String,
-    unique: true,
-    requeired: true,
+    required: true,
+  },
+  type: {
+    type: String,
+    enum: ["holding", "finished"],
+    required: true,
   },
   code: {
     type: String,
+    required: true,
     unique: true,
-  },
-  quantity: {
-    type: Number,
-    require: true,
-  },
-  description: {
-    type: String,
   },
 });
 

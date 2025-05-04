@@ -113,3 +113,22 @@ export const getProductLayerById = async (id: string) => {
     );
   }
 };
+export const createProductLayer = async (req: NextRequest) => {
+  await connect();
+  try {
+    const data = await req.json();
+    
+    const newProductLayer = new ProductLayer(data);
+    await newProductLayer.save();
+    
+    return NextResponse.json(
+      { message: "Product layer created successfully", productLayer: newProductLayer },
+      { status: 201 }
+    );
+  } catch (error) {
+    return NextResponse.json(
+      { error: "Failed to create product layer", details: error },
+      { status: 500 }
+    );
+  }
+};

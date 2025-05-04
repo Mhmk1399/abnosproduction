@@ -3,7 +3,7 @@ import { NextRequest , NextResponse} from "next/server";
 import { createMicroLine, getAllMicroLines, updateMicroLine , deleteMicroLine} from "@/middlewares/microLines";
 
 
-export const GET = async (request: NextRequest) => {
+export const GET = async () => {
   await connect();
   return getAllMicroLines();
 }
@@ -23,7 +23,7 @@ export const PUT = async (request: NextRequest) => {
             { status: 400 }
         );
     }
-    return updateMicroLine(request, _id);
+    return updateMicroLine(body, _id);
 
 }
     export const DELETE = async (request: NextRequest) => {

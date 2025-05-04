@@ -98,9 +98,9 @@ export default function ProductionLinesPage() {
         </div>
       ) : (
         <>
-          {lines.length > 0 ? (
+          {lines && lines.length > 0 ? (
             <motion.div className="space-y-8" variants={containerVariants}>
-              {lines.map((line: any) => (
+              {lines.filter(line => line && line._id).map((line: any) => (
                 <motion.div key={line._id} variants={itemVariants}>
                   <ProductionLineView
                     lineId={line._id}

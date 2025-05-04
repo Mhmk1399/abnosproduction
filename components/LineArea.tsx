@@ -1,65 +1,81 @@
-"use client";
-import { Ref } from "react";
-import { useDrop } from "react-dnd";
-import { ProductionStep, Inventory } from "./types/production";
-import DraggableItem from "./DraggableStep";
+import { useDrop } from 'react-dnd';
+import { LineItem } from './types/production';
+import MicroLineItem from './MicroLineItem';
+import InventoryItem from './InventoryItem';
+import StepItem from './StepItem';
 
 interface LineAreaProps {
-  items: (ProductionStep | Inventory)[];
-  onDrop: (itemId: any, itemType: any) => void;
+  items: LineItem[];
+  onDrop: (itemId: string, itemType: "microLine" | "inventory" | "step") => void;
   onReorder: (fromIndex: number, toIndex: number) => void;
   onRemove: (itemId: string) => void;
 }
 
-export default function LineArea({
-  items,
-  onDrop,
-  onReorder,
-  onRemove,
-}: LineAreaProps) {
-  // Set up drop for both steps and inventories
+export default function LineArea({ items, onDrop, onReorder, onRemove }: LineAreaProps) {
   const [{ isOver }, drop] = useDrop(() => ({
-    accept: ["step", "inventory"],
-    drop: (
-      item: {
-        id: string;
-        type: string;
-        isNew?: boolean;
-        isReordering?: boolean;
-      },
-      monitor
-    ) => {
-      // Only handle drops for new items (not reordering)
-      if (!item.isReordering && item.isNew) {
-        onDrop(item.id, item.type);
-        return { dropped: true };
-      }
-      return undefined;
+    accept: ['microLine', 'inventory', 'step'],
+    drop: (item: { id: string; type: "microLine" | "inventory" | "step" }) => {
+      onDrop(item.id, item.type);
     },
     collect: (monitor) => ({
       isOver: !!monitor.isOver(),
     }),
   }));
 
+  const moveItem = (dragIndex: number, hoverIndex: number) => {
+    onReorder(dragIndex, hoverIndex);
+  };
+
   return (
     <div
-      ref={drop as unknown as Ref<HTMLDivElement>}
-      className={`min-h-[400px] p-4 rounded-lg border-2 border-dashed ${
-        isOver ? "border-blue-500 bg-blue-50" : "border-gray-300 bg-gray-50"
-      } transition-colors duration-200`}
+      ref={drop}
+      className={`min-h-[300px] border-2 border-dashed rounded-lg p-4 ${
+        isOver ? 'border-blue-400 bg-blue-50' : 'border-gray-300'
+      }`}
     >
-      {items.map((item, index) => (
-        <DraggableItem
-          key={item.id}
-          item={item}
-          index={index}
-          onReorder={onReorder}
-          onRemove={() => onRemove(item.id)}
-        />
-      ))}
-      {items.length === 0 && (
-        <div className="text-gray-400 text-center py-8">
-          Drag steps and inventories here to build your production line
+      {items.length === 0 ? (
+        <div className="flex flex-col items-center justify-center h-full text-gray-500">
+          <p>Drag and drop items here to build your production line</p>
+        </div>
+      ) : (
+        <div className="space-y-2">
+          {items.map((item, index) => (
+            <div key={item.id} className="relative">
+              {item.type === 'microLine' ? (
+                <MicroLineItem
+                  microLine={{
+                    id: item.id,
+                    name: item.name,
+                    description: item.description || '',
+                    steps: item.steps || [],
+                  }}
+                  isInLine={true}
+                  onRemove={() => onRemove(item.id)}
+                />
+              ) : item.type === 'inventory' ? (
+                <InventoryItem
+                  inventory={{
+                    id: item.id,
+                    name: item.name,
+                    quantity: item.quantity,
+                    description: item.description || '',
+                  }}
+                  isInLine={true}
+                  onRemove={() => onRemove(item.id)}
+                />
+              ) : (
+                <StepItem
+                  step={{
+                    id: item.id,
+                    name: item.name,
+                    description: item.description || '',
+                  }}
+                  isInLine={true}
+                  onRemove={() => onRemove(item.id)}
+                />
+              )}
+            </div>
+          ))}
         </div>
       )}
     </div>

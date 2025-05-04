@@ -124,3 +124,19 @@ export interface ProductionLine {
   createdAt: string;
   updatedAt: string;
 }
+export interface LineItem {
+  id: string;
+  originalId: string;
+  name: string;
+  type: "microLine" | "inventory";
+  description?: string;
+  quantity?: number;
+  steps?: {
+    step: {
+      _id: string;
+      name: string;
+      description: string;
+    };
+    order: number;
+  }[];
+}

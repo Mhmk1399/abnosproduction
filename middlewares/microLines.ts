@@ -1,16 +1,19 @@
-import InventoryForm from "@/components/forms/InventoryForm";
 import microLine from "@/models/microLine";
-import ProductionLine from "@/models/productionLine"
 import steps from "@/models/steps";
 import { generateSequentialCode } from "@/utils/codeGenerator";
 import { NextRequest, NextResponse } from "next/server";
-
+import productionInventory from "@/models/productionInventory";
 
 export const getAllMicroLines = async () => {
   try {
     // Fetch all micro lines
-    const lines = await microLine.find({}).sort({ createdAt: -1 });
-
+    const lines = await microLine.find({}).populate({
+      path: "steps.step",
+      model: steps,
+    }).populate({
+      path: "inventory",
+      model: productionInventory,
+    });
     return NextResponse.json(lines, { status: 200 });
   } catch (error) {
     console.error("Error fetching micro lines:", error);
@@ -25,7 +28,7 @@ export const getAllMicroLines = async () => {
 export const createMicroLine = async (request: NextRequest) => {
   try {
     const body = await request.json();
-    const { name, description, productionLineId } = body;
+    const { name, description, inventory } = body;
 
     // Validate required fields
     if (!name) {
@@ -44,7 +47,7 @@ export const createMicroLine = async (request: NextRequest) => {
       code: code,
       description: description,
       steps: body.steps ,
-      Inventory: body.Inventory 
+      inventory
     });
     await newLine.save();
     // Update the production line to include the new micro line
@@ -60,11 +63,11 @@ export const createMicroLine = async (request: NextRequest) => {
 
   };
 
-  export const updateMicroLine = async (request: NextRequest, _id: string) => {
+  export const updateMicroLine = async (request:{ name: string, description: string, steps: string, inventory: string} , _id: string) => {
     try {
       
       
-      const { name, description, steps, Inventory } = await request.json();
+      const { name, description, steps, inventory } = request;
 
       // Validate required fields
       if (!name) {
@@ -81,7 +84,7 @@ export const createMicroLine = async (request: NextRequest) => {
           name,
           description,
           steps,
-          Inventory
+          inventory
         },
         { new: true, runValidators: true }
       );

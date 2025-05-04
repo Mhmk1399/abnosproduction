@@ -3,9 +3,9 @@ import { useState, useCallback } from "react";
 import { DndProvider } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
 import LineArea from "./LineArea";
-import StepItem from "./StepItem";
+import MicroLineItem from "./MicroLineItem"; // You'll need to create this component
 import InventoryItem from "./InventoryItem";
-import { useSteps, Step } from "../hooks/useSteps";
+import { useMicroLines, MicroLine } from "../hooks/useMicroLines";
 import { useInventories, Inventory } from "../hooks/useInventories";
 import { v4 as uuidv4 } from "uuid";
 import { LineItem } from "./types/production";
@@ -19,8 +19,8 @@ export default function ProductionLineBuilder({
   initialConfig,
   onSave,
 }: ProductionLineBuilderProps) {
-  // Use our custom hooks to fetch steps and inventories
-  const { steps, isLoading: stepsLoading, error: stepsError } = useSteps();
+  // Use our custom hooks to fetch microLines and inventories
+  const { microLines, isLoading: microLinesLoading, error: microLinesError, mutate } = useMicroLines();
   const {
     inventories,
     isLoading: inventoriesLoading,
@@ -30,6 +30,7 @@ export default function ProductionLineBuilder({
   // State for the production line being built
   const [lineItems, setLineItems] = useState<LineItem[]>([]);
   const [lineName, setLineName] = useState(initialConfig?.name || "");
+  const [lineCode, setLineCode] = useState(initialConfig?.code || "");
   const [lineDescription, setLineDescription] = useState(
     initialConfig?.description || ""
   );
@@ -39,11 +40,11 @@ export default function ProductionLineBuilder({
 
   // Handle dropping a new item into the line area
   const handleDrop = useCallback(
-    (itemId: string, itemType: "step" | "inventory") => {
+    (itemId: string, itemType: "microLine" | "inventory") => {
       // Find the original item
       let originalItem;
-      if (itemType === "step") {
-        originalItem = steps.find((s) => s._id === itemId);
+      if (itemType === "microLine") {
+        originalItem = microLines.find((ml) => ml._id === itemId);
       } else {
         originalItem = inventories.find((i) => i._id === itemId);
       }
@@ -59,12 +60,15 @@ export default function ProductionLineBuilder({
           ...(itemType === "inventory" && {
             quantity: (originalItem as Inventory).quantity,
           }),
+          ...(itemType === "microLine" && {
+            steps: (originalItem as MicroLine).steps,
+          }),
         };
 
         setLineItems((prev) => [...prev, newItem]);
       }
     },
-    [steps, inventories]
+    [microLines, inventories]
   );
 
   // Handle reordering items within the line area
@@ -99,42 +103,33 @@ export default function ProductionLineBuilder({
     setSuccess(null);
 
     try {
-      // Prepare the data for the API
-      const steps = lineItems
-        .filter((item) => item.type === "step")
+      // Prepare the data for the API according to the new model structure
+      const microLinesData = lineItems
+        .filter((item) => item.type === "microLine")
         .map((item, index) => ({
-          stepId: item.originalId,
+          microLine: item.originalId,
           order: index,
         }));
 
-      const inventories = lineItems
-        .filter((item) => item.type === "inventory")
-        .map((item, index) => ({
-          inventoryId: item.originalId,
-          order: index,
-        }));
-
-      const flowOrder = lineItems.map((item, index) => ({
-        itemId: item.originalId,
-        itemType: item.type === "step" ? "steps" : "productionInventory",
-        order: index,
-      }));
+      const inventoryId = lineItems
+        .find((item) => item.type === "inventory")?.originalId || null;
 
       const productionLineData = {
         name: lineName,
+        code: lineCode,
         description: lineDescription,
-        steps,
-        inventories,
-        flowOrder,
-        ...(initialConfig?.id && { _id: initialConfig.id }),
+        microLines: microLinesData,
+        inventory: inventoryId,
+        active: true,
+        ...(initialConfig?._id && { _id: initialConfig._id }),
       };
 
       // Send the data to the API
-      const url = initialConfig?.id
-        ? `/api/production-lines/${initialConfig.id}`
+      const url = initialConfig?._id
+        ? `/api/production-lines/${initialConfig._id}`
         : "/api/production-lines";
 
-      const method = initialConfig?.id ? "PUT" : "POST";
+      const method = initialConfig?._id ? "PUT" : "POST";
 
       const response = await fetch(url, {
         method,
@@ -152,6 +147,7 @@ export default function ProductionLineBuilder({
       const savedLine = await response.json();
 
       setSuccess("Production line saved successfully!");
+      mutate(); // Refresh the microLines data
 
       // Call the onSave callback if provided
       if (onSave) {
@@ -166,7 +162,7 @@ export default function ProductionLineBuilder({
   };
 
   // Loading state
-  const isLoading = stepsLoading || inventoriesLoading;
+  const isLoading = microLinesLoading || inventoriesLoading;
 
   if (isLoading) {
     return (
@@ -177,11 +173,11 @@ export default function ProductionLineBuilder({
   }
 
   // Error state
-  if (stepsError || inventoriesError) {
+  if (microLinesError || inventoriesError) {
     return (
       <div className="bg-red-50 border border-red-200 text-red-700 p-4 rounded-lg">
         <p className="font-bold">Error:</p>
-        <p>{stepsError || inventoriesError}</p>
+        <p>{microLinesError || inventoriesError}</p>
       </div>
     );
   }
@@ -222,6 +218,23 @@ export default function ProductionLineBuilder({
 
           <div>
             <label
+              htmlFor="lineCode"
+              className="block text-sm font-medium text-gray-700 mb-1"
+            >
+              Code
+            </label>
+            <input
+              type="text"
+              id="lineCode"
+              value={lineCode}
+              onChange={(e) => setLineCode(e.target.value)}
+              placeholder="Enter code (optional)"
+              className="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+            />
+          </div>
+
+          <div>
+            <label
               htmlFor="lineDescription"
               className="block text-sm font-medium text-gray-700 mb-1"
             >
@@ -240,24 +253,25 @@ export default function ProductionLineBuilder({
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           <div>
-            <h2 className="text-xl font-bold mb-4">Available Steps</h2>
+            <h2 className="text-xl font-bold mb-4">Available Micro Lines</h2>
             <div className="bg-white p-4 rounded-lg shadow-md h-[500px] overflow-y-auto">
               <div className="space-y-2">
-                {steps.map((step) => (
-                  <StepItem
-                    key={step._id}
-                    step={{
-                      id: step._id,
-                      name: step.name,
-                      description: step.description,
+                {microLines.map((microLine) => (
+                  <MicroLineItem
+                    key={microLine._id}
+                    microLine={{
+                      id: microLine._id,
+                      name: microLine.name,
+                      description: microLine.description,
+                      steps: microLine.steps,
                     }}
                     isInLine={false}
                   />
                 ))}
               </div>
-              {steps.length === 0 && (
+              {microLines.length === 0 && (
                 <p className="text-gray-500 text-center py-4">
-                  No steps available
+                  No micro lines available
                 </p>
               )}
             </div>

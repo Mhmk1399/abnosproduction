@@ -10,8 +10,16 @@ export async function GET(
   request: NextRequest,
   { params }: { params: { id: string } }
 ) {
-  const id = params.id;
-  return getProductionLineById(id);
+  try {
+    // Fix: Properly await params.id
+    const id = request.url.split("/").pop();
+    console.log("Fetching production line with ID:", id);
+    if (id) return await getProductionLineById(id);
+  }
+  catch (error) {
+    console.error("Error fetching production line:", error);
+    return new Response("Failed to fetch production line", { status: 500 });
+  }
 }
 
 // UPDATE a production line
@@ -19,8 +27,8 @@ export async function PUT(
   request: NextRequest,
   { params }: { params: { id: string } }
 ) {
+  // Fix: Properly use params.id without awaiting
   const id = params.id;
-
   return updateProductionLine(request, id);
 }
 
