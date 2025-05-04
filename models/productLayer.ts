@@ -16,9 +16,9 @@ const productLayerSchema = new mongoose.Schema(
     },
     treatments: [
       {
-        treatment: { type: mongoose.Schema.Types.ObjectId, ref: "Treatment" },
+        treatment: {type:mongoose.Schema.Types.ObjectId, ref: "Treatment"},
         count: {
-          type: Number,
+          type: Number
         },
         measurement: {
           type: String,
@@ -57,6 +57,14 @@ const productLayerSchema = new mongoose.Schema(
       type: mongoose.Schema.Types.ObjectId,
       ref: "steps",
     },
+    currentline: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "ProductionLine",
+    },
+    currentInventory: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Inventory",
+    },
     productionNotes: {
       type: String,
     },
@@ -64,9 +72,9 @@ const productLayerSchema = new mongoose.Schema(
       type: mongoose.Schema.Types.ObjectId,
       ref: "Design",
       required: true,
-    },
+    }
+
   },
   { timestamps: true }
 );
-export default mongoose.models.ProductLayer ||
-  mongoose.model("ProductLayer", productLayerSchema);
+export default mongoose.models.ProductLayer || mongoose.model("ProductLayer", productLayerSchema);

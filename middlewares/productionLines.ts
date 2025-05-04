@@ -1,24 +1,28 @@
 import { NextRequest, NextResponse } from "next/server";
 import connect from "@/lib/data";
 import productionLine from "@/models/productionLine";
-import { v4 as uuidv4 } from "uuid";
 import "@/models/productionInventory";
-import "@/models/steps";
+import "@/models/microLine";
+import { generateSequentialCode } from "@/utils/codeGenerator";
 
 export const getAllProductionLines = async () => {
   try {
     await connect();
 
-    // Fetch production lines with populated steps and inventories
+    // Fetch production lines with populated microLines and inventory
     const lines = await productionLine
       .find({})
       .populate({
-        path: "steps.stepId",
-        model: "steps",
+        path: "microLines.microLine",
+        model: "MicroLine",
+        populate: {
+          path: "steps.step",
+          model: "steps"
+        }
       })
       .populate({
-        path: "inventories.inventoryId",
-        model: "productionInventory",
+        path: "inventory",
+        model: "Inventory",
       })
       .sort({ createdAt: -1 });
 
@@ -47,19 +51,15 @@ export const createProductionLine = async (request: NextRequest) => {
     }
 
     // Generate a unique code if not provided
-    if (!body.code) {
-      body.code = `LINE-${uuidv4().substring(0, 8)}`;
-    }
+    const code= await generateSequentialCode("productionLine", "");
 
     // Create the new production line
     const newLine = new productionLine({
       name: body.name,
       code: body.code,
       description: body.description || "",
-      steps: body.steps || [],
-      inventories: body.inventories || [],
-      flowOrder: body.flowOrder || [],
-      layers: body.layers || [],
+      microLines: body.microLines || [],
+      inventory: body.inventory || null,
       active: body.active !== undefined ? body.active : true,
     });
 
@@ -91,12 +91,16 @@ export const getProductionLineById = async (id: string) => {
     const line = await productionLine
       .findById(id)
       .populate({
-        path: "steps.stepId",
-        model: "steps",
+        path: "microLines.microLine",
+        model: "MicroLine",
+        populate: {
+          path: "steps.step",
+          model: "steps"
+        }
       })
       .populate({
-        path: "inventories.inventoryId",
-        model: "productionInventory",
+        path: "inventory",
+        model: "Inventory",
       });
 
     if (!line) {
@@ -138,9 +142,8 @@ export const updateProductionLine = async (
       {
         name: body.name,
         description: body.description,
-        steps: body.steps,
-        inventories: body.inventories,
-        flowOrder: body.flowOrder,
+        microLines: body.microLines,
+        inventory: body.inventory,
         active: body.active,
       },
       { new: true, runValidators: true }

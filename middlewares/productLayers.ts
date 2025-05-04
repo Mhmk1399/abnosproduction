@@ -32,6 +32,8 @@ export const updateProductLayer = async (req: NextRequest) => {
       productionLine,
       productionDate,
       currentStep,
+      currentline,
+      currentInventory,
       productionNotes,
       designNumber,
     } = await req.json();
@@ -51,6 +53,8 @@ export const updateProductLayer = async (req: NextRequest) => {
         productionLine,
         productionDate,
         currentStep,
+        currentline,
+        currentInventory,
         productionNotes,
         designNumber,
       },
@@ -68,6 +72,7 @@ export const updateProductLayer = async (req: NextRequest) => {
     );
   }
 };
+
 
 export const deleteProductLayer = async (req: NextRequest) => {
   try {
