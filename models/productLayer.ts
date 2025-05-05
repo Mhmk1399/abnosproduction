@@ -73,7 +73,6 @@ const productLayerSchema = new mongoose.Schema(
       ref: "Design",
       required: true,
     }
-
   },
   { timestamps: true }
 );

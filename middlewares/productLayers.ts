@@ -1,11 +1,30 @@
 import { NextResponse, NextRequest } from "next/server";
 import connect from "@/lib/data";
 import ProductLayer from "@/models/productLayer";
-
+import customer from "@/models/customer";
+import steps from "@/models/steps";
+import productionLine from "@/models/productionLine";
+import productionInventory from "@/models/productionInventory";
+import glass from "@/models/glass";
 export const getProductLayers = async () => {
   await connect();
   try {
-    const productLayers = await ProductLayer.find();
+    const productLayers = await ProductLayer.find().populate({
+      path:"customer",
+      model: customer
+    }).populate({
+      path:"currentStep",
+      model: steps
+    }).populate({
+      path:"currentline",
+      model: productionLine
+    }).populate({
+      path:"currentInventory",
+      model: productionInventory
+    }).populate({
+      path: "glass",
+      model:glass
+    })
     return NextResponse.json({ productLayers }, { status: 200 });
   } catch (error) {
     return NextResponse.json(
@@ -77,7 +96,9 @@ export const updateProductLayer = async (req: NextRequest) => {
 export const deleteProductLayer = async (req: NextRequest) => {
   try {
     const { id } = await req.json();
-    await ProductLayer.findByIdAndDelete(id);
+    await ProductLayer.findByIdAndDelete(id)
+    
+  
     return NextResponse.json(
       { message: "Product layer deleted successfully" },
       { status: 200 }

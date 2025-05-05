@@ -1,8 +1,40 @@
 import useSWR from "swr";
 
+export interface Customer {
+  _id: string;
+  name: string;
+  code: string;
+  address: string;
+  phone: string;
+  nationalId: string;
+  postalCode: string;
+  type: string;
+}
+
+export interface Step {
+  _id: string;
+  name: string;
+  code: string;
+  description: string;
+}
+
+export interface ProductionLine {
+  _id: string;
+  name: string;
+  code: string;
+  description: string;
+  microLines: Array<{
+    microLine: string;
+    order: number;
+    _id: string;
+  }>;
+  active: boolean;
+  inventory: string;
+}
+
 export interface ProductLayer {
   _id: string;
-  customer: string;
+  customer: Customer | string;
   code: string;
   glass: string;
   treatments: string[];
@@ -13,11 +45,12 @@ export interface ProductLayer {
   productionCode: string;
   productionLine: string;
   productionDate: string;
-  currentStep: string;
-  currentline: string;
-  currentInventory: string;
-  productionNotes: string;
-  designNumber: string;
+  currentStep: Step | string;
+  currentline: ProductionLine | string;
+  productionNotes?: string;
+  designNumber?: string;
+  createdAt: string;
+  updatedAt: string;
 }
 
 // Fetcher function for SWR
@@ -46,7 +79,14 @@ export function useProductLayers() {
 export function useProductLayersByLine(lineId: string) {
   const { layers, isLoading, error, mutate } = useProductLayers();
   
-  const filteredLayers = layers.filter(layer => layer.currentline === lineId);
+  const filteredLayers = layers.filter(layer => {
+    // Check if currentline is an object with _id or just an id string
+    const currentLineId = typeof layer.currentline === 'object' 
+      ? layer.currentline._id 
+      : layer.currentline;
+    
+    return currentLineId === lineId;
+  });
   
   return {
     layers: filteredLayers,
