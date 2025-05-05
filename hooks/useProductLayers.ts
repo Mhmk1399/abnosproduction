@@ -47,6 +47,7 @@ export interface ProductLayer {
   productionDate: string;
   currentStep: Step | string;
   currentline: ProductionLine | string;
+  currentInventory?: any;
   productionNotes?: string;
   designNumber?: string;
   createdAt: string;
@@ -57,7 +58,7 @@ export interface ProductLayer {
 const fetcher = async (url: string) => {
   const response = await fetch(url);
   if (!response.ok) {
-    throw new Error("Failed to fetch product layers");
+    throw new Error("Failed to fetch data");
   }
   return response.json();
 };

@@ -6,6 +6,7 @@ import steps from "@/models/steps";
 import productionLine from "@/models/productionLine";
 import productionInventory from "@/models/productionInventory";
 import glass from "@/models/glass";
+import invoice from "@/models/invoice";
 export const getProductLayers = async () => {
   await connect();
   try {
@@ -24,7 +25,11 @@ export const getProductLayers = async () => {
     }).populate({
       path: "glass",
       model:glass
-    })
+    }).populate({
+      path:"invoice",
+      model:invoice
+    });
+   
     return NextResponse.json({ productLayers }, { status: 200 });
   } catch (error) {
     return NextResponse.json(
@@ -119,13 +124,39 @@ export const getProductLayerById = async (id: string) => {
         { status: 400 }
       );
     }
-    const productLayer = await ProductLayer.findById(id);
+    
+    const productLayer = await ProductLayer.findById(id)
+      .populate({
+        path: "customer",
+        model: customer
+      })
+      .populate({
+        path: "currentStep",
+        model: steps
+      })
+      .populate({
+        path: "currentline",
+        model: productionLine
+      })
+      .populate({
+        path: "currentInventory",
+        model: productionInventory
+      })
+      .populate({
+        path: "glass",
+        model: glass
+      }).populate({
+        path: "invoice",
+      model:invoice
+      });
+      
     if (!productLayer) {
       return NextResponse.json(
         { error: "Product layer not found" },
         { status: 404 }
       );
     }
+    
     return NextResponse.json({ productLayer }, { status: 200 });
   } catch (error) {
     return NextResponse.json(
@@ -133,8 +164,7 @@ export const getProductLayerById = async (id: string) => {
       { status: 500 }
     );
   }
-};
-export const createProductLayer = async (req: NextRequest) => {
+};export const createProductLayer = async (req: NextRequest) => {
   await connect();
   try {
     const data = await req.json();

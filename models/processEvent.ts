@@ -14,8 +14,7 @@ const processEventSchema = new mongoose.Schema(
       ref: "steps",
       required: true,
       index: true,
-    },
-    eventType: {
+    },    eventType: {
       type: String,
       enum: ["start", "complete", "defect", "measurement", "note"],
       required: true,

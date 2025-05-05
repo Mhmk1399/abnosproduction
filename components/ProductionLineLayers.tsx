@@ -117,7 +117,7 @@ export default function ProductionLineLayers({
               </div>
               
               <div className="p-4">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                   {stepsLayers.map((layer) => (
                     <Link 
                       href={`/layers/${layer._id}`} 
@@ -169,7 +169,7 @@ export default function ProductionLineLayers({
                           {/* Invoice number if available */}
                           {layer.invoice && (
                             <span className="inline-block bg-gray-100 text-gray-600 text-xs px-2 py-1 rounded font-vazir">
-                              فاکتور: {typeof layer.invoice === 'object' ? layer.invoice._id : layer.invoice}
+                              فاکتور: {typeof layer.invoice === 'object' ? layer.invoice.code : layer.invoice}
                             </span>
                           )}
                           
