@@ -1,6 +1,7 @@
 import useSWR from "swr";
 
 export interface Inventory {
+  type: string;
   _id: string;
   name: string;
   code: string;

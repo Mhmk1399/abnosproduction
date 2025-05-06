@@ -54,7 +54,7 @@ export default function MicroLineBuilder({
 
   // Handle dropping a new item into the line area
   const handleDrop = useCallback(
-    (itemId: string, itemType: "step") => {
+    (itemId: string, itemType: "microLine" | "inventory" | "step") => {
       // Find the original item
       const originalItem = steps.find((s) => s._id === itemId);
 
@@ -228,26 +228,29 @@ export default function MicroLineBuilder({
           </div>
 
           <div>
-            <label
-              htmlFor="inventory"
-              className="block text-sm font-medium text-gray-700 mb-1"
-            >
-              Inventory
-            </label>
-            <select
-              id="inventory"
-              value={selectedInventory}
-              onChange={(e) => setSelectedInventory(e.target.value)}
-              className="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-            >
-              <option value="">Select an inventory (optional)</option>
-              {inventories.map((inventory) => (
-                <option key={inventory._id} value={inventory._id}>
-                  {inventory.name}
-                </option>
-              ))}
-            </select>
-          </div>
+  <label
+    htmlFor="inventory"
+    className="block text-sm font-medium text-gray-700 mb-1"
+  >
+    Inventory
+  </label>
+  <select
+    id="inventory"
+    value={selectedInventory}
+    onChange={(e) => setSelectedInventory(e.target.value)}
+    className="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+  >
+    <option value="">Select an inventory (optional)</option>
+    {inventories
+      .filter(inventory => inventory.type === "holding")
+      .map((inventory) => (
+        <option key={inventory._id} value={inventory._id}>
+          {inventory.name}
+        </option>
+      ))}
+  </select>
+</div>
+
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">

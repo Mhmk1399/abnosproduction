@@ -2,11 +2,18 @@ export interface LineItem {
   id: string;
   originalId: string;
   name: string;
-  type: "step" | "inventory";
+  type: "microLine" | "inventory" | "step";
   description?: string;
   quantity?: number;
+  steps?: {
+    step: {
+      _id: string;
+      name: string;
+      description: string;
+    };
+    order: number;
+  }[];
 }
-
 // Add this to your existing types
 export interface Inventory {
   id: string;
@@ -128,7 +135,7 @@ export interface LineItem {
   id: string;
   originalId: string;
   name: string;
-  type: "microLine" | "inventory";
+  type: "microLine" | "inventory"| "step";
   description?: string;
   quantity?: number;
   steps?: {

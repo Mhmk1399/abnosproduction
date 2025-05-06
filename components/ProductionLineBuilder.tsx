@@ -40,13 +40,16 @@ export default function ProductionLineBuilder({
 
   // Handle dropping a new item into the line area
   const handleDrop = useCallback(
-    (itemId: string, itemType: "microLine" | "inventory") => {
+    (itemId: string, itemType: "microLine" | "inventory" | "step") => {
       // Find the original item
       let originalItem;
       if (itemType === "microLine") {
         originalItem = microLines.find((ml) => ml._id === itemId);
-      } else {
+      } else if (itemType === "inventory") {
         originalItem = inventories.find((i) => i._id === itemId);
+      } else {
+        // Handle step type if needed
+        return;
       }
 
       if (originalItem) {
@@ -281,7 +284,8 @@ export default function ProductionLineBuilder({
             <h2 className="text-xl font-bold mb-4">Available Inventories</h2>
             <div className="bg-white p-4 rounded-lg shadow-md h-[500px] overflow-y-auto">
               <div className="space-y-2">
-                {inventories.map((inventory) => (
+                {inventories .filter(inventory => inventory.type === "finished")
+                  .map((inventory) => (
                   <InventoryItem
                     key={inventory._id}
                     inventory={{
