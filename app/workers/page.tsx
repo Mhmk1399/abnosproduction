@@ -5,6 +5,7 @@ import WorkerInputForm from "../../components/WorkerInputForm";
 export default function WorkerPage() {
   const [stepId, setStepId] = useState<string | null>(null);
   const [stepName, setStepName] = useState<string | null>(null);
+  const [workerId, setWorkerId] = useState<string>("default-worker");
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [formData, setFormData] = useState({
@@ -20,6 +21,7 @@ export default function WorkerPage() {
     if (storedStepId && storedStepName) {
       setStepId(storedStepId);
       setStepName(storedStepName);
+      console.log("Loaded from localStorage:", { storedStepId, storedStepName });
     }
     
     setIsLoading(false);
@@ -64,6 +66,7 @@ export default function WorkerPage() {
       // Update state
       setStepId(data.step._id);
       setStepName(data.step.name);
+      console.log("Authentication successful:", { id: data.step._id, name: data.step.name });
     } catch (err) {
       setError(err instanceof Error ? err.message : "Authentication failed");
     } finally {
@@ -77,6 +80,9 @@ export default function WorkerPage() {
     setStepId(null);
     setStepName(null);
   };
+
+  // Debug output
+  console.log("WorkerPage render state:", { stepId, stepName, isLoading });
 
   if (isLoading) {
     return (
@@ -93,7 +99,7 @@ export default function WorkerPage() {
           Worker Station
         </h1>
         
-        {stepId ? (
+        {stepId && stepName ? (
           <>
             <div className="mb-4 flex justify-between items-center">
               <div>
@@ -107,7 +113,11 @@ export default function WorkerPage() {
                 Change Step
               </button>
             </div>
-            <WorkerInputForm stepId={stepId} stepName={stepName} />
+            <WorkerInputForm 
+              stepId={stepId} 
+              stepName={stepName} 
+              workerId={workerId} 
+            />
           </>
         ) : (
           <div className="bg-white rounded-xl shadow-lg p-6">
