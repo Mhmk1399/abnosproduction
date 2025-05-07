@@ -1,5 +1,5 @@
 "use client";
-import { useRef, useState, useEffect } from "react";
+import { useRef, useState, useEffect, ReactNode } from "react";
 import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
 import { navMenuItems } from "../lib/sideBar";
@@ -10,6 +10,32 @@ import InventoryList from "./inventoryList";
 import ConfigurePage from "@/app/configure/page";
 import ConfigureMicroLinePage from "@/app/configure-micro-line/page";
 import LayerDetailsPage from "@/app/layers/[id]/page";
+import MicroLinesPage from "@/app/micro-lines/page";
+import OptimizerPage from "@/app/optimizer/page";
+import StepsPage from "@/app/steps/page";
+import {
+  FaBoxOpen,
+  FaIndustry,
+  FaCogs,
+  FaMicrochip,
+  FaLayerGroup,
+  FaStream,
+  FaChartLine,
+  FaListOl,
+  FaCog,
+} from "react-icons/fa";
+
+const iconMap = {
+  FaBoxOpen,
+  FaIndustry,
+  FaCogs,
+  FaMicrochip,
+  FaLayerGroup,
+  FaStream,
+  FaChartLine,
+  FaListOl,
+  FaCog,
+};
 
 interface MenuItemChild {
   id: string;
@@ -19,6 +45,7 @@ interface MenuItemChild {
 interface NavMenuItem {
   id: string;
   title: string;
+  icon: ReactNode;
   children: {
     id: string;
     title: string;
@@ -99,6 +126,9 @@ const NavItem = ({
   const hasActiveChild =
     activeChild && item.children.some((child) => child.id === activeChild);
 
+  // Get the icon component from the icon map
+  const IconComponent = item.icon && iconMap[item.icon as keyof typeof iconMap];
+
   return (
     <motion.div variants={itemVariants} className="mb-3">
       <motion.div
@@ -111,13 +141,24 @@ const NavItem = ({
         whileTap={{ scale: 0.98 }}
         onClick={toggleDropdown}
       >
-        <span
-          className={`font-medium ${
-            hasActiveChild ? "text-white" : "text-indigo-800"
-          }`}
-        >
-          {item.title}
-        </span>
+        <div className="flex items-center">
+          {IconComponent && (
+            <div
+              className={`ml-2 ${
+                hasActiveChild ? "text-white" : "text-indigo-600"
+              }`}
+            >
+              <IconComponent size={18} />
+            </div>
+          )}
+          <span
+            className={`font-medium ${
+              hasActiveChild ? "text-white" : "text-indigo-800"
+            }`}
+          >
+            {item.title}
+          </span>
+        </div>
         <motion.div
           animate={{
             rotate: isDropdownOpen ? 180 : 0,
@@ -213,6 +254,13 @@ const renderChildComponent = (
         return <ConfigureMicroLinePage />;
       case "layer":
         return <LayerDetailsPage />;
+      case "microLine":
+        return <MicroLinesPage />;
+      case "optimizer":
+        return <OptimizerPage />;
+      case "step":
+        return <StepsPage />;
+
       default:
         return (
           <WelcomeScreen

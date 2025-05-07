@@ -1,5 +1,13 @@
 import React, { useState } from "react";
 import { useForm } from "react-hook-form";
+import {
+  FaBoxOpen,
+  FaChevronDown,
+  FaExclamationCircle,
+  FaSave,
+  FaSpinner,
+  FaTag,
+} from "react-icons/fa";
 
 interface InventoryFormData {
   name: string;
@@ -48,61 +56,99 @@ const AddInventoryForm = () => {
   };
 
   return (
-    <div className="bg-white p-6 rounded-lg shadow-md">
-      <h2 className="text-xl font-semibold mb-4">Add New Inventory</h2>
-      <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+    <div className="bg-white p-8 rounded-xl shadow-lg mt-20 border border-indigo-50">
+      <div className="flex items-center mb-6 border-b pb-4">
+        <h2 className="text-2xl font-bold text-gray-800">افزودن موجودی جدید</h2>
+        <div className="bg-indigo-100 p-2 rounded-lg mr-1">
+          <FaBoxOpen className="text-indigo-600 text-xl" />
+        </div>
+      </div>
+
+      <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
         {error && (
-          <div className="p-3 bg-red-100 text-red-700 rounded">{error}</div>
+          <div className="p-4 bg-red-50 border-l-4 border-red-500 text-red-700 rounded-md flex items-center">
+            <FaExclamationCircle className="mr-2 text-red-500" />
+            <span>{error}</span>
+          </div>
         )}
 
-        <div>
-          <label className="block text-sm font-medium text-gray-700">
-            Inventory Name *
+        <div className="space-y-2">
+          <label className="block text-sm font-semibold text-gray-700 mb-1">
+            نام موجودی <span className="text-red-500">*</span>
           </label>
-          <input
-            type="text"
-            {...register("name", { required: "Inventory name is required" })}
-            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
-          />
+          <div className="relative">
+            <input
+              type="text"
+              {...register("name", { required: "Inventory name is required" })}
+              className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all duration-200 shadow-sm"
+              placeholder="نام موجودی را وارد کنید"
+            />
+            <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+              <FaTag className="text-gray-400" />
+            </div>
+          </div>
           {errors.name && (
-            <p className="mt-1 text-sm text-red-600">{errors.name.message}</p>
+            <p className="mt-1 text-sm text-red-600 flex items-center">
+              <FaExclamationCircle className="mr-1" />
+              {errors.name.message}
+            </p>
           )}
         </div>
 
-        <div>
-          <label className="block text-sm font-medium text-gray-700">
-            Type *
+        <div className="space-y-2">
+          <label className="block text-sm font-semibold text-gray-700 mb-1">
+            نوع <span className="text-red-500">*</span>
           </label>
-          <select
-            {...register("type", { required: "Type is required" })}
-            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
-          >
-            <option value="holding">Holding</option>
-            <option value="finished">Finished</option>
-          </select>
+          <div className="relative">
+            <select
+              {...register("type", { required: "Type is required" })}
+              className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all duration-200 shadow-sm appearance-none"
+            >
+              <option value="">نوع موجودی را انتخاب کنید</option>
+              <option value="holding">نگهداری</option>
+              <option value="finished">تکمیل شده</option>
+            </select>
+            <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+              <FaChevronDown className="text-gray-400" />
+            </div>
+          </div>
           {errors.type && (
-            <p className="mt-1 text-sm text-red-600">{errors.type.message}</p>
+            <p className="mt-1 text-sm text-red-600 flex items-center">
+              <FaExclamationCircle className="mr-1" />
+              {errors.type.message}
+            </p>
           )}
         </div>
 
-        <div>
-          <label className="block text-sm font-medium text-gray-700">
-            Description
+        <div className="space-y-2">
+          <label className="block text-sm font-semibold text-gray-700 mb-1">
+            توضیحات
           </label>
           <textarea
             {...register("description")}
-            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
-            rows={3}
+            className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all duration-200 shadow-sm"
+            rows={4}
+            placeholder="توضیحات اضافی را وارد کنید (اختیاری)"
           />
         </div>
 
-        <div>
+        <div className="pt-4">
           <button
             type="submit"
             disabled={isSubmitting}
-            className="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:opacity-50"
+            className="w-full md:w-auto flex items-center justify-center py-3 px-6 border border-transparent rounded-lg shadow-sm text-base font-medium text-white bg-gradient-to-r from-indigo-600 to-indigo-700 hover:from-indigo-700 hover:to-indigo-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200"
           >
-            {isSubmitting ? "Saving..." : "Save Inventory"}
+            {isSubmitting ? (
+              <>
+                در حال ذخیره...
+                <FaSpinner className="animate-spin mr-2" />
+              </>
+            ) : (
+              <>
+                ذخیره موجودی
+                <FaSave className="mr-2" />
+              </>
+            )}
           </button>
         </div>
       </form>
