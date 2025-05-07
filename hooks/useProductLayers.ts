@@ -80,14 +80,21 @@ export function useProductLayers() {
 export function useProductLayersByLine(lineId: string) {
   const { layers, isLoading, error, mutate } = useProductLayers();
   
+  // Add debugging
+  console.log('All layers:', layers);
+  console.log('Filtering for line ID:', lineId);
+  
   const filteredLayers = layers.filter(layer => {
-    // Check if currentline is an object with _id or just an id string
+    // Check if productionLine is an object with _id or just an id string
     const currentLineId = typeof layer.productionLine === 'object' 
       ? layer.productionLine._id 
       : layer.productionLine;
     
+    console.log(`Layer ${layer._id} has line ID: ${currentLineId}`);
     return currentLineId === lineId;
   });
+  
+  console.log('Filtered layers:', filteredLayers);
   
   return {
     layers: filteredLayers,
@@ -96,6 +103,7 @@ export function useProductLayersByLine(lineId: string) {
     mutate
   };
 }
+
 
 export function useProductLayer(id: string) {
   const { data, error, isLoading, mutate } = useSWR<{ productLayer: ProductLayer }>(

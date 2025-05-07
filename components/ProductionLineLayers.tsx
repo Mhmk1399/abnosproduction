@@ -12,6 +12,7 @@ import {
   FiFileText,
   FiMaximize2,
   FiShield,
+  FiBox,
 } from "react-icons/fi";
 import Link from "next/link";
 import { subDays } from "date-fns";
@@ -33,6 +34,7 @@ export default function ProductionLineLayers({
   const { layers, isLoading, error } = useProductLayersByLine(lineId);
 
   // Use useMemo to group layers by step
+  // Use useMemo to group layers by step
   const layersByStep = useMemo(() => {
     if (!layers || layers.length === 0) return {};
 
@@ -40,8 +42,8 @@ export default function ProductionLineLayers({
       // Check if currentStep is an object with _id or just an id string
       const stepId =
         typeof layer.currentStep === "object"
-          ? layer.currentStep
-          : layer.currentStep._id;
+          ? layer.currentStep._id
+          : layer.currentStep;
 
       if (!acc[stepId]) {
         acc[stepId] = [];
@@ -121,7 +123,7 @@ export default function ProductionLineLayers({
         <span>لایه‌های در حال تولید</span>
       </h3>
 
-      <div className="space-y-8">
+      <div className="space-y-6">
         {steps.map((step) => {
           // Get the step ID
           const stepId = step._id;
@@ -134,121 +136,82 @@ export default function ProductionLineLayers({
           return (
             <div
               key={stepId}
-              className="border border-gray-200 rounded-xl overflow-hidden shadow-sm hover:shadow-md transition-all duration-300"
+              className="border border-gray-200 rounded-lg overflow-hidden"
             >
-              <div className="bg-gradient-to-r from-indigo-50 to-purple-50 p-4">
+              <div className="bg-gray-50 p-4">
                 <h4 className="font-medium text-gray-800 font-vazir flex items-center gap-2">
-                  <div className="w-9 h-9 rounded-full bg-indigo-100 flex items-center justify-center shadow-sm">
-                    <FiClock className="text-indigo-600" />
-                  </div>
-                  <span>{step.name}</span>
-                  <span className="bg-indigo-100 text-indigo-700 text-xs px-2.5 py-1 rounded-full font-vazir ml-2">
-                    {stepsLayers.length} لایه
+                  <span className="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center">
+                    <FiClock className="text-blue-600" />
                   </span>
+                  {step.name} ({stepsLayers.length})
                 </h4>
               </div>
 
-              <div className="p-5">
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+              <div className="p-4">
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                   {stepsLayers.map((layer) => (
                     <Link
                       href={`/layers/${layer._id}`}
                       key={layer._id}
-                      className="group block border border-gray-200 rounded-xl p-5 hover:bg-indigo-50/30 hover:border-indigo-200 transition-all duration-300 shadow-sm hover:shadow-md relative overflow-hidden"
+                      className="block border border-gray-200 rounded-lg p-4 hover:bg-gray-50 transition-colors"
                     >
-                      {/* Decorative corner */}
-                      <div className="absolute top-0 right-0 w-16 h-16 bg-indigo-50 rounded-bl-full opacity-50 pointer-events-none group-hover:bg-indigo-100 transition-colors"></div>
-
-                      <div className="flex flex-col gap-3 relative">
+                      <div className="flex flex-col gap-2">
                         {/* Header with code and production code */}
                         <div className="flex justify-between items-start">
-                          <h5 className="font-bold text-gray-800 font-vazir text-lg group-hover:text-indigo-700 transition-colors">
+                          <h5 className="font-medium text-gray-800 font-vazir">
                             {layer.code}
                           </h5>
-                          <span className="inline-flex items-center bg-green-100 text-green-700 text-xs px-2.5 py-1 rounded-full font-vazir">
-                            <FiTag className="mr-1 text-green-600" />
-                            <span>کد تولید: {layer.productionCode}</span>
+                          <span className="inline-block bg-green-100 text-green-700 text-xs px-2 py-1 rounded font-vazir">
+                            کد تولید: {layer.productionCode}
                           </span>
                         </div>
 
                         {/* Customer information */}
-                        <div className="flex items-center gap-2 text-gray-700">
-                          <div className="p-1.5 bg-blue-100 rounded-md">
-                            <FiUser className="text-blue-600 text-sm" />
-                          </div>
+                        <div className="flex items-center gap-2 text-gray-600">
+                          <FiUser className="text-blue-500" />
                           <p className="text-sm font-vazir">
                             مشتری:{" "}
-                            <span className="font-medium">
-                              {layer.customer?.name || "نامشخص"}
-                            </span>
+                            {typeof layer.customer === "object"
+                              ? layer.customer.name
+                              : "نامشخص"}
                           </p>
                         </div>
 
-                        {/* Dimensions */}
-                        <div className="flex items-center gap-2 text-gray-700">
-                          <div className="p-1.5 bg-amber-100 rounded-md">
-                            <FiMaximize2 className="text-amber-600 text-sm" />
+                        {/* Glass information if available */}
+                        {layer.glass && (
+                          <div className="flex items-center gap-2 text-gray-600">
+                            <FiBox className="text-blue-500" />
+                            <p className="text-sm font-vazir">
+                              شیشه:{" "}
+                              {typeof layer.glass === "object"
+                                ? layer.glass.name
+                                : layer.glass}
+                              {typeof layer.glass === "object" &&
+                                layer.glass.thickness &&
+                                ` (${layer.glass.thickness}mm)`}
+                            </p>
                           </div>
+                        )}
+
+                        {/* Dimensions */}
+                        <div className="flex items-center gap-2 text-gray-600">
+                          <FiBox className="text-blue-500" />
                           <p className="text-sm font-vazir">
-                            ابعاد:{" "}
-                            <span className="font-medium">
-                              {layer.width} × {layer.height}
-                            </span>
+                            ابعاد: {layer.width} × {layer.height}
                           </p>
                         </div>
 
                         {/* Production date - Persian format and 24h earlier */}
-                        <div className="flex items-center gap-2 text-gray-700">
-                          <div className="p-1.5 bg-purple-100 rounded-md">
-                            <FiCalendar className="text-purple-600 text-sm" />
-                          </div>
+                        <div className="flex items-center gap-2 text-gray-600">
+                          <FiCalendar className="text-blue-500" />
                           <p className="text-sm font-vazir">
-                            تاریخ تولید:{" "}
-                            <span className="font-medium">
-                              {formatDate(layer.productionDate)}
-                            </span>
+                            تاریخ تولید: {formatDate(layer.productionDate)}
                           </p>
                         </div>
 
                         {/* Barcode for production code */}
-                        <div className="mt-2 flex justify-center bg-white p-2 rounded-lg border border-gray-200 group-hover:border-indigo-200 transition-colors">
-                          <Barcode
-                            value={layer.productionCode}
-                            height={40}
-                            width={1.5}
-                            fontSize={12}
-                            margin={5}
-                            background="#FFFFFF"
-                          />
-                        </div>
-
-                        {/* Tags at the bottom */}
-                        <div className="flex flex-wrap gap-2 mt-2">
-                          {/* Invoice number if available */}
-                          {layer.invoice && (
-                            <span className="inline-flex items-center bg-gray-100 text-gray-700 text-xs px-2.5 py-1 rounded-full font-vazir">
-                              <FiFileText className="mr-1 text-gray-600" />
-                              <span>
-                                فاکتور:{" "}
-                                {typeof layer.invoice === "object"
-                                  ? layer.invoice.code
-                                  : layer.invoice}
-                              </span>
-                            </span>
-                          )}
-
-                          {/* Glass type if available */}
-                          {layer.glass && (
-                            <span className="inline-flex items-center bg-blue-100 text-blue-700 text-xs px-2.5 py-1 rounded-full font-vazir">
-                              <FiShield className="mr-1 text-blue-600" />
-                              <span>
-                                شیشه:{" "}
-                                {typeof layer.glass === "object"
-                                  ? layer.glass.name
-                                  : layer.glass}
-                              </span>
-                            </span>
-                          )}
+                        <div className="mt-3 flex justify-center">
+                          <Barcode value={layer.productionCode} />
                         </div>
                       </div>
                     </Link>

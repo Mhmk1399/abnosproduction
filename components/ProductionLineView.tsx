@@ -83,16 +83,32 @@ export default function ProductionLineView({
   >({});
 
   // Always define lineSteps, even if it's empty
+  // Update the lineSteps useMemo in ProductionLineView.tsx
   const lineSteps = useMemo(() => {
     if (!line || !line.microLines) return [];
 
     const typedLine = line as unknown as ProductionLineData;
-    return typedLine.microLines.flatMap((item) =>
-      (item.microLine.steps || []).map((step) => ({
-        _id: step.step._id,
-        name: step.step.name,
-      }))
-    );
+    return typedLine.microLines.flatMap((item) => {
+      // Check if microLine.steps exists and has the expected structure
+      if (!item.microLine.steps || !Array.isArray(item.microLine.steps)) {
+        return [];
+      }
+
+      return item.microLine.steps.map((step) => {
+        // Handle both possible structures of step data
+        const stepId =
+          typeof step.step === "object" ? step.step._id : step.step;
+        const stepName =
+          typeof step.step === "object"
+            ? step.step.name
+            : `Step ${step.order + 1}`;
+
+        return {
+          _id: stepId,
+          name: stepName,
+        };
+      });
+    });
   }, [line]);
 
   // Initialize expanded state for all microLines when data is loaded
