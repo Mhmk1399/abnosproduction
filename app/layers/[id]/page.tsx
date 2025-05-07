@@ -182,6 +182,7 @@ export default function LayerDetailsPage() {
                     </p>
                   </div>
                 )}
+                
                 {layer.currentInventory && (
                   <div className="flex items-center gap-2 text-gray-600">
                     <span className="w-5 h-5 rounded-full bg-amber-100 flex items-center justify-center">

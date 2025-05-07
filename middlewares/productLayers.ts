@@ -34,10 +34,7 @@ export const getProductLayers = async () => {
         path: "glass",
         model: glass
       })
-      .populate({
-        path: "invoice",
-        model: invoice
-      })
+      
       // Populate productionLine
       .populate({
         path: "productionLine",
@@ -112,9 +109,13 @@ export const getProductLayerById = async (id: string) => {
       })
       .populate({
         path: "productionLine",
-        model: productionLine
-      });
-
+        model: microLine
+      })
+      .populate({
+        path: "currentMicroLine",
+        model: microLine
+      })
+      
     if (!productLayer) {
       return NextResponse.json(
         { error: "Product layer not found" },

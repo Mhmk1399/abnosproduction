@@ -23,20 +23,24 @@ export default function ProductionLineLayers({
   const { layers, isLoading, error } = useProductLayersByLine(lineId);
   
   // Use useMemo to group layers by step
-  const layersByStep = useMemo(() => {
-    if (!layers || layers.length === 0) return {};
+ // Use useMemo to group layers by step
+const layersByStep = useMemo(() => {
+  if (!layers || layers.length === 0) return {};
+  
+  return layers.reduce((acc: Record<string, any[]>, layer) => {
+    // Check if currentStep is an object with _id or just an id string
+    const stepId = typeof layer.currentStep === 'object' 
+      ? layer.currentStep._id 
+      : layer.currentStep;
     
-    return layers.reduce((acc: Record<string, any[]>, layer) => {
-      // Check if currentStep is an object with _id or just an id string
-      const stepId = typeof layer.currentStep === 'object' ? layer.currentStep._id : layer.currentStep;
-      
-      if (!acc[stepId]) {
-        acc[stepId] = [];
-      }
-      acc[stepId].push(layer);
-      return acc;
-    }, {});
-  }, [layers]);
+    if (!acc[stepId]) {
+      acc[stepId] = [];
+    }
+    acc[stepId].push(layer);
+    return acc;
+  }, {});
+}, [layers]);
+
 
   // Format date function - converts to Persian and subtracts 24 hours
   const formatDate = (dateString: string) => {
@@ -96,92 +100,88 @@ export default function ProductionLineLayers({
       </h3>
       
       <div className="space-y-6">
-        {steps.map((step) => {
-          // Get the step ID
-          const stepId = step._id;
-          const stepsLayers = layersByStep[stepId] || [];
-          
-          if (stepsLayers.length === 0) {
-            return null; // Don't show steps with no layers
-          }
-          
-          return (
-            <div key={stepId} className="border border-gray-200 rounded-lg overflow-hidden">
-              <div className="bg-gray-50 p-4">
-                <h4 className="font-medium text-gray-800 font-vazir flex items-center gap-2">
-                  <span className="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center">
-                    <FiClock className="text-blue-600" />
-                  </span>
-                  {step.name} ({stepsLayers.length})
-                </h4>
-              </div>
+      {steps.map((step) => {
+  // Get the step ID
+  const stepId = step._id;
+  const stepsLayers = layersByStep[stepId] || [];
+  
+  if (stepsLayers.length === 0) {
+    return null; // Don't show steps with no layers
+  }
+  
+  return (
+    <div key={stepId} className="border border-gray-200 rounded-lg overflow-hidden">
+      <div className="bg-gray-50 p-4">
+        <h4 className="font-medium text-gray-800 font-vazir flex items-center gap-2">
+          <span className="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center">
+            <FiClock className="text-blue-600" />
+          </span>
+          {step.name} ({stepsLayers.length})
+        </h4>
+      </div>
               
               <div className="p-4">
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                   {stepsLayers.map((layer) => (
                     <Link 
-                      href={`/layers/${layer._id}`} 
-                      key={layer._id}
-                      className="block border border-gray-200 rounded-lg p-4 hover:bg-gray-50 transition-colors"
-                    >
-                      <div className="flex flex-col gap-2">
-                        {/* Header with code and production code */}
-                        <div className="flex justify-between items-start">
-                          <h5 className="font-medium text-gray-800 font-vazir">
-                            {layer.code}
-                          </h5>
-                          <span className="inline-block bg-green-100 text-green-700 text-xs px-2 py-1 rounded font-vazir">
-                            کد تولید: {layer.productionCode}
-                          </span>
-                        </div>
-                        
-                        {/* Customer information */}
-                        <div className="flex items-center gap-2 text-gray-600">
-                          <FiUser className="text-blue-500" />
-                          <p className="text-sm font-vazir">
-                            مشتری: {layer.customer?.name || "نامشخص"}
-                          </p>
-                        </div>
-                        
-                        {/* Dimensions */}
+                    href={`/layers/${layer._id}`} 
+                    key={layer._id}
+                    className="block border border-gray-200 rounded-lg p-4 hover:bg-gray-50 transition-colors"
+                  >
+                    <div className="flex flex-col gap-2">
+                      {/* Header with code and production code */}
+                      <div className="flex justify-between items-start">
+                        <h5 className="font-medium text-gray-800 font-vazir">
+                          {layer.code}
+                        </h5>
+                        <span className="inline-block bg-green-100 text-green-700 text-xs px-2 py-1 rounded font-vazir">
+                          کد تولید: {layer.productionCode}
+                        </span>
+                      </div>
+                      
+                      {/* Customer information */}
+                      <div className="flex items-center gap-2 text-gray-600">
+                        <FiUser className="text-blue-500" />
+                        <p className="text-sm font-vazir">
+                          مشتری: {typeof layer.customer === 'object' ? layer.customer.name : "نامشخص"}
+                        </p>
+                      </div>
+                      
+                      {/* Glass information if available */}
+                      {layer.glass && (
                         <div className="flex items-center gap-2 text-gray-600">
                           <FiBox className="text-blue-500" />
                           <p className="text-sm font-vazir">
-                            ابعاد: {layer.width} × {layer.height}
+                            شیشه: {typeof layer.glass === 'object' ? layer.glass.name : layer.glass}
+                            {typeof layer.glass === 'object' && layer.glass.thickness && 
+                              ` (${layer.glass.thickness}mm)`}
                           </p>
                         </div>
-                        
-                        {/* Production date - Persian format and 24h earlier */}
-                        <div className="flex items-center gap-2 text-gray-600">
-                          <FiCalendar className="text-blue-500" />
-                          <p className="text-sm font-vazir">
-                            تاریخ تولید: {formatDate(layer.productionDate)}
-                          </p>
-                        </div>
-                        
-                        {/* Barcode for production code */}
-                        <div className="mt-3 flex justify-center">
-                          <Barcode value={layer.productionCode} />
-                        </div>
-                        
-                        {/* Tags at the bottom */}
-                        <div className="flex flex-wrap gap-2 mt-2">
-                          {/* Invoice number if available */}
-                          {layer.invoice && (
-                            <span className="inline-block bg-gray-100 text-gray-600 text-xs px-2 py-1 rounded font-vazir">
-                              فاکتور: {typeof layer.invoice === 'object' ? layer.invoice.code : layer.invoice}
-                            </span>
-                          )}
-                          
-                          {/* Glass type if available */}
-                          {layer.glass && (
-                            <span className="inline-block bg-blue-100 text-blue-700 text-xs px-2 py-1 rounded font-vazir">
-                              شیشه: {typeof layer.glass === 'object' ? layer.glass.name : layer.glass}
-                            </span>
-                          )}
-                        </div>
+                      )}
+                      
+                      {/* Dimensions */}
+                      <div className="flex items-center gap-2 text-gray-600">
+                        <FiBox className="text-blue-500" />
+                        <p className="text-sm font-vazir">
+                          ابعاد: {layer.width} × {layer.height}
+                        </p>
                       </div>
-                    </Link>
+                      
+                      {/* Production date - Persian format and 24h earlier */}
+                      <div className="flex items-center gap-2 text-gray-600">
+                        <FiCalendar className="text-blue-500" />
+                        <p className="text-sm font-vazir">
+                          تاریخ تولید: {formatDate(layer.productionDate)}
+                        </p>
+                      </div>
+                      
+                      {/* Barcode for production code */}
+                      <div className="mt-3 flex justify-center">
+                        <Barcode value={layer.productionCode} />
+                      </div>
+                    </div>
+                  </Link>
+                  
                   ))}
                 </div>
               </div>

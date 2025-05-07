@@ -65,6 +65,10 @@ const productLayerSchema = new mongoose.Schema(
       type: mongoose.Schema.Types.ObjectId,
       ref: "Inventory",
     },
+    currentMicroLine: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "MicroLine",
+    },
     productionNotes: {
       type: String,
     },
@@ -72,7 +76,7 @@ const productLayerSchema = new mongoose.Schema(
       type: mongoose.Schema.Types.ObjectId,
       ref: "Design",
       required: true,
-    }
+    },
   },
   { timestamps: true }
 );

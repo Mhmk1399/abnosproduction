@@ -14,6 +14,9 @@ const stepsSchema = new mongoose.Schema(
     description: {
       type: String,
     },
+    password: {
+      type: String,
+    }
   },
   { timestamps: true }
 );

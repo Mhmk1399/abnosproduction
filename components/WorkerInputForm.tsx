@@ -63,9 +63,7 @@ const fakeStepsLayers = [
 
 
 export default function WorkerInputForm({
-  stepId = "680cb6e4d5a9cadc24acd5b4",
-  stepName,
-  workerId = "W-12345",
+
 }: {
   stepId?: string;
   stepName?: string;
@@ -94,7 +92,7 @@ export default function WorkerInputForm({
     productionLine,
     allSteps,
     currentStepIndex,
-  } = useLayerProcessing({ stepId, workerId });
+  } = useLayerProcessing({ stepId });
 
   // State for fake data
   const [useFakeData, setUseFakeData] = useState(false);
