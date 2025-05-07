@@ -82,9 +82,9 @@ export function useProductLayersByLine(lineId: string) {
   
   const filteredLayers = layers.filter(layer => {
     // Check if currentline is an object with _id or just an id string
-    const currentLineId = typeof layer.currentline === 'object' 
-      ? layer.currentline._id 
-      : layer.currentline;
+    const currentLineId = typeof layer.productionLine === 'object' 
+      ? layer.productionLine._id 
+      : layer.productionLine;
     
     return currentLineId === lineId;
   });

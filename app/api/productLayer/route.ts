@@ -1,34 +1,31 @@
-import connect from "@/lib/data";
-import { NextRequest } from "next/server";
-import {
-  getProductLayers,
-  getProductLayerById,
-  deleteProductLayer,
-  updateProductLayer,
-  createProductLayer,
+import { NextRequest, NextResponse } from "next/server";
+import { 
+  getProductLayers, 
+  getProductLayerById, 
+  createProductLayer, 
+  updateProductLayer, 
+  deleteProductLayer 
 } from "@/middlewares/productLayers";
 
 export async function GET(req: NextRequest) {
-  await connect();
-  const { searchParams } = new URL(req.url);
-  const id = searchParams.get("id");
+  const url = new URL(req.url);
+  const id = url.searchParams.get("id");
+  
   if (id) {
     return getProductLayerById(id);
   }
+  
   return getProductLayers();
 }
 
 export async function POST(req: NextRequest) {
-  await connect();
   return createProductLayer(req);
 }
 
-export async function PATCH(req: NextRequest) {
-  await connect();
+export async function PUT(req: NextRequest) {
   return updateProductLayer(req);
 }
 
 export async function DELETE(req: NextRequest) {
-  await connect();
   return deleteProductLayer(req);
 }

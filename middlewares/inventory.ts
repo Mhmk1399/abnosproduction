@@ -18,7 +18,6 @@ export const getAllInventories = async () => {
 export const createInventory = async (request: NextRequest) => {
     try {
         const { name, type } = await request.json();
-        console.log({ name, type }, "Inventory data:");
         
         // Fix: Await the code generation
         const code = await generateSequentialCode("productionInventory", "INV");
