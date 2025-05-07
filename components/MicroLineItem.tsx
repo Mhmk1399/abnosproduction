@@ -47,8 +47,8 @@ export default function MicroLineItem({ microLine, isInLine, onRemove }: MicroLi
               <p className="text-sm text-gray-500">{microLine.description}</p>
             )}
             <div className="mt-1">
-              <span className="text-xs text-gray-500">
-                Contains {microLine.steps.length} steps
+              <span className="text-xs  text-gray-500">
+                شامل {microLine.steps.length} مرحله
               </span>
             </div>
           </div>

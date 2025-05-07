@@ -16,9 +16,7 @@ export default function ConfigurePage() {
 
   return (
     <div>
-      <h1 className="text-3xl font-bold text-center my-8">
-        Production Line Configuration
-      </h1>
+      <h1 className="text-3xl font-bold text-center my-8">پیکربندی خط تولید</h1>
       <ProductionLineBuilder onSave={handleSave} />
     </div>
   );

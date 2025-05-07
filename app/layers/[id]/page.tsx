@@ -2,7 +2,14 @@
 import { useParams } from "next/navigation";
 import { useProductLayer } from "@/hooks/useProductLayers";
 import { useState } from "react";
-import { FiArrowLeft, FiAlertCircle, FiUser, FiCalendar, FiBox, FiInfo } from "react-icons/fi";
+import {
+  FiArrowLeft,
+  FiAlertCircle,
+  FiUser,
+  FiCalendar,
+  FiBox,
+  FiInfo,
+} from "react-icons/fi";
 import Link from "next/link";
 import { format, subDays } from "date-fns";
 import { format as formatJalali } from "date-fns-jalali";
@@ -12,14 +19,14 @@ export default function LayerDetailsPage() {
   const params = useParams();
   const layerId = params.id as string;
   const { layer, isLoading, error } = useProductLayer(layerId);
-  
+
   // Format date function - converts to Persian and subtracts 24 hours
   const formatDate = (dateString: string) => {
     try {
       // Parse the date, subtract 24 hours (1 day), and format to Persian
       const date = new Date(dateString);
       const adjustedDate = subDays(date, 1); // Subtract 1 day (24 hours)
-      
+
       // Format to Persian date (Jalali calendar)
       return formatJalali(adjustedDate, "yyyy/MM/dd");
     } catch (e) {
@@ -53,7 +60,7 @@ export default function LayerDetailsPage() {
           </div>
           <p className="mt-2 pr-7 font-vazir">{error}</p>
           <div className="mt-4">
-            <Link 
+            <Link
               href="/"
               className="inline-flex items-center gap-2 px-4 py-2 bg-red-100 text-red-700 rounded-lg hover:bg-red-200 transition-colors"
             >
@@ -76,7 +83,7 @@ export default function LayerDetailsPage() {
           </div>
           <p className="mt-2 pr-7 font-vazir">لایه مورد نظر یافت نشد</p>
           <div className="mt-4">
-            <Link 
+            <Link
               href="/"
               className="inline-flex items-center gap-2 px-4 py-2 bg-yellow-100 text-yellow-700 rounded-lg hover:bg-yellow-200 transition-colors"
             >
@@ -92,7 +99,7 @@ export default function LayerDetailsPage() {
   return (
     <div className="container mx-auto p-6 max-w-4xl" dir="rtl">
       <div className="mb-6">
-        <Link 
+        <Link
           href="/"
           className="inline-flex items-center gap-2 px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors"
         >
@@ -111,7 +118,10 @@ export default function LayerDetailsPage() {
               <div className="flex items-center gap-2 text-gray-600">
                 <FiUser className="text-blue-500" />
                 <p className="font-vazir">
-                  مشتری: {typeof layer.customer === 'object' ? layer.customer.name : 'نامشخص'}
+                  مشتری:{" "}
+                  {typeof layer.customer === "object"
+                    ? layer.customer.name
+                    : "نامشخص"}
                 </p>
               </div>
             </div>
@@ -123,8 +133,8 @@ export default function LayerDetailsPage() {
           {/* Barcode */}
           <div className="mb-6 flex justify-center">
             <div className="bg-white p-3 border border-gray-200 rounded-lg">
-              <Barcode 
-                value={layer.productionCode} 
+              <Barcode
+                value={layer.productionCode}
                 width={1.5}
                 height={50}
                 fontSize={14}
@@ -136,15 +146,21 @@ export default function LayerDetailsPage() {
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
             <div className="bg-gray-50 p-4 rounded-lg">
-              <h3 className="font-semibold text-gray-700 mb-3 font-vazir">اطلاعات محصول</h3>
+              <h3 className="font-semibold text-gray-700 mb-3 font-vazir">
+                اطلاعات محصول
+              </h3>
               <div className="space-y-3">
                 <div className="flex items-center gap-2 text-gray-600">
                   <FiBox className="text-blue-500" />
-                  <p className="font-vazir">ابعاد: {layer.width} × {layer.height}</p>
+                  <p className="font-vazir">
+                    ابعاد: {layer.width} × {layer.height}
+                  </p>
                 </div>
                 <div className="flex items-center gap-2 text-gray-600">
                   <FiCalendar className="text-blue-500" />
-                  <p className="font-vazir">تاریخ تولید: {formatDate(layer.productionDate)}</p>
+                  <p className="font-vazir">
+                    تاریخ تولید: {formatDate(layer.productionDate)}
+                  </p>
                 </div>
                 {layer.glass && (
                   <div className="flex items-center gap-2 text-gray-600">
@@ -152,7 +168,10 @@ export default function LayerDetailsPage() {
                       <span className="text-blue-600 text-xs">G</span>
                     </span>
                     <p className="font-vazir">
-                      شیشه: {typeof layer.glass === 'object' ? layer.glass.name : layer.glass}
+                      شیشه:{" "}
+                      {typeof layer.glass === "object"
+                        ? layer.glass.name
+                        : layer.glass}
                     </p>
                   </div>
                 )}
@@ -160,7 +179,9 @@ export default function LayerDetailsPage() {
             </div>
 
             <div className="bg-gray-50 p-4 rounded-lg">
-              <h3 className="font-semibold text-gray-700 mb-3 font-vazir">وضعیت تولید</h3>
+              <h3 className="font-semibold text-gray-700 mb-3 font-vazir">
+                وضعیت تولید
+              </h3>
               <div className="space-y-3">
                 {layer.currentStep && (
                   <div className="flex items-center gap-2 text-gray-600">
@@ -168,7 +189,10 @@ export default function LayerDetailsPage() {
                       <span className="text-green-600 text-xs">S</span>
                     </span>
                     <p className="font-vazir">
-                      مرحله فعلی: {typeof layer.currentStep === 'object' ? layer.currentStep.name : 'نامشخص'}
+                      مرحله فعلی:{" "}
+                      {typeof layer.currentStep === "object"
+                        ? layer.currentStep.name
+                        : "نامشخص"}
                     </p>
                   </div>
                 )}
@@ -178,7 +202,10 @@ export default function LayerDetailsPage() {
                       <span className="text-purple-600 text-xs">L</span>
                     </span>
                     <p className="font-vazir">
-                      خط تولید: {typeof layer.currentline === 'object' ? layer.currentline.name : 'نامشخص'}
+                      خط تولید:{" "}
+                      {typeof layer.currentline === "object"
+                        ? layer.currentline.name
+                        : "نامشخص"}
                     </p>
                   </div>
                 )}
@@ -188,7 +215,10 @@ export default function LayerDetailsPage() {
                       <span className="text-amber-600 text-xs">I</span>
                     </span>
                     <p className="font-vazir">
-                      موجودی فعلی: {typeof layer.currentInventory === 'object' ? layer.currentInventory.name : 'نامشخص'}
+                      موجودی فعلی:{" "}
+                      {typeof layer.currentInventory === "object"
+                        ? layer.currentInventory.name
+                        : "نامشخص"}
                     </p>
                   </div>
                 )}
@@ -199,14 +229,20 @@ export default function LayerDetailsPage() {
           {/* Production Notes */}
           {layer.productionNotes && (
             <div className="bg-blue-50 p-4 rounded-lg mb-6">
-              <h3 className="font-semibold text-gray-700 mb-2 font-vazir">یادداشت‌های تولید</h3>
-              <p className="text-gray-600 font-vazir">{layer.productionNotes}</p>
+              <h3 className="font-semibold text-gray-700 mb-2 font-vazir">
+                یادداشت‌های تولید
+              </h3>
+              <p className="text-gray-600 font-vazir">
+                {layer.productionNotes}
+              </p>
             </div>
           )}
 
           {/* Additional Information */}
           <div className="border-t border-gray-200 pt-4">
-            <h3 className="font-semibold text-gray-700 mb-3 font-vazir">اطلاعات تکمیلی</h3>
+            <h3 className="font-semibold text-gray-700 mb-3 font-vazir">
+              اطلاعات تکمیلی
+            </h3>
             <div className="grid grid-cols-2 gap-4">
               {layer.invoice && (
                 <div className="flex items-center gap-2 text-gray-600">
@@ -214,7 +250,10 @@ export default function LayerDetailsPage() {
                     <span className="text-gray-600 text-xs">F</span>
                   </span>
                   <p className="font-vazir">
-                    فاکتور: {typeof layer.invoice === 'object' ? layer.invoice.code : layer.invoice}
+                    فاکتور:{" "}
+                    {typeof layer.invoice === "object"
+                      ? layer.invoice.code
+                      : layer.invoice}
                   </p>
                 </div>
               )}
@@ -224,7 +263,10 @@ export default function LayerDetailsPage() {
                     <span className="text-gray-600 text-xs">P</span>
                   </span>
                   <p className="font-vazir">
-                    خط تولید اصلی: {typeof layer.currentline === 'object' ? layer.currentline.name : 'نامشخص'}
+                    خط تولید اصلی:{" "}
+                    {typeof layer.currentline === "object"
+                      ? layer.currentline.name
+                      : "نامشخص"}
                   </p>
                 </div>
               )}

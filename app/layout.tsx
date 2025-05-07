@@ -1,16 +1,14 @@
 import type { Metadata } from "next";
-import {  Vazirmatn } from "next/font/google";
+import { Vazirmatn } from "next/font/google";
 import { Toaster } from "react-hot-toast";
 import "./globals.css";
-
-
+import SideBar from "@/components/sidebar";
 
 const vazir = Vazirmatn({
   variable: "--font-vazir",
   subsets: ["arabic"],
   display: "swap",
 });
-
 
 export const metadata: Metadata = {
   title: "Create Next App",
@@ -24,9 +22,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body
-        className={` ${vazir.variable} antialiased`}
-      >
+      <body className={` ${vazir.variable} antialiased`}>
+        <SideBar />
+
         {children}
         <Toaster />
       </body>
