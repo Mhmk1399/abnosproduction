@@ -78,7 +78,6 @@ export const createProductionLine = async (request: NextRequest) => {
   }
 };
 
-
 export const getAllProductionLines = async () => {
   try {
     await connect();
@@ -95,6 +94,8 @@ export const getAllProductionLines = async () => {
         model: ProductionInventory,
       })
       .sort({ createdAt: -1 });
+
+      
 
     return NextResponse.json(lines, { status: 200 });
   } catch (error) {
@@ -115,14 +116,16 @@ export const getProductionLineById = async (id: string) => {
       .populate({
         path: "microLines.microLine",
         model: MicroLine,
-        populate: [{
-          path: "steps.step",
-          model: steps
-        },
-        {
-          path: "inventory",
-          model: ProductionInventory,
-        }]
+        populate: [
+          {
+            path: "steps.step",
+            model: steps,
+          },
+          {
+            path: "inventory",
+            model: ProductionInventory,
+          },
+        ],
       })
       .populate({
         path: "inventory",
@@ -145,7 +148,6 @@ export const getProductionLineById = async (id: string) => {
     );
   }
 };
-
 
 export const updateProductionLine = async (
   request: NextRequest,

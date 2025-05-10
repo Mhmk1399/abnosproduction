@@ -11,10 +11,10 @@ interface StepModalProps {
 
 const StepModal: React.FC<StepModalProps> = ({ step, onClose, onSuccess }) => {
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-      <div className="bg-white rounded-lg p-6 w-full max-w-md max-h-[90vh] overflow-y-auto">
+    <div className="fixed inset-0 z-50 overflow-auto bg-gray-50/10 backdrop-blur-sm flex items-center justify-center">
+      <div className="relative bg-white rounded-xl max-w-md w-full mx-auto p-6 shadow-2xl border border-gray-200">
         <div className="flex justify-between items-center mb-4">
-          <h2 className="text-xl font-bold text-gray-800">Edit Step</h2>
+          <h2 className="text-xl font-bold text-gray-800">ویرایش مرحله</h2>
           <button
             onClick={onClose}
             className="text-gray-500 hover:text-gray-700"
@@ -35,11 +35,7 @@ const StepModal: React.FC<StepModalProps> = ({ step, onClose, onSuccess }) => {
             </svg>
           </button>
         </div>
-        <StepsForm
-          stepToEdit={step}
-          mode="edit"
-          onSuccess={onSuccess}
-        />
+        <StepsForm stepToEdit={step} mode="edit" onSuccess={onSuccess} onClose={onClose} />
       </div>
     </div>
   );

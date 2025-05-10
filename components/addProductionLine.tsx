@@ -41,7 +41,7 @@ export default function ProductionLinesPage() {
 
   return (
     <motion.div
-      className="container mx-auto p-6 max-w-6xl"
+      className="container mx-auto p-6 max-w-6xl mt-20"
       initial="hidden"
       animate="visible"
       variants={containerVariants}

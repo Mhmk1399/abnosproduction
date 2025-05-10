@@ -82,6 +82,9 @@ export default function ProductionLineView({
     Record<string, boolean>
   >({});
 
+  console.log(line, "lllll");
+  console.log(lineId, "lineId");
+
   // Always define lineSteps, even if it's empty
   // Update the lineSteps useMemo in ProductionLineView.tsx
   const lineSteps = useMemo(() => {

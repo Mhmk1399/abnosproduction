@@ -1,7 +1,6 @@
 "use client";
 import { useParams } from "next/navigation";
 import { useProductLayer } from "@/hooks/useProductLayers";
-import { useState } from "react";
 import {
   FiArrowLeft,
   FiAlertCircle,
@@ -11,7 +10,7 @@ import {
   FiInfo,
 } from "react-icons/fi";
 import Link from "next/link";
-import { format, subDays } from "date-fns";
+import { subDays } from "date-fns";
 import { format as formatJalali } from "date-fns-jalali";
 import Barcode from "react-barcode";
 

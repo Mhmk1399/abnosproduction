@@ -8,6 +8,18 @@ import { useSteps } from "../hooks/useSteps";
 import { useInventories } from "../hooks/useInventories";
 import { v4 as uuidv4 } from "uuid";
 import { LineItem } from "./types/production";
+import {
+  FiTag,
+  FiFileText,
+  FiPackage,
+  FiList,
+  FiLayers,
+  FiSave,
+  FiLoader,
+  FiAlertCircle,
+  FiCheckCircle,
+  FiInfo,
+} from "react-icons/fi";
 
 interface MicroLineBuilderProps {
   initialConfig?: any;
@@ -20,34 +32,43 @@ export default function MicroLineBuilder({
 }: MicroLineBuilderProps) {
   // Use our custom hooks to fetch steps and inventories
   const { steps, isLoading: stepsLoading, error: stepsError } = useSteps();
-  const { inventories, isLoading: inventoriesLoading, error: inventoriesError } = useInventories();
+  const {
+    inventories,
+    isLoading: inventoriesLoading,
+    error: inventoriesError,
+  } = useInventories();
 
   // State for the micro line being built
   const [lineItems, setLineItems] = useState<LineItem[]>(
     initialConfig?.steps
-      ? initialConfig.steps.map((stepConfig: any) => {
-          const step = typeof stepConfig.step === 'object' 
-            ? stepConfig.step 
-            : steps.find((s) => s._id === stepConfig.step);
-          
-          if (!step) return null;
-          
-          return {
-            id: uuidv4(),
-            originalId: step._id,
-            name: step.name,
-            type: "step",
-            description: step.description,
-          };
-        }).filter(Boolean)
+      ? initialConfig.steps
+          .map((stepConfig: any) => {
+            const step =
+              typeof stepConfig.step === "object"
+                ? stepConfig.step
+                : steps.find((s) => s._id === stepConfig.step);
+
+            if (!step) return null;
+
+            return {
+              id: uuidv4(),
+              originalId: step._id,
+              name: step.name,
+              type: "step",
+              description: step.description,
+            };
+          })
+          .filter(Boolean)
       : []
   );
-  
+
   const [lineName, setLineName] = useState(initialConfig?.name || "");
   const [lineDescription, setLineDescription] = useState(
     initialConfig?.description || ""
   );
-  const [selectedInventory, setSelectedInventory] = useState(initialConfig?.inventory || "");
+  const [selectedInventory, setSelectedInventory] = useState(
+    initialConfig?.inventory || ""
+  );
   const [isSaving, setIsSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
@@ -92,12 +113,12 @@ export default function MicroLineBuilder({
   // Handle saving the micro line
   const handleSave = async () => {
     if (!lineName.trim()) {
-      setError("Micro line name is required");
+      setError("نام میکرو لاین اجباری است");
       return;
     }
 
     if (lineItems.length === 0) {
-      setError("Micro line must have at least one step");
+      setError("میکرو لاین حداقل بتید یک لاین داشته باشد");
       return;
     }
 
@@ -117,7 +138,7 @@ export default function MicroLineBuilder({
       const microLineData = {
         name: lineName,
         description: lineDescription,
-        inventory: selectedInventory ,
+        inventory: selectedInventory,
         steps: stepsData,
         ...(initialConfig?._id && { _id: initialConfig._id }),
       };
@@ -136,12 +157,12 @@ export default function MicroLineBuilder({
 
       if (!response.ok) {
         const errorData = await response.json();
-        throw new Error(errorData.error || "Failed to save micro line");
+        throw new Error(errorData.error || "خطا در ساخت ");
       }
 
       const savedLine = await response.json();
 
-      setSuccess("Micro line saved successfully!");
+      setSuccess("میکرو لاین ساخته شد ");
 
       // Call the onSave callback if provided
       if (onSave) {
@@ -175,18 +196,19 @@ export default function MicroLineBuilder({
       </div>
     );
   }
-
   return (
     <DndProvider backend={HTML5Backend}>
       <div className="container mx-auto p-4">
         {error && (
-          <div className="mb-4 p-3 bg-red-50 border border-red-200 text-red-700 rounded">
+          <div className="mb-4 p-3 bg-red-50 border border-red-200 text-red-700 rounded flex items-center">
+            <FiAlertCircle className="mr-2" size={18} />
             {error}
           </div>
         )}
 
         {success && (
-          <div className="mb-4 p-3 bg-green-50 border border-green-200 text-green-700 rounded">
+          <div className="mb-4 p-3 bg-green-50 border border-green-200 text-green-700 rounded flex items-center">
+            <FiCheckCircle className="ml-2" size={18} />
             {success}
           </div>
         )}
@@ -195,16 +217,17 @@ export default function MicroLineBuilder({
           <div>
             <label
               htmlFor="lineName"
-              className="block text-sm font-medium text-gray-700 mb-1"
+              className=" text-sm font-medium text-gray-700 mb-1 flex items-center"
             >
-              Micro Line Name*
+              <FiTag className="ml-1" size={16} />
+              <span>نام میکرو لاین*</span>
             </label>
             <input
               type="text"
               id="lineName"
               value={lineName}
               onChange={(e) => setLineName(e.target.value)}
-              placeholder="Enter micro line name"
+              placeholder="نام میکرو لاین را وارد کنید"
               className="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
               required
             />
@@ -213,49 +236,53 @@ export default function MicroLineBuilder({
           <div>
             <label
               htmlFor="lineDescription"
-              className="block text-sm font-medium text-gray-700 mb-1"
+              className=" text-sm font-medium text-gray-700 mb-1 flex items-center"
             >
-              Description
+              <FiFileText className="ml-1" size={16} />
+              <span>توضیحات</span>
             </label>
             <textarea
               id="lineDescription"
               value={lineDescription}
               onChange={(e) => setLineDescription(e.target.value)}
-              placeholder="Enter description (optional)"
+              placeholder="توضیحات را وارد کنید (اختیاری)"
               rows={2}
               className="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
             />
           </div>
 
           <div>
-  <label
-    htmlFor="inventory"
-    className="block text-sm font-medium text-gray-700 mb-1"
-  >
-    Inventory
-  </label>
-  <select
-    id="inventory"
-    value={selectedInventory}
-    onChange={(e) => setSelectedInventory(e.target.value)}
-    className="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-  >
-    <option value="">Select an inventory (optional)</option>
-    {inventories
-      .filter(inventory => inventory.type === "holding")
-      .map((inventory) => (
-        <option key={inventory._id} value={inventory._id}>
-          {inventory.name}
-        </option>
-      ))}
-  </select>
-</div>
-
+            <label
+              htmlFor="inventory"
+              className=" text-sm font-medium text-gray-700 mb-1 flex items-center"
+            >
+              <FiPackage className="ml-1" size={16} />
+              <span>انبار</span>
+            </label>
+            <select
+              id="inventory"
+              value={selectedInventory}
+              onChange={(e) => setSelectedInventory(e.target.value)}
+              className="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+            >
+              <option value="">انتخاب انبار (اختیاری)</option>
+              {inventories
+                .filter((inventory) => inventory.type === "holding")
+                .map((inventory) => (
+                  <option key={inventory._id} value={inventory._id}>
+                    {inventory.name}
+                  </option>
+                ))}
+            </select>
+          </div>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div>
-            <h2 className="text-xl font-bold mb-4">Available Steps</h2>
+            <h2 className="text-xl font-bold mb-4 flex items-center">
+              <FiList className="ml-2" size={20} />
+              <span>مراحل موجود</span>
+            </h2>
             <div className="bg-white p-4 rounded-lg shadow-md h-[500px] overflow-y-auto">
               <div className="space-y-2">
                 {steps.map((step) => (
@@ -271,32 +298,45 @@ export default function MicroLineBuilder({
                 ))}
               </div>
               {steps.length === 0 && (
-                <p className="text-gray-500 text-center py-4">
-                  No steps available
+                <p className="text-gray-500 text-center py-4 flex flex-col items-center">
+                  <FiInfo size={24} className="mb-2" />
+                  <span>هیچ مرحله‌ای موجود نیست</span>
                 </p>
               )}
             </div>
           </div>
 
           <div>
-            <h2 className="text-xl font-bold mb-4">Micro Line</h2>
+            <h2 className="text-xl font-bold mb-4 flex items-center">
+              <FiLayers className="ml-2" size={20} />
+              <span>میکرو لاین</span>
+            </h2>
             <div className="bg-white p-4 rounded-lg shadow-md">
-            <LineArea
-  items={lineItems}
-  onDrop={handleDrop}
-  onReorder={handleReorder}
-  onRemove={handleRemove}
-/>
-
+              <LineArea
+                items={lineItems}
+                onDrop={handleDrop}
+                onReorder={handleReorder}
+                onRemove={handleRemove}
+              />
 
               <button
                 onClick={handleSave}
                 disabled={
                   isSaving || !lineName.trim() || lineItems.length === 0
                 }
-                className="mt-4 w-full px-6 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 disabled:bg-gray-400 disabled:cursor-not-allowed"
+                className="mt-4 w-full px-6 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 disabled:bg-gray-400 disabled:cursor-not-allowed flex items-center justify-center"
               >
-                {isSaving ? "Saving..." : "Save Micro Line"}
+                {isSaving ? (
+                  <>
+                    <FiLoader className="animate-spin ml-2" size={18} />
+                    <span>در حال ذخیره...</span>
+                  </>
+                ) : (
+                  <>
+                    <FiSave className="ml-2" size={18} />
+                    <span>ذخیره میکرو لاین</span>
+                  </>
+                )}
               </button>
             </div>
           </div>

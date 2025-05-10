@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { useForm } from "react-hook-form";
+import toast from "react-hot-toast";
 import {
   FaBoxOpen,
   FaChevronDown,
@@ -46,9 +47,13 @@ const AddInventoryForm = () => {
         throw new Error(errorData.error || "Failed to create inventory");
       }
 
+      toast.success("موجودی با موفقیت ثبت شد");
+
       reset();
       // Notify parent components if callbacks are provided
     } catch (err) {
+      toast.success("خطا در ثبت موجودی");
+
       setError(err instanceof Error ? err.message : "An error occurred");
     } finally {
       setIsSubmitting(false);
@@ -79,7 +84,7 @@ const AddInventoryForm = () => {
           <div className="relative">
             <input
               type="text"
-              {...register("name", { required: "Inventory name is required" })}
+              {...register("name", { required: "نام موجودی الزامی است" })}
               className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all duration-200 shadow-sm"
               placeholder="نام موجودی را وارد کنید"
             />
@@ -101,7 +106,7 @@ const AddInventoryForm = () => {
           </label>
           <div className="relative">
             <select
-              {...register("type", { required: "Type is required" })}
+              {...register("type", { required: "نوع الزامی است" })}
               className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all duration-200 shadow-sm appearance-none"
             >
               <option value="">نوع موجودی را انتخاب کنید</option>

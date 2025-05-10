@@ -1,14 +1,17 @@
 "use client";
 import { useState } from "react";
-import { useMicroLines } from "../../hooks/useMicroLines";
-import Link from "next/link";
-import MicroLineModal from "../../components/MicroLineModal";
+
+import DeleteConfirmationModal from "@/components/deleteConfirmationModal";
+import MicroLineModal from "./MicroLineModal";
+import { useMicroLines } from "@/hooks/useMicroLines";
 
 export default function MicroLinesPage() {
   const { microLines, isLoading, error, mutate } = useMicroLines();
   const [searchTerm, setSearchTerm] = useState("");
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedMicroLine, setSelectedMicroLine] = useState<any>(null);
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const [lineToDelete, setLineToDelete] = useState<string | null>(null);
 
   // Filter micro lines based on search term
   const filteredLines = microLines.filter(
@@ -22,27 +25,30 @@ export default function MicroLinesPage() {
     setIsModalOpen(true);
   };
 
-  const handleDelete = async (id: string) => {
-    if (confirm("Are you sure you want to delete this micro line?")) {
-      try {
-        const response = await fetch("/api/microLine", {
-          method: "DELETE",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({ _id: id }),
-        });
+  const handleDelete = async () => {
+    if (!lineToDelete) return;
 
-        if (!response.ok) {
-          throw new Error("Failed to delete micro line");
-        }
+    try {
+      const response = await fetch("/api/microLine", {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ _id: lineToDelete }),
+      });
 
-        // Refresh the data
-        mutate();
-      } catch (error) {
-        console.error("Error deleting micro line:", error);
-        alert("Failed to delete micro line");
+      if (!response.ok) {
+        throw new Error("حذف میکرو لاین با خطا مواجه شد");
       }
+
+      // Refresh the data
+      mutate();
+      // Close the modal
+      setIsDeleteModalOpen(false);
+      setLineToDelete(null);
+    } catch (error) {
+      console.error("خطا در حذف میکرو لاین:", error);
+      // You could set an error state here to display in the modal
     }
   };
 
@@ -96,21 +102,18 @@ export default function MicroLinesPage() {
   }
 
   return (
-    <div className="container mx-auto p-4">
+    <div className="container mx-auto p-8 mt-20" dir="rtl">
       <div className="flex justify-between items-center mb-6">
-        <h1 className="text-3xl font-bold">Micro Lines</h1>
-        <Link
-          href="/configure-micro-line"
-          className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600"
-        >
-          Create New Micro Line
-        </Link>
+        <h1 className="text-3xl font-bold">میکرو لاین ها</h1>
+        <button className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600">
+          ساخت میکرو لاین
+        </button>
       </div>
 
       <div className="mb-6">
         <input
           type="text"
-          placeholder="Search micro lines..."
+          placeholder="جستجوی میکرو لاین..."
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
           className="w-full p-2 border border-gray-300 rounded-lg"
@@ -121,29 +124,35 @@ export default function MicroLinesPage() {
         <table className="min-w-full divide-y divide-gray-200">
           <thead className="bg-gray-50">
             <tr>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Code
+              <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                ردیف
               </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Name
+              <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                کد
               </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Description
+              <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                نام
               </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Inventory
+              <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                توضیحات
               </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Steps
+              <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                موجودی
               </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Actions
+              <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                مراحل
+              </th>
+              <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                عملیات
               </th>
             </tr>
           </thead>
           <tbody className="bg-white divide-y divide-gray-200">
-            {filteredLines.map((line) => (
-              <tr key={line._id}>
+            {filteredLines.map((line, index) => (
+              <tr key={index}>
+                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                  {index + 1}
+                </td>
                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                   {line.code}
                 </td>
@@ -154,27 +163,30 @@ export default function MicroLinesPage() {
                   {line.description || "-"}
                 </td>
                 <td className="px-6 py-4 text-sm text-gray-500">
-                  {line.inventory ? (
-                    typeof line.inventory === 'object' ? 
-                      line.inventory.name : 
-                      "Assigned"
-                  ) : "-"}
+                  {line.inventory
+                    ? typeof line.inventory === "object"
+                      ? line.inventory.name
+                      : "Assigned"
+                    : "-"}
                 </td>
                 <td className="px-6 py-4 text-sm text-gray-500">
                   {line.steps ? line.steps.length : 0}
                 </td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                <td className="px-6 py-4 whitespace-nowrap gap-3 flex text-sm text-gray-500">
                   <button
                     onClick={() => handleEdit(line)}
                     className="text-blue-500 hover:text-blue-700 mr-4"
                   >
-                    Edit
+                    ویرایش
                   </button>
                   <button
-                    onClick={() => handleDelete(line._id)}
+                    onClick={() => {
+                      setLineToDelete(line._id);
+                      setIsDeleteModalOpen(true);
+                    }}
                     className="text-red-500 hover:text-red-700"
                   >
-                    Delete
+                    حذف
                   </button>
                 </td>
               </tr>
@@ -182,7 +194,7 @@ export default function MicroLinesPage() {
             {filteredLines.length === 0 && (
               <tr>
                 <td colSpan={6} className="px-6 py-4 text-center text-gray-500">
-                  No micro lines found
+                  میکرو لاینی پیدا نشد
                 </td>
               </tr>
             )}
@@ -195,6 +207,17 @@ export default function MicroLinesPage() {
           microLine={selectedMicroLine}
           onClose={handleModalClose}
           onSave={handleModalSave}
+        />
+      )}
+      {isDeleteModalOpen && (
+        <DeleteConfirmationModal
+          onClose={() => {
+            setIsDeleteModalOpen(false);
+            setLineToDelete(null);
+          }}
+          onConfirm={handleDelete}
+          title="تایید حذف میکرو لاین"
+          message="آیا از حذف این میکرو لاین اطمینان دارید؟ این عمل قابل بازگشت نیست."
         />
       )}
     </div>

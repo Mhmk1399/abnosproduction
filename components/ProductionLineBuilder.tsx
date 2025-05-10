@@ -205,7 +205,7 @@ export default function ProductionLineBuilder({
 
   return (
     <DndProvider backend={HTML5Backend}>
-      <div className="container mx-auto p-8 bg-gray-50 rounded-xl" dir="rtl">
+      <div className="container mx-auto p-8 rounded-xl" dir="rtl">
         {error && (
           <div className="mb-4 p-4 bg-red-50 border-r-4 border-red-500 text-red-700 rounded-lg shadow-sm flex items-center gap-3">
             <FiAlertCircle className="text-red-500 text-xl flex-shrink-0" />

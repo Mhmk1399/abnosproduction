@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useInventories } from "../hooks/useInventories";
 
 interface MicroLineModalProps {
@@ -22,7 +22,9 @@ export default function MicroLineModal({
   const { inventories, isLoading, error } = useInventories();
 
   const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
+    e: React.ChangeEvent<
+      HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
+    >
   ) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
@@ -34,9 +36,30 @@ export default function MicroLineModal({
   };
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-      <div className="bg-white rounded-lg p-6 w-full max-w-md">
-        <h2 className="text-xl font-bold mb-4">Edit Micro Line</h2>
+    <div className="fixed inset-0 z-50 overflow-auto bg-gray-50/10 backdrop-blur-sm flex items-center justify-center">
+      <div className="relative bg-white rounded-xl max-w-md w-full mx-auto p-6 shadow-2xl border border-gray-200">
+        <div className="flex justify-between items-center mb-4">
+          <h2 className="text-xl font-bold text-gray-800">ویرایش میکرو لاین</h2>
+          <button
+            onClick={onClose}
+            className="text-gray-500 hover:text-gray-700"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              className="h-6 w-6"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M6 18L18 6M6 6l12 12"
+              />
+            </svg>
+          </button>
+        </div>
 
         <form onSubmit={handleSubmit}>
           <div className="mb-4">
@@ -44,7 +67,7 @@ export default function MicroLineModal({
               htmlFor="name"
               className="block text-sm font-medium text-gray-700 mb-1"
             >
-              Name
+              نام
             </label>
             <input
               type="text"
@@ -62,7 +85,7 @@ export default function MicroLineModal({
               htmlFor="code"
               className="block text-sm font-medium text-gray-700 mb-1"
             >
-              Code
+              کد
             </label>
             <input
               type="text"
@@ -80,7 +103,7 @@ export default function MicroLineModal({
               htmlFor="description"
               className="block text-sm font-medium text-gray-700 mb-1"
             >
-              Description
+              توضیحات
             </label>
             <textarea
               id="description"
@@ -97,7 +120,7 @@ export default function MicroLineModal({
               htmlFor="inventory"
               className="block text-sm font-medium text-gray-700 mb-1"
             >
-              Inventory
+              موجودی
             </label>
             <select
               id="inventory"
@@ -106,30 +129,36 @@ export default function MicroLineModal({
               onChange={handleChange}
               className="w-full p-2 border border-gray-300 rounded-lg"
             >
-              <option value="">Select an inventory (optional)</option>
-              {!isLoading && !error && inventories.map((inventory) => (
-                <option key={inventory._id} value={inventory._id}>
-                  {inventory.name}
-                </option>
-              ))}
+              <option value="">انتخاب موجودی</option>
+              {!isLoading &&
+                !error &&
+                inventories.map((inventory) => (
+                  <option key={inventory._id} value={inventory._id}>
+                    {inventory.name}
+                  </option>
+                ))}
             </select>
-            {isLoading && <p className="text-sm text-gray-500">Loading inventories...</p>}
-            {error && <p className="text-sm text-red-500">Error loading inventories</p>}
+            {isLoading && (
+              <p className="text-sm text-gray-500">در حال بارگذاری موجودی ها</p>
+            )}
+            {error && (
+              <p className="text-sm text-red-500">خطا در دریافت موجودی ها</p>
+            )}
           </div>
 
-          <div className="flex justify-end space-x-2">
+          <div className="flex justify-start space-x-2">
             <button
               type="button"
               onClick={onClose}
               className="px-4 py-2 bg-gray-200 text-gray-800 rounded-lg hover:bg-gray-300"
             >
-              Cancel
+              لغو
             </button>
             <button
               type="submit"
               className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600"
             >
-              Save Changes
+              ثبت و ذخیره
             </button>
           </div>
         </form>

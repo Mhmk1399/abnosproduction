@@ -1,5 +1,7 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { useForm } from "react-hook-form";
+import toast from "react-hot-toast";
+import { useInventory } from "../hooks/useInventory";
 import {
   FaBoxes,
   FaBoxOpen,
@@ -31,14 +33,19 @@ interface Inventory {
 }
 
 const InventoryList = () => {
-  const [inventories, setInventories] = useState<Inventory[]>([]);
+  const {
+    inventories,
+    isLoading,
+    error,
+    mutate,
+    deleteInventory,
+    updateInventory,
+  } = useInventory();
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [error, setError] = useState<string | null>(null);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [currentInventory, setCurrentInventory] = useState<Inventory | null>(
     null
   );
-  const [localRefreshTrigger, setLocalRefreshTrigger] = useState(0);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [inventoryToDelete, setInventoryToDelete] = useState<string | null>(
     null
@@ -54,8 +61,6 @@ const InventoryList = () => {
     setInventoryToDelete(null);
   };
 
-  // Combine external and local refresh triggers
-
   const {
     register: registerEdit,
     handleSubmit: handleSubmitEdit,
@@ -63,24 +68,6 @@ const InventoryList = () => {
     setValue,
     formState: { errors: errorsEdit },
   } = useForm<InventoryFormData>();
-
-  // Fetch all inventories
-  const fetchInventories = async () => {
-    try {
-      const response = await fetch("/api/inventory");
-      if (!response.ok) {
-        throw new Error("Failed to fetch inventories");
-      }
-      const data = await response.json();
-      setInventories(data);
-    } catch (err) {
-      setError(err instanceof Error ? err.message : "An error occurred");
-    }
-  };
-
-  useEffect(() => {
-    fetchInventories();
-  }, []);
 
   const handleEdit = (inventory: Inventory) => {
     setCurrentInventory(inventory);
@@ -95,61 +82,36 @@ const InventoryList = () => {
     if (!currentInventory) return;
 
     setIsSubmitting(true);
-    setError(null);
 
     try {
-      const response = await fetch("/api/inventory", {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          ...data,
-          _id: currentInventory._id,
-        }),
+      const success = await updateInventory({
+        ...data,
+        _id: currentInventory._id,
       });
 
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.error || "Failed to update inventory");
+      if (success) {
+        toast.success("انبار با موفقیت ویرایش شد");
+        setIsEditModalOpen(false);
+        resetEdit();
+      } else {
+        toast.error("خطا در ویرایش انبار");
       }
-
-      setIsEditModalOpen(false);
-      resetEdit();
-      // Trigger a refresh
-      setLocalRefreshTrigger((prev) => prev + 1);
-    } catch (err) {
-      setError(err instanceof Error ? err.message : "An error occurred");
     } finally {
       setIsSubmitting(false);
     }
   };
 
-  const confirmDelete = async () => {
-    if (!inventoryToDelete) return;
-
-    setIsSubmitting(true);
-    setError(null);
-
+  const confirmDelete = (id: string) => async () => {
     try {
-      const response = await fetch(`/api/inventory`, {
-        method: "DELETE",
-      });
+      setIsSubmitting(true);
+      const success = await deleteInventory(id);
 
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.error || "Failed to delete inventory");
+      if (success) {
+        setIsDeleteModalOpen(false);
+        toast.success("انبار با موفقیت حذف شد");
+      } else {
+        toast.error("خطا در حذف انبار");
       }
-
-      // Remove the deleted inventory from the list
-      setInventories(
-        inventories.filter((inv) => inv._id !== inventoryToDelete)
-      );
-      closeDeleteModal();
-    } catch (err) {
-      setError(
-        err instanceof Error ? err.message : "An error occurred during deletion"
-      );
     } finally {
       setIsSubmitting(false);
     }
@@ -157,13 +119,20 @@ const InventoryList = () => {
 
   const closeEditModal = () => {
     setIsEditModalOpen(false);
-    setError(null);
     resetEdit();
   };
 
   const refreshList = () => {
-    setLocalRefreshTrigger((prev) => prev + 1);
+    mutate();
   };
+
+  if (isLoading) {
+    return (
+      <div className="flex justify-center items-center h-40 mt-20">
+        <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-indigo-600"></div>
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-8 mt-20">
@@ -184,6 +153,13 @@ const InventoryList = () => {
           </button>
         </div>
 
+        {error && (
+          <div className="p-4 bg-red-50 border-r-4 border-red-500 text-red-700 rounded-md flex items-center mb-4">
+            <FaExclamationCircle className="ml-2 text-red-500" />
+            <span>{error}</span>
+          </div>
+        )}
+
         {inventories.length === 0 ? (
           <div className="flex flex-col items-center justify-center py-12 px-4 text-center">
             <FaBoxOpen className="text-gray-300 text-5xl mb-4" />
@@ -197,6 +173,9 @@ const InventoryList = () => {
             <table className="min-w-full divide-y divide-gray-200">
               <thead className="bg-gray-50">
                 <tr>
+                  <th className="px-6 py-4 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    ردیف
+                  </th>
                   <th className="px-6 py-4 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
                     نام
                   </th>
@@ -212,11 +191,14 @@ const InventoryList = () => {
                 </tr>
               </thead>
               <tbody className="bg-white divide-y divide-gray-200">
-                {inventories.map((inventory) => (
+                {inventories.map((inventory: Inventory, index: number) => (
                   <tr
                     key={inventory._id}
                     className="hover:bg-gray-50 transition-colors duration-150"
                   >
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-right font-medium text-gray-900">
+                      {index + 1}
+                    </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-right font-medium text-gray-900">
                       {inventory.name}
                     </td>
@@ -432,7 +414,11 @@ const InventoryList = () => {
                 </button>
                 <button
                   type="button"
-                  onClick={confirmDelete}
+                  onClick={
+                    inventoryToDelete
+                      ? confirmDelete(inventoryToDelete)
+                      : undefined
+                  }
                   disabled={isSubmitting}
                   className="flex items-center justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-lg text-white bg-gradient-to-r from-red-600 to-red-700 hover:from-red-700 hover:to-red-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 disabled:opacity-50 transition-all duration-200"
                 >

@@ -25,7 +25,10 @@ export const navMenuItems = [
     id: "configureMicroLines",
     title: "تنظیمات پیکربندی میکرو لاین",
     icon: "FaMicrochip", // Font Awesome Microchip icon
-    children: [{ id: "configureMicroLine", title: "پیکربندی میکرولاین" }],
+    children: [
+      { id: "AddconfigureMicroLine", title: "افزودن میکرولاین" },
+      { id: "configureMicroLineList", title: "لیست میکرولاین" },
+    ],
   },
   {
     id: "layers",
@@ -38,6 +41,12 @@ export const navMenuItems = [
     title: "میکرو لاین ها",
     icon: "FaStream", // Font Awesome Stream icon
     children: [{ id: "microLine", title: "میکرو لاین" }],
+  },
+  {
+    id: "Workers",
+    title: "نیرو ها",
+    icon: "FaUsers", // Font Awesome Stream icon
+    children: [{ id: "WorkerPage", title: "نیرو ها" }],
   },
   {
     id: "optimizers",

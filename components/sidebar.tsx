@@ -1,18 +1,19 @@
 "use client";
-import { useRef, useState, useEffect, ReactNode } from "react";
-import Image from "next/image";
+import { useRef, useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { navMenuItems } from "../lib/sideBar";
 import ProductionLinesPage from "./addProductionLine";
 import WelcomeScreen from "./welcome";
 import AddInventoryForm from "./addInventory";
 import InventoryList from "./inventoryList";
-import ConfigurePage from "@/app/configure/page";
-import ConfigureMicroLinePage from "@/app/configure-micro-line/page";
-import LayerDetailsPage from "@/app/layers/[id]/page";
-import MicroLinesPage from "@/app/micro-lines/page";
-import OptimizerPage from "@/app/optimizer/page";
-import StepsPage from "@/app/steps/page";
+import WorkerPage from "./workers";
+import StepsPage from "./steps";
+import OptimizerPage from "./optimaizer";
+import MicroLinesPage from "./microLines";
+import LayerDetailsPage from "./layerDetail";
+import ConfigurePage from "./configure";
+import ConfigureMicroLinePage from "./configureMicroLinePage";
+
 import {
   FaBoxOpen,
   FaIndustry,
@@ -23,6 +24,7 @@ import {
   FaChartLine,
   FaListOl,
   FaCog,
+  FaUsers,
 } from "react-icons/fa";
 
 const iconMap = {
@@ -35,6 +37,7 @@ const iconMap = {
   FaChartLine,
   FaListOl,
   FaCog,
+  FaUsers,
 };
 
 interface MenuItemChild {
@@ -45,48 +48,25 @@ interface MenuItemChild {
 interface NavMenuItem {
   id: string;
   title: string;
-  icon: ReactNode;
+  icon: string;
   children: {
     id: string;
     title: string;
   }[];
 }
 
-const contentVariants = {
+// Simple animation variants
+const sidebarVariants = {
   open: {
-    opacity: 1,
-    x: 0,
-    transition: {
-      delay: 0.1,
-      staggerChildren: 0.07,
-      delayChildren: 0.1,
-    },
+    width: "280px",
+    transition: { duration: 0.3, ease: "easeOut" },
   },
   closed: {
-    opacity: 0,
-    x: 20,
-    transition: {
-      delay: 0,
-      staggerChildren: 0.05,
-      staggerDirection: -1,
-    },
+    width: "0px",
+    transition: { duration: 0.3, ease: "easeIn" },
   },
 };
 
-const itemVariants = {
-  open: {
-    opacity: 1,
-    y: 0,
-    transition: { type: "spring", stiffness: 300, damping: 24 },
-  },
-  closed: {
-    opacity: 0,
-    y: 20,
-    transition: { duration: 0.2 },
-  },
-};
-
-// Enhanced NavItem component with better hover effects and animations
 const NavItem = ({
   item,
   setActiveChild,
@@ -99,6 +79,7 @@ const NavItem = ({
   activeChild: string | null;
 }) => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const IconComponent = item.icon && iconMap[item.icon as keyof typeof iconMap];
 
   // Auto-open dropdown if a child is active
   useEffect(() => {
@@ -116,61 +97,49 @@ const NavItem = ({
 
   const handleChildClick = (childId: string) => {
     setActiveChild(childId);
-    // Don't close sidebar on mobile for better UX
-    if (window.innerWidth > 768) {
+    if (window.innerWidth < 768) {
       setIsOpen(false);
     }
   };
 
-  // Check if any child is active
   const hasActiveChild =
     activeChild && item.children.some((child) => child.id === activeChild);
 
-  // Get the icon component from the icon map
-  const IconComponent = item.icon && iconMap[item.icon as keyof typeof iconMap];
-
   return (
-    <motion.div variants={itemVariants} className="mb-3">
-      <motion.div
-        className={`flex items-center justify-between p-3 rounded-lg cursor-pointer transition-all duration-300 ${
-          hasActiveChild
-            ? "bg-gradient-to-r from-indigo-600 to-indigo-700 text-white shadow-md"
-            : "bg-indigo-50 hover:bg-indigo-100 text-indigo-800"
+    <div className="mb-2">
+      <div
+        className={`flex items-center justify-between p-2.5 rounded-md cursor-pointer transition-all duration-200 ${
+          hasActiveChild ? "bg-blue-50" : "hover:bg-gray-50"
         }`}
-        whileHover={{ scale: 1.02, x: 4 }}
-        whileTap={{ scale: 0.98 }}
         onClick={toggleDropdown}
       >
-        <div className="flex items-center">
+        <div className="flex items-center gap-2.5">
           {IconComponent && (
             <div
-              className={`ml-2 ${
-                hasActiveChild ? "text-white" : "text-indigo-600"
+              onClick={() => setIsOpen(false)}
+              className={`${
+                hasActiveChild ? "text-blue-600" : "text-gray-500"
               }`}
             >
-              <IconComponent size={18} />
+              <IconComponent size={16} />
             </div>
           )}
           <span
-            className={`font-medium ${
-              hasActiveChild ? "text-white" : "text-indigo-800"
+            className={`text-sm font-medium ${
+              hasActiveChild ? "text-blue-600" : "text-gray-700"
             }`}
           >
             {item.title}
           </span>
         </div>
         <motion.div
-          animate={{
-            rotate: isDropdownOpen ? 180 : 0,
-            color: hasActiveChild ? "#ffffff" : "#4f46e5",
-          }}
-          transition={{ duration: 0.3 }}
+          animate={{ rotate: isDropdownOpen ? 180 : 0 }}
+          transition={{ duration: 0.2 }}
+          className={`${hasActiveChild ? "text-blue-600" : "text-gray-500"}`}
         >
           <svg
             xmlns="http://www.w3.org/2000/svg"
-            className={`h-5 w-5 ${
-              hasActiveChild ? "text-white" : "text-indigo-600"
-            }`}
+            className="h-4 w-4"
             fill="none"
             viewBox="0 0 24 24"
             stroke="currentColor"
@@ -183,53 +152,42 @@ const NavItem = ({
             />
           </svg>
         </motion.div>
-      </motion.div>
+      </div>
 
       <AnimatePresence>
         {isDropdownOpen && (
           <motion.div
-            initial={{ opacity: 0, height: 0 }}
-            animate={{ opacity: 1, height: "auto" }}
-            exit={{ opacity: 0, height: 0 }}
-            transition={{ duration: 0.3 }}
+            initial={{ height: 0, opacity: 0 }}
+            animate={{ height: "auto", opacity: 1 }}
+            exit={{ height: 0, opacity: 0 }}
+            transition={{ duration: 0.2 }}
             className="overflow-hidden"
           >
-            <div className="pt-2 pr-4 border-r-2 border-indigo-200 mr-3 mt-1">
+            <div className="pr-2 mr-2 mt-1 border-r border-gray-100">
               {item.children.map((child: MenuItemChild) => {
                 const isActive = child.id === activeChild;
-
                 return (
-                  <motion.div
+                  <div
                     key={child.id}
-                    className={`py-2 px-4 mb-2 rounded-md cursor-pointer transition-all duration-200 ${
+                    className={`py-2 px-3 my-1 text-xs rounded-md cursor-pointer transition-all duration-150 ${
                       isActive
-                        ? "bg-indigo-500 text-white shadow-sm transform translate-x-2"
-                        : "hover:bg-indigo-100 text-gray-700 hover:text-indigo-700"
+                        ? "bg-blue-500 text-white"
+                        : "hover:bg-gray-50 text-gray-600"
                     }`}
-                    whileHover={{
-                      x: isActive ? 2 : 6,
-                      backgroundColor: isActive
-                        ? "rgba(99, 102, 241, 0.8)"
-                        : "rgba(99, 102, 241, 0.1)",
+                    onClick={() => {
+                      handleChildClick(child.id);
+                      setIsOpen(false);
                     }}
-                    whileTap={{ scale: 0.98 }}
-                    onClick={() => handleChildClick(child.id)}
                   >
-                    <div className="flex items-center">
-                      <span
-                        className={isActive ? "font-medium text-white" : ""}
-                      >
-                        {child.title}
-                      </span>
-                    </div>
-                  </motion.div>
+                    {child.title}
+                  </div>
                 );
               })}
             </div>
           </motion.div>
         )}
       </AnimatePresence>
-    </motion.div>
+    </div>
   );
 };
 
@@ -250,17 +208,20 @@ const renderChildComponent = (
         return <ProductionLinesPage />;
       case "configure":
         return <ConfigurePage />;
-      case "configureMicroLine":
+      case "AddconfigureMicroLine":
         return <ConfigureMicroLinePage />;
+      case "configureMicroLineList":
+        return <MicroLinesPage />;
       case "layer":
         return <LayerDetailsPage />;
       case "microLine":
         return <MicroLinesPage />;
       case "optimizer":
         return <OptimizerPage />;
+      case "WorkerPage":
+        return <WorkerPage />;
       case "step":
         return <StepsPage />;
-
       default:
         return (
           <WelcomeScreen
@@ -288,7 +249,7 @@ const SideBar = () => {
   const [isPinned] = useState(false);
   const sidebarRef = useRef<HTMLDivElement>(null);
 
-  // Close sidebar when clicking outside (only if not pinned)
+  // Close sidebar when clicking outside
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (
@@ -329,78 +290,52 @@ const SideBar = () => {
 
   return (
     <div className="flex h-full" dir="rtl">
-      {/* Enhanced Floating Action Button with Tooltip */}
-      <div className="fixed top-4 right-4 z-50 flex flex-col items-end">
-        <motion.button
-          onClick={() => setIsOpen(!isOpen)}
-          className="bg-gradient-to-r from-indigo-600 to-indigo-700 text-white p-3 rounded-full shadow-lg hover:shadow-xl focus:outline-none relative"
-          whileHover={{
-            scale: 1.05,
-            boxShadow: "0 10px 25px -5px rgba(79, 70, 229, 0.5)",
-          }}
-          whileTap={{ scale: 0.95 }}
-          initial={{ opacity: 0, y: -20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.3 }}
+      {/* Menu Button */}
+      <button
+        onClick={() => setIsOpen(!isOpen)}
+        className="fixed top-4 right-4 z-50 bg-white p-2 rounded-md shadow-md hover:shadow-lg transition-shadow focus:outline-none"
+        aria-label={isOpen ? "Close menu" : "Open menu"}
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          className="h-6 w-6 text-blue-600"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
         >
           {isOpen ? (
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              className="h-6 w-6"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M6 18L18 6M6 6l12 12"
-              />
-            </svg>
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M6 18L18 6M6 6l12 12"
+            />
           ) : (
-            <>
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                className="h-6 w-6"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M4 6h16M4 12h16M4 18h16"
-                />
-              </svg>
-            </>
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M4 6h16M4 12h16M4 18h16"
+            />
           )}
-        </motion.button>
-      </div>
+        </svg>
+      </button>
 
-      {/* Enhanced Backdrop with Blur Effect */}
+      {/* Backdrop */}
       <AnimatePresence>
         {isOpen && !isPinned && (
           <motion.div
-            initial={{ opacity: 0, backdropFilter: "blur(0px)" }}
-            animate={{
-              opacity: 1,
-              backdropFilter: "blur(8px)",
-              transition: { duration: 0.4 },
-            }}
-            exit={{
-              opacity: 0,
-              backdropFilter: "blur(0px)",
-              transition: { duration: 0.3, delay: 0.1 },
-            }}
-            className="fixed inset-0 bg-indigo-900/10 z-30"
-            onClick={() => !isPinned && setIsOpen(false)}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.2 }}
+            className="fixed inset-0 bg-black/20 backdrop-blur-md z-30"
+            onClick={() => setIsOpen(false)}
           />
         )}
       </AnimatePresence>
 
-      {/* Redesigned Sidebar with Glass Morphism */}
+      {/* Sidebar */}
       <AnimatePresence>
         {isOpen && (
           <motion.div
@@ -408,81 +343,18 @@ const SideBar = () => {
             initial="closed"
             animate="open"
             exit="closed"
-            variants={{
-              open: {
-                width: "320px",
-                boxShadow: "10px 0px 50px rgba(99, 102, 241, 0.15)",
-                transition: {
-                  type: "spring",
-                  stiffness: 300,
-                  damping: 30,
-                  duration: 0.4,
-                },
-              },
-              closed: {
-                width: "0px",
-                boxShadow: "none",
-                transition: {
-                  type: "spring",
-                  stiffness: 400,
-                  damping: 40,
-                  delay: 0.1,
-                  duration: 0.4,
-                },
-              },
-            }}
-            className={`fixed top-0 right-0 h-full z-40 overflow-hidden ${
-              isPinned
-                ? "bg-white border-l border-indigo-100"
-                : "bg-white/90 backdrop-blur-md border-l border-indigo-100/50"
-            }`}
+            variants={sidebarVariants}
+            className="fixed top-0 right-0 h-full z-40 bg-white shadow-lg overflow-hidden"
           >
-            <motion.div
-              variants={contentVariants}
-              className="h-full flex flex-col py-6 px-4 overflow-hidden"
-            >
-              {/* Enhanced Logo and App Name with Pin Button */}
-              <motion.div
-                variants={itemVariants}
-                className="mt-10 mb-8 px-4"
-                whileHover={{ scale: 1.02 }}
-              >
-                <div className="bg-gradient-to-r from-indigo-600 to-purple-600 p-5 rounded-2xl shadow-lg flex items-center justify-between w-full relative overflow-hidden">
-                  <motion.div
-                    className="absolute inset-0 bg-[url('/assets/images/pattern.svg')] opacity-10"
-                    animate={{
-                      x: [0, 10, 0],
-                      y: [0, 5, 0],
-                    }}
-                    transition={{
-                      repeat: Infinity,
-                      duration: 8,
-                      repeatType: "mirror",
-                    }}
-                  />
-                  <div className="flex items-center">
-                    <motion.div
-                      className="bg-white p-1.5 rounded-full mr-3"
-                      whileHover={{ scale: 1.1, rotate: 5 }}
-                      whileTap={{ scale: 0.95 }}
-                    >
-                      <Image
-                        src="/assets/images/logo.png"
-                        alt="Logo"
-                        width={40}
-                        height={40}
-                        className="rounded-full"
-                      />
-                    </motion.div>
-                    <h1 className="text-xl font-bold text-white">
-                      آبنوس پلتفورم
-                    </h1>
-                  </div>
-                </div>
-              </motion.div>
+            <div className="h-full flex flex-col p-4">
+              <div className="mr-auto w-full gap-3 py-4 border-b border-gray-100">
+                <h1 className="text-lg font-semibold mr-28 -mt-2 text-gray-800">
+                  آبنوس پلتفورم
+                </h1>
+              </div>
 
-              {/* Navigation Menu Items with Dropdowns */}
-              <div className="flex-1 overflow-y-auto px-2 py-2 custom-scrollbar">
+              {/* Navigation Menu */}
+              <div className="flex-1 overflow-y-auto py-2">
                 {navMenuItems.map((item) => (
                   <NavItem
                     key={item.id}
@@ -494,108 +366,47 @@ const SideBar = () => {
                 ))}
               </div>
 
-              {/* Redesigned User Profile Card */}
-              <motion.div variants={itemVariants} className="mt-auto py-4 px-3">
-                <motion.div
-                  className="flex items-center p-4 bg-gradient-to-r from-indigo-50 to-purple-50 rounded-xl shadow-sm border border-indigo-100 relative overflow-hidden"
-                  whileHover={{
-                    scale: 1.02,
-                    boxShadow: "0 4px 12px rgba(99, 102, 241, 0.15)",
-                  }}
-                  transition={{ duration: 0.2 }}
-                >
-                  <motion.div
-                    className="absolute inset-0 bg-gradient-to-r from-indigo-200/20 to-purple-200/20 opacity-50"
-                    animate={{
-                      backgroundPosition: ["0% 0%", "100% 100%"],
-                    }}
-                    transition={{
-                      duration: 5,
-                      repeat: Infinity,
-                      repeatType: "reverse",
-                    }}
-                  />
-                  <div className="z-10 w-full">
-                    <div className="flex items-center justify-between">
-                      <div>
-                        <p className="font-medium text-indigo-800">
-                          آبنوس سیستم
-                        </p>
-                        <p className="text-xs text-indigo-600 mt-1">
-                          مدیریت تولید
-                        </p>
-                      </div>
-                      <motion.button
-                        whileHover={{ scale: 1.1, rotate: 5 }}
-                        whileTap={{ scale: 0.9 }}
-                        className="bg-indigo-100 p-2 rounded-full text-indigo-600"
-                        onClick={() => !isPinned && setIsOpen(false)}
-                      >
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          className="h-5 w-5"
-                          fill="none"
-                          viewBox="0 0 24 24"
-                          stroke="currentColor"
-                        >
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth={2}
-                            d="M6 18L18 6M6 6l12 12"
-                          />
-                        </svg>
-                      </motion.button>
-                    </div>
-                  </div>
-                </motion.div>
-                <motion.div
-                  className="mt-4 text-center text-xs text-gray-400 flex justify-center items-center gap-2"
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  transition={{ delay: 0.5 }}
-                >
-                  <motion.span
-                    className="px-2 py-1 bg-indigo-50 rounded-full"
-                    whileHover={{ scale: 1.05 }}
+              {/* Footer */}
+              <div className="mt-auto pt-4 border-t border-gray-100">
+                <div className="flex items-center justify-between text-sm text-gray-500">
+                  <span>نسخه ۱.۰.۰</span>
+                  <button
+                    onClick={() => setIsOpen(false)}
+                    className="p-1.5 rounded-md hover:bg-gray-50 text-gray-400 hover:text-gray-600"
                   >
-                    نسخه ۱.۰.۰
-                  </motion.span>
-                  <span>•</span>
-                  <motion.span whileHover={{ scale: 1.05 }}>
-                    آبنوس سیستم
-                  </motion.span>
-                </motion.div>
-              </motion.div>
-            </motion.div>
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      className="h-5 w-5"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M6 18L18 6M6 6l12 12"
+                      />
+                    </svg>
+                  </button>
+                </div>
+              </div>
+            </div>
           </motion.div>
         )}
       </AnimatePresence>
 
-      {/* Main Content with Smooth Transition */}
-      <motion.div
-        className={`flex-1 transition-all duration-300 p-4 ${
-          isPinned && isOpen ? "mr-[320px]" : ""
-        }`}
-        animate={{
-          opacity: activeChild ? 1 : 0.97,
-        }}
-        transition={{ type: "spring", stiffness: 200, damping: 30 }}
-      >
-        <motion.main
-          className="w-full"
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.1, duration: 0.5 }}
-        >
+      {/* Main Content */}
+      <div className="flex-1 transition-all duration-300">
+        <main className="w-full">
           {renderChildComponent(
             activeChild,
             setActiveChild,
             setIsOpen,
             isPinned
           )}
-        </motion.main>
-      </motion.div>
+        </main>
+      </div>
     </div>
   );
 };

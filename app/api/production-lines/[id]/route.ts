@@ -15,8 +15,7 @@ export async function GET(
     const id = request.url.split("/").pop();
     console.log("Fetching production line with ID:", id);
     if (id) return await getProductionLineById(id);
-  }
-  catch (error) {
+  } catch (error) {
     console.error("Error fetching production line:", error);
     return new Response("Failed to fetch production line", { status: 500 });
   }

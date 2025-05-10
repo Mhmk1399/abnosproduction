@@ -15,6 +15,7 @@ export function useProductionLines() {
     "/api/production-lines",
     fetcher
   );
+  console.log(data, "usepro");
 
   return {
     lines: data || [],

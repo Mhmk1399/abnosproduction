@@ -5,6 +5,10 @@ export interface MicroLine {
   name: string;
   code: string;
   description: string;
+  inventory: {
+    name: string;
+    type: string;
+  };
   steps: {
     step: {
       _id: string;

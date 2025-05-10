@@ -135,7 +135,7 @@ export interface LineItem {
   id: string;
   originalId: string;
   name: string;
-  type: "microLine" | "inventory"| "step";
+  type: "microLine" | "inventory" | "step";
   description?: string;
   quantity?: number;
   steps?: {
@@ -146,4 +146,25 @@ export interface LineItem {
     };
     order: number;
   }[];
+}
+
+export interface MicroLine {
+  _id: string;
+  name: string;
+  code: string;
+  description: string;
+  inventory: {
+    name: string;
+    type: string;
+  };
+  steps: {
+    step: {
+      _id: string;
+      name: string;
+      description: string;
+    };
+    order: number;
+  }[];
+  createdAt: string;
+  updatedAt: string;
 }
