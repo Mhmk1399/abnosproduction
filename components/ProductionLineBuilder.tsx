@@ -60,6 +60,19 @@ export default function ProductionLineBuilder({
   const handleDrop = useCallback(
     (itemId: string, itemType: "microLine" | "inventory" | "step") => {
       // Find the original item
+      // Check if this item already exists in the line
+      const isDuplicate = lineItems.some(
+        (item) => item.originalId === itemId && item.type === itemType
+      );
+
+      if (isDuplicate) {
+        setError(
+          `This ${
+            itemType === "microLine" ? "micro line" : "inventory"
+          } is already added to the production line`
+        );
+        return;
+      }
       let originalItem;
       if (itemType === "microLine") {
         originalItem = microLines.find((ml) => ml._id === itemId);
@@ -87,9 +100,10 @@ export default function ProductionLineBuilder({
         };
 
         setLineItems((prev) => [...prev, newItem]);
+        setError(null);
       }
     },
-    [microLines, inventories]
+    [microLines, inventories, lineItems, setError]
   );
 
   // Handle reordering items within the line area
