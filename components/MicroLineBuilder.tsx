@@ -3,7 +3,7 @@ import { useState, useCallback } from "react";
 import { DndProvider } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
 import LineArea from "./LineArea";
-import StepItem from "./StepItem";
+import StepItem from "./step/StepItem";
 import { useSteps } from "../hooks/useSteps";
 import { useInventories } from "../hooks/useInventories";
 import { v4 as uuidv4 } from "uuid";

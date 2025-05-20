@@ -1,7 +1,7 @@
 "use client";
 import React, { useState } from "react";
-import StepsList from "@/components/StepsList";
-import StepsForm from "@/components/forms/StepsForm";
+import StepsList from "@/components/step/StepsList";
+import StepsForm from "@/components/step/StepsForm";
 import { useSteps } from "@/hooks/useSteps";
 
 export default function StepsPage() {

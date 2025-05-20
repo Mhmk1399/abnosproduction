@@ -1,7 +1,7 @@
 "use client";
 import React from "react";
 import { Step } from "@/hooks/useSteps";
-import StepsForm from "./forms/StepsForm";
+import StepsForm from "./StepsForm";
 
 interface StepModalProps {
   step: Step;

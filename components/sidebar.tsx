@@ -7,7 +7,7 @@ import WelcomeScreen from "./welcome";
 import AddInventoryForm from "./addInventory";
 import InventoryList from "./inventoryList";
 import WorkerPage from "./workers";
-import StepsPage from "./steps";
+import StepsPage from "./step/steps";
 import OptimizerPage from "./optimaizer";
 import MicroLinesPage from "./microLines";
 import LayerDetailsPage from "./layerDetail";

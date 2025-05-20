@@ -2,7 +2,7 @@ import { useDrop } from "react-dnd";
 import { LineItem } from "./types/production";
 import MicroLineItem from "./MicroLineItem";
 import InventoryItem from "./InventoryItem";
-import StepItem from "./StepItem";
+import StepItem from "./step/StepItem";
 import {
   FiArrowDown,
   FiCheckCircle,

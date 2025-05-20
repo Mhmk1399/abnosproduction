@@ -1,6 +1,6 @@
 "use client";
 import { useState, useEffect } from "react";
-import { ProductionStep } from "./types/production";
+import { ProductionStep } from "../types/production";
 
 interface StepSelectorProps {
   onSelectStep: (step: ProductionStep) => void;
