@@ -88,7 +88,7 @@ export interface layerData {
     _id: string;
     customer: Customer | string;
     code: string;
-    glass: string;
+    glass: glassData;
     treatments: Array<{
         treatment: string;
         count: number;
@@ -96,7 +96,7 @@ export interface layerData {
     width: number;
     height: number;
     product: string;
-    invoice: string;
+    invoice: invoiceData;
     productionCode: string;
     productionLine: ProductionLine | string;
     productionDate: string;
