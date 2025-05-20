@@ -13,13 +13,19 @@ export const navMenuItems = [
     id: "steps",
     title: "ایستگاه های تولید",
     icon: "FaListOl", // Font Awesome List Ordered icon
-    children: [{ id: "ProductionStepsView", title: "لیست ایستگاه های تولید" }, { id: "AddProductionStep", title: "ساخت ایستگاه تولید" }],
+    children: [
+      { id: "ProductionStepsView", title: "لیست ایستگاه های تولید" },
+      { id: "AddProductionStep", title: "ساخت ایستگاه تولید" },
+    ],
   },
   {
     id: "ProductionLinesPages",
     title: "مدیریت خطوط تولید",
     icon: "FaIndustry", // Font Awesome Industry icon
-    children: [{ id: "ProductionLinesPage", title: "لیست خطوط ساخته شده", }, { id: "configure", title: "ساخت خط تولید" }],
+    children: [
+      { id: "ProductionLinesPage", title: "لیست خطوط ساخته شده" },
+      { id: "configure", title: "ساخت خط تولید" },
+    ],
   },
 
   {
@@ -37,12 +43,7 @@ export const navMenuItems = [
     icon: "FaLayerGroup", // Font Awesome Layer Group icon
     children: [{ id: "layer", title: "لیست لایه ها " }],
   },
-  {
-    id: "microLines",
-    title: "میکرو لاین ها",
-    icon: "FaStream", // Font Awesome Stream icon
-    children: [{ id: "microLine", title: "میکرو لاین" }],
-  },
+
   {
     id: "Workers",
     title: "نیرو ها",
