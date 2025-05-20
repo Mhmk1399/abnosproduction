@@ -4,6 +4,7 @@ import ProductionLineView from "../components/ProductionLineView";
 import Link from "next/link";
 import { motion } from "framer-motion";
 import { FiPlus, FiAlertCircle, FiPackage } from "react-icons/fi";
+import { ProductionLine } from "./types/production";
 
 export default function ProductionLinesPage() {
   const { lines, isLoading, error } = useProductionLines();
@@ -54,13 +55,7 @@ export default function ProductionLinesPage() {
         <h1 className="text-3xl font-bold text-gray-800 font-vazir">
           خطوط تولید
         </h1>
-        <Link
-          href="/configure"
-          className="px-5 py-2.5 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors duration-300 flex items-center gap-2 shadow-md"
-        >
-          <span className="font-vazir">ایجاد خط جدید</span>
-          <FiPlus className="text-lg" />
-        </Link>
+        
       </motion.div>
 
       {error && (
@@ -102,7 +97,7 @@ export default function ProductionLinesPage() {
             <motion.div className="space-y-8" variants={containerVariants}>
               {lines
                 .filter((line) => line && line._id)
-                .map((line: any) => (
+                .map((line: ProductionLine) => (
                   <motion.div key={line._id} variants={itemVariants}>
                     <ProductionLineView
                       lineId={line._id}

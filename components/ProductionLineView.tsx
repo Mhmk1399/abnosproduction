@@ -87,17 +87,18 @@ export default function ProductionLineView({
 
   // Always define lineSteps, even if it's empty
   // Update the lineSteps useMemo in ProductionLineView.tsx
+  // Update the lineSteps useMemo in ProductionLineView.tsx
   const lineSteps = useMemo(() => {
     if (!line || !line.microLines) return [];
 
     const typedLine = line as unknown as ProductionLineData;
-    return typedLine.microLines.flatMap((item) => {
+    return typedLine.microLines.flatMap((item, microLineIndex) => {
       // Check if microLine.steps exists and has the expected structure
       if (!item.microLine.steps || !Array.isArray(item.microLine.steps)) {
         return [];
       }
 
-      return item.microLine.steps.map((step) => {
+      return item.microLine.steps.map((step, stepIndex) => {
         // Handle both possible structures of step data
         const stepId =
           typeof step.step === "object" ? step.step._id : step.step;
@@ -107,8 +108,9 @@ export default function ProductionLineView({
             : `Step ${step.order + 1}`;
 
         return {
-          _id: stepId,
+          _id: `${item.microLine._id}_${stepId}`, // Create a composite key using microLine ID and step ID
           name: stepName,
+          originalId: stepId, // Keep the original ID for reference if needed
         };
       });
     });
@@ -252,7 +254,7 @@ export default function ProductionLineView({
 
                 return (
                   <div
-                    key={microLine._id}
+                    key={`${microLine._id}_${microIndex}`}
                     className="border border-gray-200 rounded-lg overflow-hidden transition-all duration-200 hover:border-blue-200 hover:shadow-md"
                   >
                     <div
@@ -352,7 +354,7 @@ export default function ProductionLineView({
 
                                 return (
                                   <button
-                                    key={step._id}
+                                    key={`${microLine._id}_${step._id}_${stepIndex}`}
                                     onClick={() =>
                                       handleStepClick(
                                         step._id,
