@@ -11,7 +11,6 @@ import LayerDetailsPage from "./layerDetail";
 import AddProductionStep from "../steps/AddProductionStep";
 import ProductionStepsView from "../steps/ProductionStepsView";
 
-
 import {
   FaBoxOpen,
   FaIndustry,
@@ -205,13 +204,11 @@ const renderChildComponent = (
       case "InventoryList":
         return <InventoryList />;
       case "ProductionLinesPage":
-        return <ProductionLine />;
+  return <ProductionLine setActiveChild={setActiveChild} />;
       case "configure":
         return <CreateProductionLine />;
-
       case "layer":
         return <LayerDetailsPage />;
-      
       case "optimizer":
         return <OptimizerPage />;
       case "WorkerPage":
@@ -287,7 +284,7 @@ const SideBar = () => {
   }, [isOpen, isPinned]);
 
   return (
-    <div className="flex h-full" dir="rtl">
+    <div className="flex h-full overflow-auto" dir="rtl">
       {/* Menu Button */}
       <button
         onClick={() => setIsOpen(!isOpen)}

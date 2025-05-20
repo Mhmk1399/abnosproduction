@@ -23,3 +23,31 @@ body {
   color: black;
   font-family: "Vazirmatn", sans-serif;
 }
+
+/* tooltip for buttons in ProductionStepsView */
+
+.tooltip-container {
+  position: relative;
+}
+.tooltip {
+  visibility: hidden;
+  position: absolute;
+  top: -30px;
+  right: 50%;
+  transform: translateX(50%);
+  background-color: rgba(0, 0, 0, 0.8);
+  color: white;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 12px;
+  white-space: nowrap;
+  z-index: 10;
+  opacity: 0;
+  transition: opacity 0.2s;
+}
+.tooltip-container:hover .tooltip {
+  visibility: visible;
+  opacity: 1;
+}
+
+/* ---------------- */

@@ -15,12 +15,15 @@ import {
   FiTrash2,
   FiEye,
 } from "react-icons/fi";
-import { FaCube } from "react-icons/fa";
 
-export default function ProductionLine() {
+const ProductionLine = ({
+  setActiveChild,
+}: {
+  setActiveChild: (child: string) => void;
+}) => {
   const { productionLines, isLoading, deleteProductionLine, mutate } =
     useProductionLines();
-  const [viewMode, setViewMode] = useState<"list" | "grid" >("grid");
+  const [viewMode, setViewMode] = useState<"list" | "grid">("grid");
   const [selectedLineId, setSelectedLineId] = useState<string | null>(null);
   const [isDeleting, setIsDeleting] = useState(false);
 
@@ -39,7 +42,7 @@ export default function ProductionLine() {
   };
 
   return (
-    <div className="container mx-auto p-6" dir="rtl">
+    <div className="container mx-auto p-6 mt-20" dir="rtl">
       <div className="flex justify-between items-center mb-8">
         <h1 className="text-2xl font-bold text-gray-800">مدیریت خطوط تولید</h1>
         <div className="flex items-center gap-3">
@@ -66,7 +69,6 @@ export default function ProductionLine() {
             >
               <FiGrid />
             </button>
-           
           </div>
           <button
             onClick={() => mutate()}
@@ -78,13 +80,13 @@ export default function ProductionLine() {
             />
             <span>بروزرسانی</span>
           </button>
-          <Link
-            href="/production-lines/create"
+          <button
+            onClick={() => setActiveChild("configure")}
             className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
           >
             <FiPlus />
             <span>خط تولید جدید</span>
-          </Link>
+          </button>
         </div>
       </div>
 
@@ -98,7 +100,6 @@ export default function ProductionLine() {
       </div>
 
       {/* Production Lines View */}
-     
 
       {viewMode === "grid" && (
         <div className="bg-white rounded-lg shadow-sm p-6 border border-gray-100">
@@ -242,4 +243,6 @@ export default function ProductionLine() {
       )}
     </div>
   );
-}
+};
+
+export default ProductionLine;
