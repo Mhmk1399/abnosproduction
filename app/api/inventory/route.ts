@@ -1,45 +1,18 @@
 import connect from "@/lib/data";
 import { NextRequest, NextResponse } from "next/server";
-import {
-  createInventory,
-  getAllInventories,
-  updateInventory,
-  deleteInventory,
-} from "@/middlewares/inventory";
+import inventory from "@/models/inevntory";
 
-export const GET = async () => {
+export async function GET(request: NextRequest) {
   await connect();
-  return getAllInventories();
-};
 
-export const POST = async (request: NextRequest) => {
-  await connect();
-  return createInventory(request);
-};
-
-export const PUT = async (request: NextRequest) => {
-  await connect();
-  const body = await request.json();
-  const _id = body._id;
-  if (!_id) {
-    return NextResponse.json(
-      { error: "Inventory ID is required" },
-      { status: 400 }
-    );
+  try {
+    const inventories = await inventory.find({}).sort({ createdAt: -1 });
+    return NextResponse.json(inventories, { status: 200 });
+  } catch (error) {
+    console.error("Error fetching inventories:", error);
+    return NextResponse.json({ error: "Failed to fetch inventories" }, { status: 500 });
   }
-  return updateInventory(body, _id);
-};
 
-export const DELETE = async (request: NextRequest) => {
-  await connect();
-  const body = await request.json();
-  const _id = body._id;
 
-  if (!_id) {
-    return NextResponse.json(
-      { error: "Inventory ID is required" },
-      { status: 400 }
-    );
-  }
-  return deleteInventory(_id);
-};
+}
+

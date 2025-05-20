@@ -10,12 +10,18 @@ export const navMenuItems = [
     ],
   },
   {
+    id: "steps",
+    title: "ایستگاه های تولید",
+    icon: "FaListOl", // Font Awesome List Ordered icon
+    children: [{ id: "ProductionStepsView", title: "لیست ایستگاه های تولید" }, { id: "AddProductionStep", title: "ساخت ایستگاه تولید" }],
+  },
+  {
     id: "ProductionLinesPages",
     title: "مدیریت خطوط تولید",
     icon: "FaIndustry", // Font Awesome Industry icon
     children: [{ id: "ProductionLinesPage", title: "لیست خطوط ساخته شده", }, { id: "configure", title: "ساخت خط تولید" }],
   },
- 
+
   {
     id: "configureMicroLines",
     title: "ساخت میکرو لاین ",
@@ -49,12 +55,7 @@ export const navMenuItems = [
     icon: "FaChartLine", // Font Awesome Chart Line icon
     children: [{ id: "optimizer", title: "بهینه ساز" }],
   },
-  {
-    id: "steps",
-    title: "مراحل",
-    icon: "FaListOl", // Font Awesome List Ordered icon
-    children: [{ id: "step", title: "ساخت مرحله" }],
-  },
+
   {
     id: "setting",
     title: "تنظیمات",

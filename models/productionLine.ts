@@ -1,5 +1,6 @@
 import mongoose from "mongoose";
-
+import steps from "./steps";
+import productionInventory from "./productionInventory";
 const productionLineSchema = new mongoose.Schema(
   {
     name: {
@@ -14,27 +15,27 @@ const productionLineSchema = new mongoose.Schema(
     description: {
       type: String,
     },
-    microLines: [
-                  { 
-                    microLine: {
-                      type: mongoose.Schema.Types.ObjectId,
-                      ref: "MicroLine",
-                    },
-                    order: {
-                      type: Number,
-                      required: true, 
-                    }
-                  }
-                   ],
-        active: {
-          type: Boolean,
-          default: true,
-        },
-        inventory: {
+    steps: [
+      {
+        step: {
           type: mongoose.Schema.Types.ObjectId,
-          ref: "Inventory",
-        }
+          ref: steps,
+        },
+        sequence: {
+          type: Number,
+          required: true,
+        },
       },
+    ],
+    active: {
+      type: Boolean,
+      default: true,
+    },
+    inventory: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: productionInventory,
+    }
+  },
   { timestamps: true }
 );
 

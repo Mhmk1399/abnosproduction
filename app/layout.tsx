@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { Vazirmatn } from "next/font/google";
 import { Toaster } from "react-hot-toast";
 import "./globals.css";
-import SideBar from "@/components/sidebar";
+import SideBar from "@/components/ui/sidebar";
 
 const vazir = Vazirmatn({
   variable: "--font-vazir",

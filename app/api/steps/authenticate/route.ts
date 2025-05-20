@@ -31,7 +31,7 @@ export async function POST(request: NextRequest) {
 
     // Verify password using bcrypt compare
     const isPasswordValid = await bcrypt.compare(password, step.password);
-    
+
     if (!isPasswordValid) {
       return NextResponse.json(
         { error: "Invalid password" },
@@ -45,12 +45,16 @@ export async function POST(request: NextRequest) {
       name: step.name,
       code: step.code,
       description: step.description,
+      type: step.type,
+      handlesTreatments: step.handlesTreatments,
+      productionLine: step.productionLine,
+      requiresScan: step.requiresScan,
     };
 
     return NextResponse.json(
-      { 
-        message: "Authentication successful", 
-        step: stepData 
+      {
+        message: "Authentication successful",
+        step: stepData
       },
       { status: 200 }
     );

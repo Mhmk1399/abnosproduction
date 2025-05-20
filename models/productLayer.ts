@@ -1,83 +1,37 @@
 import mongoose from "mongoose";
+import glass from "@/models/glass";
+import glassTreatment from "@/models/glassTreatment";
+import product from "@/models/product";
+import invoice from "@/models/invoice";
+import productionLine from "@/models/productionLine";
+import steps from "@/models/steps";
+import productionInventory from "@/models/productionInventory";
+import design from "@/models/design";
 
-const productLayerSchema = new mongoose.Schema(
-  {
-    customer: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "Customer",
+
+const productLayerSchema = new mongoose.Schema({
+  productionCode: { type: String, required: true, index: true }, // barcode or unique layer ID
+  glass: { type: mongoose.Schema.Types.ObjectId, ref: glass },
+  treatments: [
+    {
+      treatment: { type: mongoose.Schema.Types.ObjectId, ref: glassTreatment },
+      count: Number,
+      measurement: String,
     },
-    code: {
-      type: String,
-      required: true,
-    },
-    glass: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "Glass",
-    },
-    treatments: [
-      {
-        treatment: {type:mongoose.Schema.Types.ObjectId, ref: "Treatment"},
-        count: {
-          type: Number
-        },
-        measurement: {
-          type: String,
-        },
-      },
-    ],
-    width: {
-      type: Number,
-      required: true,
-    },
-    height: {
-      type: Number,
-      required: true,
-    },
-    product: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "Product",
-    },
-    invoice: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "Invoice",
-    },
-    productionCode: {
-      type: String,
-      required: true,
-    },
-    productionLine: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "ProductionLine",
-    },
-    productionDate: {
-      type: Date,
-      required: true,
-    },
-    currentStep: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "steps",
-    },
-    currentline: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "ProductionLine",
-    },
-    currentInventory: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "Inventory",
-    },
-    currentMicroLine: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "MicroLine",
-    },
-    productionNotes: {
-      type: String,
-    },
-    designNumber: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "Design",
-      required: true,
-    },
-  },
-  { timestamps: true }
-);
+  ],
+  width: { type: Number, required: true },
+  height: { type: Number, required: true },
+  product: { type: mongoose.Schema.Types.ObjectId, ref: product },
+  invoice: { type: mongoose.Schema.Types.ObjectId, ref: invoice },
+  productionLine: { type: mongoose.Schema.Types.ObjectId, ref: productionLine },
+  productionDate: { type: Date, required: true },
+
+  currentStep: { type: mongoose.Schema.Types.ObjectId, ref: steps },
+  currentInventory: { type: mongoose.Schema.Types.ObjectId, ref: productionInventory },
+
+  productionNotes: String,
+  designNumber: { type: mongoose.Schema.Types.ObjectId, ref: design },
+}, { timestamps: true });
+
+
 export default mongoose.models.ProductLayer || mongoose.model("ProductLayer", productLayerSchema);

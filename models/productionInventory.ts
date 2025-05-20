@@ -5,16 +5,24 @@ const productionInventorySchema = new mongoose.Schema({
     type: String,
     required: true,
   },
-  type: {
-    type: String,
-    enum: ["holding", "finished"],
+  Capacity:{
+    type: Number,
     required: true,
   },
-  code: {
+
+  location: {
+    type: String,
+    required: true,
+  },
+    code: {
     type: String,
     required: true,
     unique: true,
   },
+  description: {
+    type: String,
+    
+  }
 });
 
 export default mongoose.models.productionInventory ||
