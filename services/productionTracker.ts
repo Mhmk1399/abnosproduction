@@ -60,10 +60,23 @@ export class ProductionTrackerService {
     /**
      * Gets all step executions for a specific layer
      */
+    /**
+     * Gets all step executions for a specific layer
+     */
+    /**
+ * Gets all step executions for a specific layer
+ */
+    /**
+     * Gets all step executions for a specific layer
+     */
     static async getLayerStepExecutions(layerId: string) {
         try {
-            const response = await fetch(`/api/StepExecution?layerId=${layerId}`);
-
+            // Use the detailed endpoint with the ID in the header
+            const response = await fetch(`/api/StepExecution/detailed`, {
+                method: 'GET',
+                headers: { 'id': layerId }
+            });
+            console.log(layerId, "isssd");
             if (!response.ok) {
                 throw new Error('Failed to fetch step executions');
             }
@@ -74,6 +87,8 @@ export class ProductionTrackerService {
             throw error;
         }
     }
+
+
 
     /**
      * Moves a layer to the next step in its production line

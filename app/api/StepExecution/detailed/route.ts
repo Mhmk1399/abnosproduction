@@ -32,6 +32,7 @@ export async function GET(request: NextRequest) {
                 select: "name"
             }
         ]);
+        console.log(stepExecutions,"s")
         return NextResponse.json(stepExecutions, { status: 200 });
     } catch (error) {
         console.error("Error fetching step executions:", error);

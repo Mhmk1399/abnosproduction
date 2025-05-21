@@ -1,7 +1,6 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { ProductionTrackerService } from "@/services/productionTracker";
 import {
   FiClock,
   FiCheckCircle,
@@ -16,6 +15,7 @@ import {
   TreatmentApplication,
 } from "@/types/types";
 import { useProductLayer } from "@/hooks/useProductLayers";
+import { useStepExecutions } from "@/hooks/useStepExecutions";
 
 export default function ProductionHistory({ layerId }: ProductionHistoryProps) {
   const [history, setHistory] = useState<StepExecution[]>([]);
@@ -24,6 +24,7 @@ export default function ProductionHistory({ layerId }: ProductionHistoryProps) {
   const [layer, setLayer] = useState<layerData | null>(null);
   const { layer: layerFromHook, isLoading: layerLoading } =
     useProductLayer(layerId);
+  const { getStepExecutions } = useStepExecutions();
 
   // Load the layer history
   const loadHistory = async () => {
@@ -33,21 +34,17 @@ export default function ProductionHistory({ layerId }: ProductionHistoryProps) {
       // Get the layer details
       if (layerFromHook) {
         setLayer(layerFromHook);
-        console.log(layerFromHook, "layerFromHook");
       }
 
       // Get the step executions for this layer
-      const executions = await ProductionTrackerService.getLayerStepExecutions(
-        layerId
-      );
+      const executions = await getStepExecutions(layerId);
       console.log(executions, "executions");
-
+      
       // Sort by execution date (newest first)
       const sortedExecutions = executions.sort(
         (a: StepExecution, b: StepExecution) =>
           new Date(b.scannedAt).getTime() - new Date(a.scannedAt).getTime()
       );
-      console.log(sortedExecutions, "sortedExecutions");
 
       setHistory(sortedExecutions);
       setError(null);
@@ -158,7 +155,7 @@ export default function ProductionHistory({ layerId }: ProductionHistoryProps) {
                     <div>
                       <h3 className="font-medium">
                         {typeof execution.step === "object"
-                          ? execution.step.name
+                          ? execution.layer.currentStep.name
                           : "Unknown Step"}
                       </h3>
                       <div className="text-sm text-gray-500">
@@ -194,10 +191,6 @@ export default function ProductionHistory({ layerId }: ProductionHistoryProps) {
                             (treatment: TreatmentApplication, i: number) => {
                               // Skip rendering if treatment or treatment.treatment is null/undefined
                               if (!treatment || !treatment.treatment) {
-                                console.log(
-                                  `Missing treatment data at index ${i}:`,
-                                  treatment
-                                );
                                 return null;
                               }
 

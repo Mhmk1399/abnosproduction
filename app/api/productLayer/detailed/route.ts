@@ -13,6 +13,11 @@ import design from "@/models/design";
 
 export async function GET(request: NextRequest) {
   const id = request.headers.get("id") || '';
+
+  if (!id) {
+    return NextResponse.json({ error: "ID is required" }, { status: 400 });
+  }
+
   await connect();
   try {
     const productLayer = await ProductLayer.findById(id).populate([
@@ -36,30 +41,34 @@ export async function GET(request: NextRequest) {
       {
         path: "productionLine",
         model: productionLine,
-
+        populate: {
+          path: "steps.step",
+          model: steps
+        }
       },
       {
         path: "currentStep",
         model: steps,
-      },
-      {
-        path: "designNumber",
-        model: design,
-      },
-      {
+      }, {
         path: "currentInventory",
         model: productionInventory,
-      }
-    ]);
+      }, {
+        path: "designNumber",
+        model: design,
+
+      },]);
+
     if (productLayer === null) {
       return NextResponse.json({ error: "Product layer not found" }, { status: 404 });
     }
+
     return NextResponse.json(productLayer, { status: 200 });
   } catch (error) {
-    console.error("Error fetching product layers:", error);
-    return NextResponse.json({ error: "Failed to fetch product layers" }, { status: 500 });
+    console.error("Error fetching product layer:", error);
+    return NextResponse.json({ error: "Failed to fetch product layer" }, { status: 500 });
   }
 }
+
 
 export async function DELETE(request: NextRequest) {
   const id = request.headers.get("id") || '';

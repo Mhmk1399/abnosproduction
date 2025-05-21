@@ -1,5 +1,5 @@
 import { layerData, UseProductLayersReturn } from "@/types/types";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import useSWR from "swr";
 
 const fetcher = (url: string) => fetch(url).then((res) => res.json());
@@ -132,16 +132,16 @@ export function useProductLayers(): UseProductLayersReturn {
 
 export function useProductLayersByLine(lineId: string) {
   const { layers, isLoading, error, mutate, createProductLayer, updateProductLayer, deleteProductLayer, getProductLayer } = useProductLayers();
-  
+
   const filteredLayers = layers.filter(layer => {
     // Check if productionLine is an object with _id or just an id string
-    const currentLineId = typeof layer.productionLine === 'object' 
-      ? layer.productionLine._id 
+    const currentLineId = typeof layer.productionLine === 'object'
+      ? layer.productionLine._id
       : layer.productionLine;
-    
+
     return currentLineId === lineId;
   });
-  
+
   return {
     layers: filteredLayers,
     isLoading,
@@ -176,8 +176,10 @@ export function useProductLayer(id: string) {
         },
       });
 
+
       if (!response.ok) {
         const errorData = await response.json();
+        console.error("API error:", errorData);
         throw new Error(errorData.error || 'Failed to fetch product layer');
       }
 
@@ -185,6 +187,7 @@ export function useProductLayer(id: string) {
       setLayer(data);
       return data;
     } catch (err) {
+      console.error("Error in fetchLayer:", err);
       setError(err instanceof Error ? err.message : 'An error occurred');
       return null;
     } finally {
@@ -192,10 +195,13 @@ export function useProductLayer(id: string) {
     }
   };
 
-  // Initial fetch
-  useState(() => {
-    fetchLayer();
-  });
+
+  // Initial fetch - using useEffect properly
+  useEffect(() => {
+    if (id) {
+      fetchLayer();
+    }
+  }, [id]);
 
   // Update the layer
   const updateLayer = async (updatedData: Partial<layerData>): Promise<boolean> => {

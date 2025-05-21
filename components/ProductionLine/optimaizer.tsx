@@ -548,12 +548,8 @@ export default function OptimizerPage() {
         </div>
       )}
 
-      {/* Production History Tab */}
-      {/* {activeTab === "history" && selectedLayerForHistory && (
-        <div className="mt-4">
-          <ProductionHistory layerId={selectedLayerForHistory} />
-        </div>
-      )} */}
+   
+    
 
       {/* Production Line Selection (for Queue and History tabs) */}
       {activeTab !== "unassigned" && (
