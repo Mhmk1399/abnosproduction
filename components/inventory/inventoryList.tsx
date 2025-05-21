@@ -280,6 +280,7 @@ const InventoryList = () => {
       </div>
 
       {/* Edit Modal */}
+      
       {isEditModalOpen && (
         <div className="fixed inset-0 z-50 overflow-auto bg-gray-50/10 backdrop-blur-sm flex items-center justify-center">
           <div className="relative bg-white rounded-xl max-w-md w-full mx-auto p-6 shadow-2xl border border-gray-200">
@@ -498,6 +499,7 @@ const InventoryList = () => {
       )}
 
       {/* Detail Modal */}
+
       {isModalOpen && selectedInventory && (
         <div className="fixed inset-0 z-50 overflow-auto bg-gray-50/10 backdrop-blur-sm flex items-center justify-center">
           <div className="relative bg-white rounded-xl max-w-md w-full mx-auto p-6 shadow-2xl border border-gray-200">
