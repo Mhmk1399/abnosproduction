@@ -14,7 +14,7 @@ import {
   FiAlertCircle,
   FiFileText,
 } from "react-icons/fi";
-import { layerData, StepExecution } from "@/types/types";
+import { layerData, StepExecution, TreatmentApplication } from "@/types/types";
 
 export default function WorkerPage() {
   // Authentication state
@@ -253,7 +253,11 @@ export default function WorkerPage() {
       console.error("Error scanning barcode:", err);
       setScanMessage({
         type: "error",
-        text: `Failed to process barcode: ${err.message || "Unknown error"}`,
+        text:
+          "Failed to process barcode: " +
+          (err && typeof err === "object" && "message" in err
+            ? (err as { message?: string }).message
+            : "Unknown error"),
       });
     } finally {
       // Clear the input
@@ -305,12 +309,25 @@ export default function WorkerPage() {
         notes: completionNotes || `Step completed by worker at ${stepName}`,
         scannedAt: new Date().toISOString(),
         treatmentsApplied:
-          scannedLayer.treatments?.map((t) => ({
-            treatment:
-              typeof t.treatment === "object" ? t.treatment._id : t.treatment,
-            count: t.count || 1,
-            measurement: t.measurement || "unit",
-          })) || [],
+          (
+            scannedLayer.treatments as {
+              treatment: { _id: string; name?: string } | string;
+              count?: number;
+              measurement?: string;
+            }[]
+          )?.map((t) => {
+            // Create a properly typed TreatmentApplication object
+            const treatmentApp: TreatmentApplication = {
+              // If t.treatment is an object with _id, use that, otherwise use the string
+              treatment:
+                typeof t.treatment === "object" && t.treatment !== null
+                  ? (t.treatment as { _id: string })._id // Just use the ID string
+                  : (t.treatment as string), // Cast to string if it's already a string
+              count: t.count || 1,
+              measurement: t.measurement || "unit",
+            };
+            return treatmentApp;
+          }) || [],
       });
 
       // Get the production line details to find the next stepاس
@@ -332,10 +349,12 @@ export default function WorkerPage() {
 
       // Find the current step index
       const steps = productionLine.steps || [];
-      const currentStepIndex = steps.findIndex((s) => {
-        const stepId = typeof s.step === "object" ? s.step._id : s.step;
-        return stepId === currentStepId;
-      });
+      const currentStepIndex = steps.findIndex(
+        (s: { step: { _id: string } }) => {
+          const stepId = typeof s.step === "object" ? s.step._id : s.step;
+          return stepId === currentStepId;
+        }
+      );
 
       // If this is the last step, mark as completed
       if (currentStepIndex === steps.length - 1) {
@@ -567,18 +586,28 @@ export default function WorkerPage() {
                           {scannedLayer.treatments &&
                           scannedLayer.treatments.length > 0 ? (
                             <div className="flex flex-wrap justify-end gap-1">
-                              {scannedLayer.treatments.map((treatment, idx) => (
-                                <span
-                                  key={idx}
-                                  className="bg-blue-50 text-blue-700 text-xs px-2 py-0.5 rounded"
-                                >
-                                  {typeof treatment.treatment === "object"
-                                    ? treatment.treatment?.name
-                                    : "نامشخص"}
-                                  {treatment.count > 1 &&
-                                    ` (${treatment.count})`}
-                                </span>
-                              ))}
+                              {scannedLayer.treatments.map((treatment, idx) => {
+                                // Add a type assertion to help TypeScript understand the shape
+                                const treatmentObj =
+                                  typeof treatment.treatment === "object"
+                                    ? (treatment.treatment as {
+                                        _id: string;
+                                        name?: string;
+                                      })
+                                    : null;
+                                return (
+                                  <span
+                                    key={idx}
+                                    className="bg-blue-50 text-blue-700 text-xs px-2 py-0.5 rounded"
+                                  >
+                                    {treatmentObj
+                                      ? treatmentObj.name
+                                      : "نامشخص"}
+                                    {treatment.count > 1 &&
+                                      ` (${treatment.count})`}
+                                  </span>
+                                );
+                              })}
                             </div>
                           ) : (
                             <span className="text-gray-500">هیچ</span>

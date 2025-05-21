@@ -4,7 +4,6 @@ import { useProductionLines } from "@/hooks/useProductionLines";
 import {
   FiActivity,
   FiAlertCircle,
-  FiCheckCircle,
   FiClock,
   FiPower,
   FiSettings,

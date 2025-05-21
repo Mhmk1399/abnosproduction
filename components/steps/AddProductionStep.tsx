@@ -110,15 +110,7 @@ const AddProductionStep: React.FC<AddProductionStepProps> = ({
     }
   };
 
-  const handleTreatmentChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    const selectedOptions = Array.from(e.target.selectedOptions).map(
-      (option) => option.value
-    );
-    setFormData({
-      ...formData,
-      handlesTreatments: selectedOptions,
-    });
-  };
+
 
   const validateForm = (): boolean => {
     const errors: { name?: string } = {};

@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { promises as fs } from "fs";
 import path from "path";
 import { format } from "date-fns";
+import { layerData } from "@/types/types";
 
 export async function POST(req: NextRequest) {
   try {
@@ -44,7 +45,7 @@ export async function POST(req: NextRequest) {
       timestamp: new Date().toISOString(),
       fileName,
       layersCount: selectedLayers.length,
-      layerIds: selectedLayers.map((layer: any) => layer._id),
+      layerIds: selectedLayers.map((layer: layerData) => layer._id),
     };
 
     try {
@@ -62,6 +63,7 @@ export async function POST(req: NextRequest) {
       try {
         logContent = await fs.readFile(logFilePath, "utf8");
       } catch (err) {
+        console.log(err)
         // File doesn't exist yet, that's fine
       }
 
@@ -94,7 +96,7 @@ export async function POST(req: NextRequest) {
   }
 }
 
-function generateTrfContent(layers: any[], batchNumber: number): string {
+function generateTrfContent(layers: layerData[], batchNumber: number): string {
   let content = "";
 
   // Add REL record
@@ -105,11 +107,11 @@ function generateTrfContent(layers: any[], batchNumber: number): string {
 
   // Process each order group
   Object.entries(layersByOrder).forEach(([orderKey, orderLayers]) => {
+    console.log(orderKey)
     const firstLayer = orderLayers[0];
     const customerName = firstLayer.customer?.name || "Unknown";
     const orderNumber =
       firstLayer.invoice?._id ||
-      firstLayer.invoice?.invoiceNumber ||
       `ORD${batchNumber}`;
 
     const customerNumber = firstLayer.customer?._id || "CUST001";
@@ -136,8 +138,8 @@ function generateTrfContent(layers: any[], batchNumber: number): string {
       const qty = 1; // Assuming quantity is always 1
 
       // Convert dimensions to n/10mm format (multiply by 10)
-      const width = Math.round(parseFloat(layer.width) * 10);
-      const height = Math.round(parseFloat(layer.height) * 10);
+      const width = Math.round(parseFloat(layer.width.toString()) * 10);
+      const height = Math.round(parseFloat(layer.height.toString()) * 10);
 
       const glassType = layer.glass?.name || "110";
 
@@ -175,7 +177,7 @@ function generateTrfContent(layers: any[], batchNumber: number): string {
         const glassName = layer.glass.name || "FLOAT";
         const glassThickness = layer.glass.thickness || "10";
         content += `<GL1> ${padRight(glassName, 20)} ${padRight(
-          glassThickness,
+          glassThickness.toString(),
           5
         )} 0\r\n`;
       }
@@ -185,8 +187,8 @@ function generateTrfContent(layers: any[], batchNumber: number): string {
   return content;
 }
 
-function groupLayersByOrder(layers: any[]): Record<string, any[]> {
-  const groups: Record<string, any[]> = {};
+function groupLayersByOrder(layers: layerData[]): Record<string, layerData[]> {
+  const groups: Record<string, layerData[]> = {};
 
   layers.forEach((layer) => {
     // Use invoice ID or customer ID as the grouping key

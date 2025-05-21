@@ -10,7 +10,6 @@ import {
   FiDatabase,
   FiLayers,
   FiPackage,
-  FiPower,
   FiSettings,
   FiTool,
   FiTruck,
@@ -239,9 +238,11 @@ export default function ProductionLineVisualizer() {
                             </div>
                             <div className="bg-white border border-gray-200 rounded-lg p-2 shadow-md max-w-[150px]">
                               <h3 className="font-bold text-gray-800 text-center">
-                                {typeof line.inventory === "object"
-                                  ? line.inventory.name
-                                  : "انبار"}
+                                {Array.isArray(line.inventory)
+                                  ? line.inventory.map(inv => inv.name).join(", ")
+                                  : typeof line.inventory === "object" && line.inventory !== null && "name" in line.inventory
+                                    ? (line.inventory as { name: string }).name
+                                    : "انبار"}
                               </h3>
                               <div className="flex items-center justify-center gap-1 text-xs text-amber-600 mt-1">
                                 <FiPackage className="text-amber-500" />

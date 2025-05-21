@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import ProductionHistory from "@/components/ProductionLine/ProductionHistory";
-import { FiArrowLeft, FiInfo, FiClock, FiList } from "react-icons/fi";
+import { FiArrowLeft, FiInfo, FiClock } from "react-icons/fi";
 import { useProductLayersByLine } from "@/hooks/useProductLayers";
 
 interface ProductionQueueProps {

@@ -38,7 +38,7 @@ export default function DraggableItemSource({
         {item.description && (
           <p className="text-sm text-gray-600">{item.description}</p>
         )}
-        {type === "inventory" && item.Capacity !== undefined && (
+        {type === "inventory" && "Capacity" in item && item.Capacity !== undefined && (
           <p className="text-sm text-gray-600">ظرفیت: {item.Capacity}</p>
         )}
         {type === "step" && item.code && (

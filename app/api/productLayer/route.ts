@@ -11,7 +11,8 @@ import productionInventory from "@/models/productionInventory";
 import design from "@/models/design";
 import { isValidObjectId } from "mongoose";
 
-export async function GET(request: NextRequest) {
+
+export async function GET() {
   try {
     await connect();
     const productLayers = await ProductLayer.find({}).populate([

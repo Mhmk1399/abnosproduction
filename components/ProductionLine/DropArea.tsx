@@ -2,13 +2,22 @@
 import { useDrop } from "react-dnd";
 import { FiUploadCloud, FiArrowDown } from "react-icons/fi";
 import DraggableItem from "./DraggableItem";
-import { LineItem } from "@/types/types";
+import { DropAreaItem, InventoryData, Step } from "@/types/types";
 
-interface DropAreaProps {
-  lineItems: LineItem[];
-  onDrop: (itemId: string, itemType: "step" | "inventory") => void;
-  onReorder: (fromIndex: number, toIndex: number) => void;
-  onRemove: (itemId: string) => void;
+export interface DraggableItemProps {
+  item: DropAreaItem;
+  index: number;
+  type: "inventory" | "step";
+  isInLine: boolean;
+  onReorder: (from: number, to: number) => void;
+  onRemove: () => void;
+}
+
+export interface DropAreaProps {
+  lineItems: DropAreaItem[];
+  onDrop: (id: string, type: "step" | "inventory") => void;
+  onReorder: (from: number, to: number) => void;
+  onRemove: (id: string) => void;
 }
 
 export default function DropArea({
@@ -56,28 +65,21 @@ export default function DropArea({
             برای ایجاد خط تولید خود، موارد را به اینجا بکشید و رها کنید
           </p>
           <p className="text-xs text-gray-400 font-vazir text-center">
-            مراحل و موجودی‌ها را از سمت راست به اینجا بکشید
+            می‌توانید آیتم‌های موجودی یا مراحل را به این بخش بکشید.
           </p>
         </div>
       ) : (
-        <div className="space-y-3">
+        <div>
           {lineItems.map((item, index) => (
-            <div key={item.id} className="relative group">
+            <div key={item.id}>
               <DraggableItem
-                item={{
-                  id: item.id,
-                  name: item.name,
-                  description: item.description,
-                  ...(item.type === "inventory" && { Capacity: item.quantity }),
-                  ...(item.type === "step" && { code: item.code }),
-                }}
+                item={item}
                 index={index}
                 type={item.type}
                 isInLine={true}
                 onReorder={onReorder}
                 onRemove={() => onRemove(item.id)}
               />
-
               {index < lineItems.length - 1 && (
                 <div className="flex justify-center my-2">
                   <div className="w-6 h-6 rounded-full bg-gray-100 border border-gray-300 flex items-center justify-center">

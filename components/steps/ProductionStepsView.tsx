@@ -312,7 +312,7 @@ const ProductionStepsView: React.FC = () => {
                 <p className="text-gray-700">
                   آیا از حذف مرحله{" "}
                   <strong className="text-red-700">
-                    "{selectedStep.name}"
+                    `{selectedStep.name}`
                   </strong>{" "}
                   اطمینان دارید؟
                 </p>

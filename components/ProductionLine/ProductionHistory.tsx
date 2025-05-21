@@ -4,7 +4,6 @@ import { useState, useEffect } from "react";
 import {
   FiClock,
   FiCheckCircle,
-  FiXCircle,
   FiAlertCircle,
   FiFileText,
 } from "react-icons/fi";
@@ -39,7 +38,7 @@ export default function ProductionHistory({ layerId }: ProductionHistoryProps) {
       // Get the step executions for this layer
       const executions = await getStepExecutions(layerId);
       console.log(executions, "executions");
-      
+
       // Sort by execution date (newest first)
       const sortedExecutions = executions.sort(
         (a: StepExecution, b: StepExecution) =>
@@ -133,7 +132,7 @@ export default function ProductionHistory({ layerId }: ProductionHistoryProps) {
               No production history available
             </div>
           ) : (
-            history.map((execution, index) => (
+            history.map((execution) => (
               <div key={execution._id} className="relative pl-10">
                 {/* Timeline dot */}
                 <div
@@ -155,9 +154,10 @@ export default function ProductionHistory({ layerId }: ProductionHistoryProps) {
                     <div>
                       <h3 className="font-medium">
                         {typeof execution.step === "object"
-                          ? execution.layer.currentStep.name
+                          ? execution.step.name
                           : "Unknown Step"}
                       </h3>
+
                       <div className="text-sm text-gray-500">
                         {new Date(execution.scannedAt).toLocaleString()}
                       </div>

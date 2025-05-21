@@ -86,7 +86,7 @@ export interface invoiceData {
 ///layer interface hooks and returns
 export interface layerData {
     _id: string;
-    customer: Customer | string;
+    customer: Customer;
     code: string;
     glass: glassData;
     treatments: Array<{
@@ -102,11 +102,13 @@ export interface layerData {
     productionDate: string;
     currentStep: Step | string;
     currentline: ProductionLine | string;
-    currentInventory?: any;
+    currentInventory?: InventoryData;
     productionNotes?: string;
     designNumber?: string;
     createdAt: string;
     updatedAt: string;
+    completedAt?: string;
+    completed?: boolean;
 
 }
 
@@ -213,12 +215,29 @@ export interface TreatmentApplication {
     measurement?: string;
 }
 
+
 /**
  * Represents a single step execution record
  */
+/**
+ * Interface for items that can be dropped in a production line
+ */
+export interface DropAreaItem {
+  id: string;
+  name: string;
+  description?: string;
+  type: "inventory" | "step";
+  // Properties for inventory items
+  quantity?: number;
+  location?: string;
+  Capacity?: number;
+  // Properties for step items
+  code?: string;
+}
+
 export interface StepExecution {
     _id: string;
-    layer: string | any; // Reference to the layer
+    layer: string | layerData; // Reference to the layer
     step: {
         _id: string;
         name: string;

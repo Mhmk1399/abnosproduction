@@ -1,10 +1,7 @@
 "use client";
-import React, { Ref } from "react";
+import React from "react";
 import { useDrag, useDrop } from "react-dnd";
-import { InventoryData, Step , DraggableItemProps} from "@/types/types";
-
-
-
+import { InventoryData, Step, DraggableItemProps } from "@/types/types";
 
 export default function DraggableItem({
   item,
@@ -18,7 +15,8 @@ export default function DraggableItem({
   const [{ isDragging }, drag] = useDrag(() => ({
     type,
     item: {
-      id: type === "inventory" ? (item as InventoryData).id : (item as Step)._id,
+      id:
+        type === "inventory" ? (item as InventoryData).id : (item as Step)._id,
       index,
       isReordering: true,
       type,

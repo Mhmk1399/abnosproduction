@@ -1,8 +1,8 @@
 import connect from "@/lib/data";
-import { NextRequest, NextResponse } from "next/server";
+import {  NextResponse } from "next/server";
 import inventory from "@/models/inevntory";
 
-export async function GET(request: NextRequest) {
+export async function GET() {
   await connect();
 
   try {

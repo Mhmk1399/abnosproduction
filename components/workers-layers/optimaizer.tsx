@@ -5,7 +5,6 @@ import { useRouter } from "next/navigation";
 import { useProductLayers } from "@/hooks/useProductLayers";
 import { useProductionLines } from "@/hooks/useProductionLines";
 import ProductionQueue from "../ProductionLine/ProductionQueue";
-import ProductionHistory from "../ProductionLine/ProductionHistory";
 import {
   FiRefreshCw,
   FiCheckSquare,

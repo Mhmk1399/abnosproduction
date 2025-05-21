@@ -24,7 +24,6 @@ const ProductionLine = ({
   const { productionLines, isLoading, deleteProductionLine, mutate } =
     useProductionLines();
   const [viewMode, setViewMode] = useState<"list" | "grid">("grid");
-  const [selectedLineId, setSelectedLineId] = useState<string | null>(null);
   const [isDeleting, setIsDeleting] = useState(false);
 
   const handleDelete = async (id: string) => {

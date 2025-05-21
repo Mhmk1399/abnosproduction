@@ -7,7 +7,6 @@ import AddInventoryForm from "../inventory/addInventory";
 import InventoryList from "../inventory/inventoryList";
 import WorkerPage from "../workers-layers/workers";
 import OptimizerPage from "../workers-layers/optimaizer";
-import LayerDetailsPage from "./layerDetail";
 import AddProductionStep from "../steps/AddProductionStep";
 import ProductionStepsView from "../steps/ProductionStepsView";
 
