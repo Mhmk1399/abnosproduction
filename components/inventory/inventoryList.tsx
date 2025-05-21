@@ -17,6 +17,15 @@ import {
   FaExclamationCircle,
 } from "react-icons/fa";
 import { InventoryData } from "@/types/types";
+import {
+  FiAlignLeft,
+  FiBox,
+  FiCode,
+  FiEye,
+  FiInfo,
+  FiMapPin,
+  FiX,
+} from "react-icons/fi";
 
 const InventoryList = () => {
   const {
@@ -39,6 +48,11 @@ const InventoryList = () => {
   const [inventoryToDelete, setInventoryToDelete] = useState<string | null>(
     null
   );
+
+  // states to handle row click for detail of each row
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedInventory, setSelectedInventory] =
+    useState<InventoryData | null>(null);
 
   const openDeleteModal = (id: string) => {
     setInventoryToDelete(id);
@@ -192,6 +206,9 @@ const InventoryList = () => {
                     موقعیت
                   </th>
                   <th className="px-6 py-4 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    توضیحات
+                  </th>
+                  <th className="px-6 py-4 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
                     عملیات
                   </th>
                 </tr>
@@ -201,7 +218,7 @@ const InventoryList = () => {
                   (inventory: InventoryData, index: number) => (
                     <tr
                       key={inventory._id}
-                      className="hover:bg-gray-50 transition-colors duration-150"
+                      className="hover:bg-gray-50 transition-colors duration-150 cursor-pointer"
                     >
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-right font-medium text-gray-900">
                         {index + 1}
@@ -221,10 +238,23 @@ const InventoryList = () => {
                         {inventory.location}
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-right text-sm text-gray-500">
+                        {inventory.description?.slice(0, 10)}...
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-right text-sm text-gray-500">
                         <div className="flex space-x-3 space-x-reverse">
                           <button
+                            onClick={() => {
+                              setSelectedInventory(inventory);
+                              setIsModalOpen(true);
+                            }}
+                            className="flex items-center text-blue-600 hover:text-blue-900 transition-colors duration-150"
+                          >
+                            <FiEye className="ml-1" />
+                            <span>جزئیات</span>
+                          </button>
+                          <button
                             onClick={() => handleEdit(inventory)}
-                            className="flex items-center text-indigo-600 hover:text-indigo-900 transition-colors duration-150"
+                            className="flex items-center text-indigo-600 hover:text-indigo-900 transition-colors duration-150 mr-3"
                           >
                             <FaEdit className="ml-1" />
                             <span>ویرایش</span>
@@ -403,6 +433,7 @@ const InventoryList = () => {
       )}
 
       {/* Delete Confirmation Modal */}
+
       {isDeleteModalOpen && (
         <div className="fixed inset-0 z-50 overflow-auto bg-gray-50/10 backdrop-blur-sm flex items-center justify-center">
           <div className="relative bg-white rounded-xl max-w-md w-full mx-auto p-6 shadow-2xl border border-gray-200">
@@ -461,6 +492,123 @@ const InventoryList = () => {
                   )}
                 </button>
               </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Detail Modal */}
+      {isModalOpen && selectedInventory && (
+        <div className="fixed inset-0 z-50 overflow-auto bg-gray-50/10 backdrop-blur-sm flex items-center justify-center">
+          <div className="relative bg-white rounded-xl max-w-md w-full mx-auto p-6 shadow-2xl border border-gray-200">
+            {/* Modal Header */}
+            <div className="flex justify-between items-center p-6 border-b">
+              <h3 className="text-xl font-bold text-gray-800 flex items-center gap-2">
+                <FiInfo className="text-blue-500" />
+                جزئیات انبار
+              </h3>
+              <button
+                onClick={() => setIsModalOpen(false)}
+                className="text-gray-500 hover:text-gray-700 transition-colors"
+              >
+                <FiX size={24} />
+              </button>
+            </div>
+
+            {/* Modal Body */}
+            <div className="p-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                {/* Basic Info */}
+                <div className=" p-4 rounded-lg">
+                  <h4 className="font-medium text-gray-700 mb-4 border-b pb-2">
+                    اطلاعات اصلی
+                  </h4>
+
+                  <div className="space-y-3">
+                    <div className="flex items-start">
+                      <div className="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center flex-shrink-0 mt-1">
+                        <FiBox className="text-blue-600" />
+                      </div>
+                      <div className="mr-3">
+                        <div className="text-sm text-gray-500">نام</div>
+                        <div className="font-medium">
+                          {selectedInventory.name}
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="flex items-start">
+                      <div className="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center flex-shrink-0 mt-1">
+                        <FiCode className="text-green-600" />
+                      </div>
+                      <div className="mr-3">
+                        <div className="text-sm text-gray-500">کد</div>
+                        <div className="font-medium">
+                          {selectedInventory.code}
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="flex items-start">
+                      <div className="w-8 h-8 bg-purple-100 rounded-full flex items-center justify-center flex-shrink-0 mt-1">
+                        <FiMapPin className="text-purple-600" />
+                      </div>
+                      <div className="mr-3">
+                        <div className="text-sm text-gray-500">موقعیت</div>
+                        <div className="font-medium">
+                          {selectedInventory.location}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Additional Info */}
+                <div className=" p-4 rounded-lg">
+                  <h4 className="font-medium text-gray-700 mb-4 border-b pb-2">
+                    اطلاعات تکمیلی
+                  </h4>
+
+                  <div className="space-y-3">
+                    <div className="flex items-center">
+                      <span className="text-gray-500 ml-2">ظرفیت:</span>
+                      <span className="font-medium bg-blue-50 text-blue-700 px-3 py-1 rounded-full">
+                        {selectedInventory.Capacity}
+                      </span>
+                    </div>
+
+                    <div>
+                      <div className="text-gray-500 mb-1 flex items-center">
+                        <FiAlignLeft className="ml-1" />
+                        توضیحات:
+                      </div>
+                      <div className="bg-white p-3 rounded border text-gray-700 min-h-[80px]">
+                        {selectedInventory.description ||
+                          "توضیحاتی ثبت نشده است."}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Modal Footer */}
+            <div className=" px-6 py-4 flex justify-start">
+              <button
+                onClick={() => setIsModalOpen(false)}
+                className="px-4 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition-colors"
+              >
+                بستن
+              </button>
+              <button
+                onClick={() => {
+                  handleEdit(selectedInventory);
+                  setIsModalOpen(false);
+                }}
+                className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors mr-2"
+              >
+                ویرایش
+              </button>
             </div>
           </div>
         </div>
