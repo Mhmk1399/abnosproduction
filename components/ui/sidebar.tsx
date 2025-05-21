@@ -5,8 +5,8 @@ import { navMenuItems } from "../../lib/sideBar";
 import WelcomeScreen from "./welcome";
 import AddInventoryForm from "../inventory/addInventory";
 import InventoryList from "../inventory/inventoryList";
-import WorkerPage from "./workers";
-import OptimizerPage from "../ProductionLine/optimaizer";
+import WorkerPage from "../workers-layers/workers";
+import OptimizerPage from "../workers-layers/optimaizer";
 import LayerDetailsPage from "./layerDetail";
 import AddProductionStep from "../steps/AddProductionStep";
 import ProductionStepsView from "../steps/ProductionStepsView";
@@ -25,6 +25,7 @@ import {
 } from "react-icons/fa";
 import CreateProductionLine from "../ProductionLine/CreateProductionLine";
 import ProductionLine from "../ProductionLine/ProductionLine";
+import LayerList from "../workers-layers/LayerList";
 
 const iconMap = {
   FaBoxOpen,
@@ -204,11 +205,11 @@ const renderChildComponent = (
       case "InventoryList":
         return <InventoryList />;
       case "ProductionLinesPage":
-  return <ProductionLine setActiveChild={setActiveChild} />;
+        return <ProductionLine setActiveChild={setActiveChild} />;
       case "configure":
         return <CreateProductionLine />;
       case "layer":
-        return <LayerDetailsPage />;
+        return <LayerList />;
       case "optimizer":
         return <OptimizerPage />;
       case "WorkerPage":

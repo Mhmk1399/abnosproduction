@@ -10,17 +10,15 @@ interface ProductionQueueProps {
   productionLineId: string;
 }
 
-export default function ProductionQueue({ productionLineId }: ProductionQueueProps) {
+export default function ProductionQueue({
+  productionLineId,
+}: ProductionQueueProps) {
   const router = useRouter();
   const [selectedLayerId, setSelectedLayerId] = useState<string | null>(null);
   const [showHistory, setShowHistory] = useState<boolean>(false);
-  
+
   // Use the hook to get layers for this production line
-  const { 
-    layers, 
-    isLoading, 
-    error 
-  } = useProductLayersByLine(productionLineId);
+  const { layers, isLoading, error } = useProductLayersByLine(productionLineId);
 
   // Select the first layer by default if available
   useEffect(() => {
@@ -54,7 +52,9 @@ export default function ProductionQueue({ productionLineId }: ProductionQueuePro
     return (
       <div className="container mx-auto p-6">
         <div className="flex justify-between items-center mb-6">
-          <h1 className="text-2xl font-bold text-gray-800">Production History</h1>
+          <h1 className="text-2xl font-bold text-gray-800">
+            Production History
+          </h1>
           <button
             onClick={() => setShowHistory(false)}
             className="px-4 py-2 bg-gray-100 hover:bg-gray-200 rounded-md transition-colors flex items-center gap-1.5"
@@ -138,8 +138,8 @@ export default function ProductionQueue({ productionLineId }: ProductionQueuePro
               </thead>
               <tbody className="bg-white divide-y divide-gray-200">
                 {layers.map((layer) => (
-                  <tr 
-                    key={layer._id} 
+                  <tr
+                    key={layer._id}
                     className={`hover:bg-gray-50 transition-colors ${
                       selectedLayerId === layer._id ? "bg-blue-50" : ""
                     }`}

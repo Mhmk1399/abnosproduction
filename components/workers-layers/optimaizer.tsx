@@ -4,8 +4,8 @@ import { useState, useEffect, useMemo } from "react";
 import { useRouter } from "next/navigation";
 import { useProductLayers } from "@/hooks/useProductLayers";
 import { useProductionLines } from "@/hooks/useProductionLines";
-import ProductionQueue from "./ProductionQueue";
-import ProductionHistory from "./ProductionHistory";
+import ProductionQueue from "../ProductionLine/ProductionQueue";
+import ProductionHistory from "../ProductionLine/ProductionHistory";
 import {
   FiRefreshCw,
   FiCheckSquare,

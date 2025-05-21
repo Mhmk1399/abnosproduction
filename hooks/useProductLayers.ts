@@ -255,6 +255,7 @@ export function useProductLayer(id: string) {
       return false;
     }
   };
+  
 
   return {
     layer,
@@ -265,3 +266,4 @@ export function useProductLayer(id: string) {
     deleteLayer
   };
 }
+
