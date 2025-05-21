@@ -10,14 +10,9 @@ import {
   FaTag,
   FaMapMarkerAlt,
   FaWarehouse,
+  FaInfoCircle,
 } from "react-icons/fa";
-
-interface InventoryFormData {
-  name: string;
-  Capacity: number;
-  location: string;
-  description?: string;
-}
+import { InventoryData } from "@/types/types";
 
 const AddInventoryForm = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -28,9 +23,9 @@ const AddInventoryForm = () => {
     handleSubmit,
     reset,
     formState: { errors },
-  } = useForm<InventoryFormData>();
+  } = useForm<InventoryData>();
 
-  const onSubmit = async (data: InventoryFormData) => {
+  const onSubmit = async (data: InventoryData) => {
     setIsSubmitting(true);
 
     try {
@@ -48,11 +43,25 @@ const AddInventoryForm = () => {
   };
 
   return (
-    <div className="max-w-4xl mx-auto bg-white p-8 rounded-xl shadow-lg mt-20 border border-indigo-50">
-      <div className="flex items-center mb-6 border-b pb-4">
-        <h2 className="text-2xl font-bold text-gray-800">افزودن انبار جدید</h2>
-        <div className="bg-indigo-100 p-2 rounded-lg mr-1">
-          <FaBoxOpen className="text-indigo-600 text-xl" />
+    <div className="max-w-5xl mx-auto bg-white p-8 rounded-xl shadow-lg mt-20 border border-indigo-50">
+      <div className="flex flex-col md:flex-row gap-6 items-center justify-between mb-6 pb-4 border-b border-gray-200">
+        <div className="flex items-center space-x-3 space-x-reverse">
+          <div className="bg-gradient-to-r from-indigo-500 to-indigo-600 p-2.5 rounded-xl shadow-md ml-2">
+            <FaBoxOpen className="text-white text-xl" />
+          </div>
+          <div>
+            <h2 className="text-2xl font-bold text-gray-800">
+              افزودن انبار جدید
+            </h2>
+            <p className="text-gray-500 text-sm mt-1">
+              ثبت اطلاعات انبار جدید در سیستم
+            </p>
+          </div>
+        </div>
+
+        <div className="bg-green-50 text-green-700 text-sm py-1.5 px-3 rounded-lg font-medium flex items-center">
+          <FaInfoCircle className="ml-1.5" />
+          <span>تکمیل تمام فیلدهای ستاره‌دار الزامی است</span>
         </div>
       </div>
 

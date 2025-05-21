@@ -23,20 +23,14 @@ export async function POST(request: NextRequest) {
 
     // Check if step exists
     if (!step) {
-      return NextResponse.json(
-        { error: "Step not found" },
-        { status: 404 }
-      );
+      return NextResponse.json({ error: "Step not found" }, { status: 404 });
     }
 
     // Verify password using bcrypt compare
     const isPasswordValid = await bcrypt.compare(password, step.password);
 
     if (!isPasswordValid) {
-      return NextResponse.json(
-        { error: "Invalid password" },
-        { status: 401 }
-      );
+      return NextResponse.json({ error: "Invalid password" }, { status: 401 });
     }
 
     // Return step information (excluding password)
@@ -54,7 +48,7 @@ export async function POST(request: NextRequest) {
     return NextResponse.json(
       {
         message: "Authentication successful",
-        step: stepData
+        step: stepData,
       },
       { status: 200 }
     );

@@ -57,10 +57,5 @@ export const navMenuItems = [
     children: [{ id: "optimizer", title: "بهینه ساز" }],
   },
 
-  {
-    id: "setting",
-    title: "تنظیمات",
-    icon: "FaCog", // Font Awesome Cog icon
-    children: [{ id: "setting1", title: "تنظیمات دسترسی" }],
-  },
+ 
 ];

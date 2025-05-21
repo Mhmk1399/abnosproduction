@@ -16,23 +16,7 @@ import {
   FaSpinner,
   FaExclamationCircle,
 } from "react-icons/fa";
-
-interface InventoryFormData {
-  name: string;
-  Capacity: number;
-  location: string;
-  description?: string;
-  _id?: string;
-}
-
-interface Inventory {
-  _id: string;
-  name: string;
-  Capacity: number;
-  location: string;
-  code: string;
-  description?: string;
-}
+import { InventoryData } from "@/types/types";
 
 const InventoryList = () => {
   const {
@@ -45,13 +29,12 @@ const InventoryList = () => {
   } = useProductionInventory();
 
   // Ensure inventories is always typed as Inventory[]
-  const inventoriesList: Inventory[] = inventories as Inventory[];
+  const inventoriesList: InventoryData[] = inventories as InventoryData[];
 
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
-  const [currentInventory, setCurrentInventory] = useState<Inventory | null>(
-    null
-  );
+  const [currentInventory, setCurrentInventory] =
+    useState<InventoryData | null>(null);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [inventoryToDelete, setInventoryToDelete] = useState<string | null>(
     null
@@ -73,9 +56,9 @@ const InventoryList = () => {
     reset: resetEdit,
     setValue,
     formState: { errors: errorsEdit },
-  } = useForm<InventoryFormData>();
+  } = useForm<InventoryData>();
 
-  const handleEdit = (inventory: Inventory) => {
+  const handleEdit = (inventory: InventoryData) => {
     setCurrentInventory(inventory);
     // Set form values for edit modal
     setValue("name", inventory.name);
@@ -85,7 +68,7 @@ const InventoryList = () => {
     setIsEditModalOpen(true);
   };
 
-  const handleUpdate = async (data: InventoryFormData) => {
+  const handleUpdate = async (data: InventoryData) => {
     if (!currentInventory) return;
 
     setIsSubmitting(true);
@@ -144,22 +127,33 @@ const InventoryList = () => {
   }
 
   return (
-    <div className="space-y-8 mt-20 max-w-7xl mx-auto">
+    <div className="space-y-8 mt-20 max-w-7xl mx-auto overflow-auto">
       <div className="bg-white p-6 rounded-xl shadow-lg border border-indigo-50">
-        <div className="flex justify-between items-center mb-6 pb-3 border-b border-gray-100">
-          <div className="flex items-center">
-            <h2 className="text-xl font-bold text-gray-800">لیست انبارها</h2>
-            <div className="bg-indigo-100 p-2 rounded-lg mr-1">
-              <FaBoxes className="text-indigo-600 text-xl" />
+        <div className="flex justify-between items-center mb-6 pb-4 border-b border-gray-200">
+          <div className="flex items-center space-x-3 space-x-reverse">
+            <div className="bg-gradient-to-r from-indigo-500 to-indigo-600 p-2.5 rounded-xl shadow-md ml-2">
+              <FaBoxes className="text-white text-xl" />
+            </div>
+            <div>
+              <h2 className="text-2xl font-bold text-gray-800">لیست انبارها</h2>
+              <p className="text-gray-500 text-sm mt-1">
+                مدیریت و مشاهده انبارهای سیستم
+              </p>
             </div>
           </div>
-          <button
-            onClick={refreshList}
-            className="flex items-center px-4 py-2 text-indigo-600 bg-indigo-50 hover:bg-indigo-100 rounded-lg transition-all duration-200"
-          >
-            <FaSyncAlt className="h-4 w-4 mr-2" />
-            <span>بروزرسانی</span>
-          </button>
+
+          <div className="flex items-center gap-2">
+            <span className="bg-indigo-50 text-indigo-700 text-sm py-1 px-3 rounded-full font-medium">
+              {inventoriesList.length} انبار
+            </span>
+            <button
+              onClick={refreshList}
+              className="flex items-center px-4 py-2.5 text-white bg-indigo-600 hover:bg-indigo-700 rounded-lg transition-all duration-200 shadow-sm"
+            >
+              <FaSyncAlt className="h-4 w-4 ml-2" />
+              <span>بروزرسانی</span>
+            </button>
+          </div>
         </div>
 
         {error && (
@@ -203,48 +197,52 @@ const InventoryList = () => {
                 </tr>
               </thead>
               <tbody>
-                {inventoriesList.map((inventory: Inventory, index: number) => (
-                  <tr
-                    key={inventory._id}
-                    className="hover:bg-gray-50 transition-colors duration-150"
-                  >
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-right font-medium text-gray-900">
-                      {index + 1}
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-right font-medium text-gray-900">
-                      {inventory.name}
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-right text-sm text-gray-500">
-                      <span className="px-3 py-1 bg-gray-100 text-gray-700 rounded-full">
-                        {inventory.code}
-                      </span>
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-right text-sm text-gray-500">
-                      {inventory.Capacity}
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-right text-sm text-gray-500">
-                      {inventory.location}
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-right text-sm text-gray-500">
-                      <div className="flex space-x-3 space-x-reverse">
-                        <button
-                          onClick={() => handleEdit(inventory)}
-                          className="flex items-center text-indigo-600 hover:text-indigo-900 transition-colors duration-150"
-                        >
-                          <FaEdit className="ml-1" />
-                          <span>ویرایش</span>
-                        </button>
-                        <button
-                          onClick={() => openDeleteModal(inventory._id)}
-                          className="flex items-center text-red-600 hover:text-red-900 transition-colors duration-150 mr-3"
-                        >
-                          <FaTrash className="ml-1" />
-                          <span>حذف</span>
-                        </button>
-                      </div>
-                    </td>
-                  </tr>
-                ))}
+                {inventoriesList.map(
+                  (inventory: InventoryData, index: number) => (
+                    <tr
+                      key={inventory._id}
+                      className="hover:bg-gray-50 transition-colors duration-150"
+                    >
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-right font-medium text-gray-900">
+                        {index + 1}
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-right font-medium text-gray-900">
+                        {inventory.name}
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-right text-sm text-gray-500">
+                        <span className="px-3 py-1 bg-gray-100 text-gray-700 rounded-full">
+                          {inventory.code}
+                        </span>
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-right text-sm text-gray-500">
+                        {inventory.Capacity}
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-right text-sm text-gray-500">
+                        {inventory.location}
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-right text-sm text-gray-500">
+                        <div className="flex space-x-3 space-x-reverse">
+                          <button
+                            onClick={() => handleEdit(inventory)}
+                            className="flex items-center text-indigo-600 hover:text-indigo-900 transition-colors duration-150"
+                          >
+                            <FaEdit className="ml-1" />
+                            <span>ویرایش</span>
+                          </button>
+                          <button
+                            onClick={() =>
+                              inventory._id && openDeleteModal(inventory._id)
+                            }
+                            className="flex items-center text-red-600 hover:text-red-900 transition-colors duration-150 mr-3"
+                          >
+                            <FaTrash className="ml-1" />
+                            <span>حذف</span>
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                  )
+                )}
               </tbody>
             </table>
           </div>

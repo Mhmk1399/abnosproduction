@@ -5,13 +5,12 @@ import Steps from "@/models/steps";
 import { v4 as uuidv4 } from "uuid";
 import bcrypt from "bcrypt";
 import glassTreatment from "@/models/glassTreatment";
-import { getCache, setCache } from '@/utils/redis';
-
+import { getCache, setCache } from "@/utils/redis";
 
 export async function GET() {
   await connect();
   try {
-    const cachedSteps = await getCache('steps');
+    const cachedSteps = await getCache("steps");
     if (cachedSteps) {
       return NextResponse.json(cachedSteps, { status: 200 });
     }
@@ -23,8 +22,8 @@ export async function GET() {
     });
 
     // Try to cache the result, but continue even if caching fails
-    setCache('steps', steps, 3600).catch(err => {
-      console.warn('Failed to cache steps data:', err.message);
+    setCache("steps", steps, 3600).catch((err) => {
+      console.warn("Failed to cache steps data:", err.message);
     });
 
     return NextResponse.json(steps, { status: 200 });
@@ -72,6 +71,4 @@ export async function POST(request: NextRequest) {
   } catch (error) {
     console.error("Error creating step:", error);
   }
-
 }
-
