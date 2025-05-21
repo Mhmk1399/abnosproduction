@@ -6,7 +6,6 @@ const connect = async () => {
   try {
     if (MONGODB_URI) {
       await mongoose.connect(MONGODB_URI);
-      console.log("Connected to MongoDB");
     } else {
       throw new Error("MONGODB_URI is not defined");
     }

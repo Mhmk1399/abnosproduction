@@ -468,7 +468,7 @@ export default function WorkerPage() {
             {/* Barcode Scanner Section */}
             <div className="bg-white p-6 rounded-xl shadow-md mb-6 border border-gray-100">
               <h2 className="text-lg font-medium mb-4 text-blue-800 flex items-center gap-2">
-                <FiBarChart2  className="text-blue-600" size={20} />
+                <FiBarChart2 className="text-blue-600" size={20} />
                 اسکن بارکد
               </h2>
               <form onSubmit={handleBarcodeScan} className="flex gap-2">
@@ -486,7 +486,7 @@ export default function WorkerPage() {
                       disabled={!!scannedLayer}
                     />
                     <div className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
-                      <FiBarChart2  className="text-gray-400" size={20} />
+                      <FiBarChart2 className="text-gray-400" size={20} />
                     </div>
                   </div>
                 </div>
@@ -660,7 +660,7 @@ export default function WorkerPage() {
                 {/* Barcode */}
                 <div className="mb-6 bg-white rounded-lg border border-gray-100 shadow-sm p-4">
                   <h3 className="font-medium mb-3 text-gray-700 flex items-center gap-2">
-                    <FiBarChart2  className="text-gray-500" size={16} />
+                    <FiBarChart2 className="text-gray-500" size={16} />
                     بارکد
                   </h3>
                   <div className="flex justify-between items-center">

@@ -1,6 +1,7 @@
 import connect from "../../../../lib/data";
 import { NextRequest, NextResponse } from "next/server";
 import steps from "@/models/steps";
+import GlassTreatment from "@/models/glassTreatment";
 
 export async function GET(request: NextRequest) {
   await connect();
@@ -13,7 +14,11 @@ export async function GET(request: NextRequest) {
         { status: 400 }
       );
     }
-    const step = await steps.findById(id);
+    const step = await steps.findById(id).populate({
+      path: "handlesTreatments",
+      model: GlassTreatment,
+      select: "name",
+    });
     if (step === null) {
       return NextResponse.json({ error: "Step not found" }, { status: 404 });
     }

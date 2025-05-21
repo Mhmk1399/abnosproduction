@@ -4,11 +4,6 @@ import { useProductionStep } from "@/hooks/useProductionStep";
 import { Step } from "@/types/types";
 import {
   FiEdit,
-
-
-
-
-  
   FiTrash2,
   FiEye,
   FiRefreshCw,
@@ -40,6 +35,8 @@ const ProductionStepsView: React.FC = () => {
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [isViewModalOpen, setIsViewModalOpen] = useState(false);
+  console.log(steps, "sssssssssss");
+  console.log(selectedStep, "selectedStep");
 
   const handleEdit = async (id: string) => {
     const step = await getStep(id);
@@ -57,10 +54,10 @@ const ProductionStepsView: React.FC = () => {
     }
   };
 
-  const handleView = async (id: string) => {
-    const step = await getStep(id);
-    if (step) {
-      setSelectedStep(step);
+  const handleView = async (step: Step) => {
+    const Step = await getStep(step._id);
+    if (Step) {
+      setSelectedStep(Step);
       setIsViewModalOpen(true);
     }
   };
@@ -96,14 +93,16 @@ const ProductionStepsView: React.FC = () => {
     <div className="max-w-6xl mx-auto mt-24 space-y-6">
       <div className="flex justify-between items-center bg-white p-5 rounded-lg shadow-md mb-6">
         <div className="flex items-center space-x-3 space-x-reverse">
-          <div className="bg-gradient-to-r from-blue-500 to-indigo-600 p-2.5 rounded-xl shadow-md ml-2">
+          <div className="bg-gradient-to-r hidden md:bloc from-blue-500 to-indigo-600 p-2 rounded-xl shadow-md ml-2">
             <FiLayers className="text-white text-xl" />
           </div>
           <div>
-            <h2 className="text-2xl font-bold text-gray-800">لیست مراحل</h2>
+            <h2 className="md:text-2xl font-bold text-gray-800">
+              لیست ایستگاه ها
+            </h2>
             <div className="flex items-center mt-1">
-              <p className="text-gray-500 text-sm">تعداد کل مراحل:</p>
-              <span className="mr-1.5 bg-indigo-50 text-indigo-700 text-sm py-0.5 px-2.5 rounded-full font-medium">
+              <p className="text-gray-500 text-sm">تعداد کل ایستگاه:</p>
+              <span className="mr-1.5  text-black text-sm py-0.5 rounded-full font-medium">
                 {steps.length}
               </span>
             </div>
@@ -112,7 +111,7 @@ const ProductionStepsView: React.FC = () => {
 
         <button
           onClick={() => mutate()}
-          className="flex items-center gap-2 px-4 py-2.5 bg-gradient-to-r from-indigo-500 to-indigo-600 hover:from-indigo-600 hover:to-indigo-700 text-white rounded-lg transition-all duration-200 shadow-sm"
+          className="flex items-center gap-2 px-2 py-1.5 md:px-4 md:py-2.5 bg-gradient-to-r from-indigo-500 to-indigo-600 hover:from-indigo-600 hover:to-indigo-700 text-white rounded-lg transition-all duration-200 shadow-sm"
         >
           <FiRefreshCw className="h-5 w-5" />
           <span>بروزرسانی</span>
@@ -204,7 +203,7 @@ const ProductionStepsView: React.FC = () => {
                           className="ml-1 text-green-500"
                           size={10}
                         />
-                        مدیریت درمان
+                        مدیریت خدمات
                       </span>
                     )}
                   {step.type && (
@@ -229,7 +228,7 @@ const ProductionStepsView: React.FC = () => {
                 </div>
                 <div className="flex gap-2">
                   <button
-                    onClick={() => handleView(step._id || "")}
+                    onClick={() => handleView(step)}
                     className="p-1.5 bg-blue-50 text-blue-600 rounded-md hover:bg-blue-100 transition-colors tooltip-container"
                     aria-label="مشاهده"
                   >
@@ -352,7 +351,7 @@ const ProductionStepsView: React.FC = () => {
       {/* View Modal */}
       {isViewModalOpen && selectedStep && (
         <div className="fixed inset-0 z-50 overflow-auto bg-gray-50/10 backdrop-blur-sm flex items-center justify-center">
-          <div className="relative bg-white rounded-xl max-w-md w-full mx-auto p-6 shadow-2xl border border-gray-200">
+          <div className="relative bg-white rounded-xl max-w-3xl w-full mx-auto p-6 shadow-2xl border border-gray-200">
             <div className=" rounded-xl overflow-hidden">
               <div className="flex justify-between items-center mb-5 pb-3 border-b border-gray-200 p-4">
                 <div className="flex items-center space-x-3 space-x-reverse">
@@ -436,15 +435,54 @@ const ProductionStepsView: React.FC = () => {
                       <FiSettings className="ml-1.5 text-indigo-500" />
                       مدیریت خدمات
                     </h3>
-                    <p
-                      className={`font-medium ${
-                        selectedStep.handlesTreatments
-                          ? "text-green-600"
-                          : "text-gray-600"
-                      }`}
-                    >
-                      {selectedStep.handlesTreatments ? "بله" : "خیر"}
-                    </p>
+
+                    {selectedStep.handlesTreatments &&
+                    Array.isArray(selectedStep.handlesTreatments) &&
+                    selectedStep.handlesTreatments.length > 0 ? (
+                      <div className="space-y-2">
+                        <p className="font-medium text-green-600">
+                          {selectedStep.handlesTreatments.length} خدمت فعال
+                        </p>
+                        <div className="mt-2 max-h-40 overflow-y-auto">
+                          <ul className="space-y-1">
+                            {selectedStep.handlesTreatments.map(
+                              (treatment, index) => {
+                                // Determine what to display based on the treatment data structure
+                                let treatmentName = "نام نامشخص"; // Default: Unknown name
+
+                                if (typeof treatment === "string") {
+                                  // If it's just a string ID
+                                  treatmentName = `ID: ${treatment}`;
+                                } else if (
+                                  treatment &&
+                                  typeof treatment === "object"
+                                ) {
+                                  // If it's an object with a name property
+                                  if (treatment.name) {
+                                    treatmentName = treatment.name;
+                                  } else if (treatment._id) {
+                                    treatmentName = `ID: ${treatment._id}`;
+                                  }
+                                }
+
+                                return (
+                                  <li
+                                    key={index}
+                                    className="flex items-center bg-gray-50 p-2 rounded-md"
+                                  >
+                                    <span className="font-medium">
+                                      {treatmentName}
+                                    </span>
+                                  </li>
+                                );
+                              }
+                            )}
+                          </ul>
+                        </div>
+                      </div>
+                    ) : (
+                      <p className="font-medium text-gray-600">بدون خدمات</p>
+                    )}
                   </div>
 
                   <div className="border border-gray-200 rounded-lg p-4">
@@ -460,7 +498,7 @@ const ProductionStepsView: React.FC = () => {
                   </div>
 
                   <div className="border border-gray-200 rounded-lg p-4">
-                    <h3 className="text-sm font-medium text-gray-700 mb-2 flex items-center">
+                    <h3 className="text-sm font-medium text-gray-700 mb-2                                                                                                                                     flex items-center">
                       <FiCalendar className="ml-1.5 text-indigo-500" />
                       تاریخ ایجاد
                     </h3>

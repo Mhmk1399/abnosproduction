@@ -93,8 +93,7 @@ export default function ProductionHistory({ layerId }: ProductionHistoryProps) {
         </div>
 
         <div className="bg-gray-50 p-3 rounded-lg">
-          <div className="text-sm text-gray-500">مرحله فعلی
-</div>
+          <div className="text-sm text-gray-500">مرحله فعلی</div>
           <div className="font-medium">
             {typeof layer.currentStep === "object"
               ? layer.currentStep.name
@@ -129,7 +128,7 @@ export default function ProductionHistory({ layerId }: ProductionHistoryProps) {
         <div className="space-y-4">
           {history.length === 0 ? (
             <div className="text-gray-500 text-center p-4">
-             سابقه تولید در دسترس نیست
+              سابقه تولید در دسترس نیست
             </div>
           ) : (
             history.map((execution) => (
@@ -159,7 +158,9 @@ export default function ProductionHistory({ layerId }: ProductionHistoryProps) {
                       </h3>
 
                       <div className="text-sm text-gray-500">
-                        {new Date(execution.scannedAt).toLocaleDateString("fa-IR")}
+                        {new Date(execution.scannedAt).toLocaleDateString(
+                          "fa-IR"
+                        )}
                       </div>
                     </div>
                     <div

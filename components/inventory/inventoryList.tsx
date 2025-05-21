@@ -18,7 +18,6 @@ import {
 } from "react-icons/fa";
 import { InventoryData } from "@/types/types";
 import {
-  FiAlignLeft,
   FiBox,
   FiCode,
   FiEye,
@@ -157,7 +156,7 @@ const InventoryList = () => {
           </div>
 
           <div className="flex items-center gap-2">
-            <span className="bg-indigo-50 text-indigo-700 text-sm py-1 px-3 rounded-full font-medium">
+            <span className=" text-black text-sm py-1 px-3 font-medium">
               {inventoriesList.length} انبار
             </span>
             <button
@@ -502,7 +501,7 @@ const InventoryList = () => {
 
       {isModalOpen && selectedInventory && (
         <div className="fixed inset-0 z-50 overflow-auto bg-gray-50/10 backdrop-blur-sm flex items-center justify-center">
-          <div className="relative bg-white rounded-xl max-w-md w-full mx-auto p-6 shadow-2xl border border-gray-200">
+          <div className="relative bg-white rounded-xl max-w-3xl w-full mx-auto p-6 shadow-2xl border border-gray-200">
             {/* Modal Header */}
             <div className="flex justify-between items-center p-6 border-b">
               <h3 className="text-xl font-bold text-gray-800 flex items-center gap-2">
@@ -574,14 +573,13 @@ const InventoryList = () => {
                   <div className="space-y-3">
                     <div className="flex items-center">
                       <span className="text-gray-500 ml-2">ظرفیت:</span>
-                      <span className="font-medium bg-blue-50 text-blue-700 px-3 py-1 rounded-full">
+                      <span className="font-medium text-black border-b px-3 py-1">
                         {selectedInventory.Capacity}
                       </span>
                     </div>
 
                     <div>
                       <div className="text-gray-500 mb-1 flex items-center">
-                        <FiAlignLeft className="ml-1" />
                         توضیحات:
                       </div>
                       <div className="bg-white p-3 rounded border text-gray-700 min-h-[80px]">
