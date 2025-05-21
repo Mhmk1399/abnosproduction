@@ -27,16 +27,6 @@ export const navMenuItems = [
       { id: "configure", title: "ساخت خط تولید" },
     ],
   },
-
-  // {
-  //   id: "configureMicroLines",
-  //   title: "ساخت میکرو لاین ",
-  //   icon: "FaMicrochip", // Font Awesome Microchip icon
-  //   children: [
-  //     { id: "AddconfigureMicroLine", title: "افزودن میکرولاین" },
-  //     { id: "configureMicroLineList", title: "لیست میکرولاین" },
-  //   ],
-  // },
   {
     id: "layers",
     title: "مدیریت لایه ها ",

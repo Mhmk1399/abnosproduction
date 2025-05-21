@@ -1,4 +1,4 @@
-import JsBarcode from 'jsbarcode';
+import JsBarcode from "jsbarcode";
 
 /**
  * Service for generating and managing barcodes for production layers
@@ -10,31 +10,34 @@ export class BarcodeService {
    * @param options Additional options for barcode generation
    * @returns A data URL containing the barcode image
    */
-  static generateBarcodeDataUrl(layerId: string, options: {
-    format?: string;
-    width?: number;
-    height?: number;
-    displayValue?: boolean;
-    text?: string;
-  } = {}): string {
+  static generateBarcodeDataUrl(
+    layerId: string,
+    options: {
+      format?: string;
+      width?: number;
+      height?: number;
+      displayValue?: boolean;
+      text?: string;
+    } = {}
+  ): string {
     // Create a canvas element to render the barcode
-    const canvas = document.createElement('canvas');
-    
+    const canvas = document.createElement("canvas");
+
     // Set default options
     const defaultOptions = {
-      format: 'CODE128',
+      format: "CODE128",
       width: 2,
       height: 100,
       displayValue: true,
       text: layerId,
-      ...options
+      ...options,
     };
-    
+
     // Generate the barcode
     JsBarcode(canvas, layerId, defaultOptions);
-    
+
     // Return the data URL
-    return canvas.toDataURL('image/png');
+    return canvas.toDataURL("image/png");
   }
 
   /**
@@ -45,17 +48,18 @@ export class BarcodeService {
    */
   static generateBarcodeValue(layerId: string): string {
     // Use a prefix to identify the type of barcode (L for Layer)
-    const prefix = 'L';
-    
+    const prefix = "L";
+
     // Take the first 10 characters of the ID to keep the barcode manageable
     const shortId = layerId.substring(0, 10);
-    
+
     // Add a simple checksum (sum of character codes modulo 97)
-    const checksum = Array.from(shortId)
-      .reduce((sum, char) => sum + char.charCodeAt(0), 0) % 97;
-    
+    const checksum =
+      Array.from(shortId).reduce((sum, char) => sum + char.charCodeAt(0), 0) %
+      97;
+
     // Format: PREFIX-SHORTID-CHECKSUM
-    return `${prefix}-${shortId}-${checksum.toString().padStart(2, '0')}`;
+    return `${prefix}-${shortId}-${checksum.toString().padStart(2, "0")}`;
   }
 
   /**
@@ -69,16 +73,16 @@ export class BarcodeService {
     const barcodeDataUrl = this.generateBarcodeDataUrl(barcodeValue, {
       text: productionCode || barcodeValue,
       height: 50,
-      displayValue: true
+      displayValue: true,
     });
-    
+
     // Create a new window for printing
-    const printWindow = window.open('', '_blank');
+    const printWindow = window.open("", "_blank");
     if (!printWindow) {
-      alert('Please allow pop-ups to print barcodes');
+      alert("Please allow pop-ups to print barcodes");
       return;
     }
-    
+
     // Write the print content
     printWindow.document.write(`
       <!DOCTYPE html>
@@ -116,7 +120,11 @@ export class BarcodeService {
         <body>
           <div class="barcode-container">
             <img src="${barcodeDataUrl}" class="barcode-image" alt="Barcode" />
-            ${productionCode ? `<div class="production-info">Code: ${productionCode}</div>` : ''}
+            ${
+              productionCode
+                ? `<div class="production-info">Code: ${productionCode}</div>`
+                : ""
+            }
           </div>
           <script>
             // Auto print when loaded
@@ -130,7 +138,7 @@ export class BarcodeService {
         </body>
       </html>
     `);
-    
+
     printWindow.document.close();
   }
 
@@ -143,18 +151,19 @@ export class BarcodeService {
     // Check if the barcode has the correct format
     const regex = /^L-([a-f0-9]{10})-(\d{2})$/i;
     const match = scannedValue.match(regex);
-    
+
     if (!match) return null;
-    
+
     const [_, shortId, checksumStr] = match;
     const checksum = parseInt(checksumStr, 10);
-    
+
     // Verify the checksum
-    const calculatedChecksum = Array.from(shortId)
-      .reduce((sum, char) => sum + char.charCodeAt(0), 0) % 97;
-    
+    const calculatedChecksum =
+      Array.from(shortId).reduce((sum, char) => sum + char.charCodeAt(0), 0) %
+      97;
+
     if (checksum !== calculatedChecksum) return null;
-    
+
     // Return the short ID (this would need to be mapped back to the full ID in a real system)
     return shortId;
   }
