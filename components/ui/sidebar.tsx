@@ -9,7 +9,7 @@ import WorkerPage from "../workers-layers/workers";
 import OptimizerPage from "../workers-layers/optimaizer";
 import AddProductionStep from "../steps/AddProductionStep";
 import ProductionStepsView from "../steps/ProductionStepsView";
-
+import { NavMenuItem, MenuItemChild } from "../../types/types";
 import {
   FaBoxOpen,
   FaIndustry,
@@ -21,6 +21,11 @@ import {
   FaListOl,
   FaCog,
   FaUsers,
+  FaTimes,
+  FaBars,
+  FaChevronLeft,
+  FaSearch,
+  FaThumbtack,
 } from "react-icons/fa";
 import CreateProductionLine from "../ProductionLine/CreateProductionLine";
 import ProductionLine from "../ProductionLine/ProductionLine";
@@ -39,29 +44,37 @@ const iconMap = {
   FaUsers,
 };
 
-interface MenuItemChild {
-  id: string;
-  title: string;
-}
-
-interface NavMenuItem {
-  id: string;
-  title: string;
-  icon: string;
-  children: {
-    id: string;
-    title: string;
-  }[];
-}
-
-// Simple animation variants
+// Enhanced animation variants
 const sidebarVariants = {
   open: {
     width: "280px",
-    transition: { duration: 0.3, ease: "easeOut" },
+    transition: {
+      duration: 0.3,
+      ease: [0.4, 0, 0.2, 1],
+      staggerChildren: 0.05,
+      delayChildren: 0.1,
+    },
   },
   closed: {
     width: "0px",
+    transition: {
+      duration: 0.3,
+      ease: [0.4, 0, 0.2, 1],
+      staggerChildren: 0.05,
+      staggerDirection: -1,
+    },
+  },
+};
+
+const itemVariants = {
+  open: {
+    opacity: 1,
+    x: 0,
+    transition: { duration: 0.3, ease: "easeOut" },
+  },
+  closed: {
+    opacity: 0,
+    x: -20,
     transition: { duration: 0.3, ease: "easeIn" },
   },
 };
@@ -71,11 +84,13 @@ const NavItem = ({
   setActiveChild,
   setIsOpen,
   activeChild,
+  isPinned,
 }: {
   item: NavMenuItem;
   setActiveChild: (childId: string) => void;
   setIsOpen: (isOpen: boolean) => void;
   activeChild: string | null;
+  isPinned: boolean;
 }) => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const IconComponent = item.icon && iconMap[item.icon as keyof typeof iconMap];
@@ -96,7 +111,7 @@ const NavItem = ({
 
   const handleChildClick = (childId: string) => {
     setActiveChild(childId);
-    if (window.innerWidth < 768) {
+    if (window.innerWidth < 768 && !isPinned) {
       setIsOpen(false);
     }
   };
@@ -105,22 +120,23 @@ const NavItem = ({
     activeChild && item.children.some((child) => child.id === activeChild);
 
   return (
-    <div className="mb-2">
+    <motion.div className="mb-2" variants={itemVariants}>
       <div
-        className={`flex items-center justify-between p-2.5 rounded-md cursor-pointer transition-all duration-200 ${
-          hasActiveChild ? "bg-blue-50" : "hover:bg-gray-50"
+        className={`flex items-center justify-between p-3 rounded-lg cursor-pointer transition-all duration-200 ${
+          hasActiveChild
+            ? "bg-blue-50 text-blue-600"
+            : "hover:bg-gray-50 text-gray-700"
         }`}
         onClick={toggleDropdown}
       >
-        <div className="flex items-center gap-2.5">
+        <div className="flex items-center gap-3">
           {IconComponent && (
             <div
-              onClick={() => setIsOpen(false)}
               className={`${
                 hasActiveChild ? "text-blue-600" : "text-gray-500"
               }`}
             >
-              <IconComponent size={16} />
+              <IconComponent size={18} />
             </div>
           )}
           <span
@@ -132,24 +148,11 @@ const NavItem = ({
           </span>
         </div>
         <motion.div
-          animate={{ rotate: isDropdownOpen ? 180 : 0 }}
+          animate={{ rotate: isDropdownOpen ? 90 : 0 }}
           transition={{ duration: 0.2 }}
           className={`${hasActiveChild ? "text-blue-600" : "text-gray-500"}`}
         >
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            className="h-4 w-4"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="M19 9l-7 7-7-7"
-            />
-          </svg>
+          <FaChevronLeft size={14} />
         </motion.div>
       </div>
 
@@ -159,18 +162,19 @@ const NavItem = ({
             initial={{ height: 0, opacity: 0 }}
             animate={{ height: "auto", opacity: 1 }}
             exit={{ height: 0, opacity: 0 }}
-            transition={{ duration: 0.2 }}
+            transition={{ duration: 0.3, ease: [0.4, 0, 0.2, 1] }}
             className="overflow-hidden"
           >
-            <div className="pr-2 mr-2 mt-1 border-r border-gray-100">
+            <div className="pr-2 mr-3 mt-1 border-r border-gray-100">
               {item.children.map((child: MenuItemChild) => {
                 const isActive = child.id === activeChild;
                 return (
-                  <div
+                  <motion.div
                     key={child.id}
-                    className={`py-2 px-3 my-1 text-xs rounded-md cursor-pointer transition-all duration-150 ${
+                    whileHover={{ x: 4 }}
+                    className={`py-2.5 px-4 my-1 text-sm rounded-lg cursor-pointer transition-all duration-150 ${
                       isActive
-                        ? "bg-blue-500 text-white"
+                        ? "bg-blue-500 text-white shadow-sm"
                         : "hover:bg-gray-50 text-gray-600"
                     }`}
                     onClick={() => {
@@ -179,14 +183,14 @@ const NavItem = ({
                     }}
                   >
                     {child.title}
-                  </div>
+                  </motion.div>
                 );
               })}
             </div>
           </motion.div>
         )}
       </AnimatePresence>
-    </div>
+    </motion.div>
   );
 };
 
@@ -199,6 +203,16 @@ const renderChildComponent = (
 ) => {
   try {
     switch (childId) {
+      case "welcome":
+      case null:
+        return (
+          <WelcomeScreen
+            setActiveChild={setActiveChild}
+            setIsOpen={setIsOpen}
+            isPinned={isPinned}
+            activeChild={childId}
+          />
+        );
       case "addInventory":
         return <AddInventoryForm />;
       case "InventoryList":
@@ -230,8 +244,8 @@ const renderChildComponent = (
   } catch (error) {
     console.error("Error rendering child component:", error);
     return (
-      <div className="p-4 text-red-600">
-        <h2 className="text-lg font-bold">خطا در بارگذاری</h2>
+      <div className="p-6 text-red-600 bg-red-50 rounded-lg border border-red-200">
+        <h2 className="text-lg font-bold mb-2">خطا در بارگذاری</h2>
         <p>لطفاً دوباره تلاش کنید.</p>
       </div>
     );
@@ -241,8 +255,20 @@ const renderChildComponent = (
 const SideBar = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [activeChild, setActiveChild] = useState<string | null>(null);
-  const [isPinned] = useState(false);
+  const [isPinned, setIsPinned] = useState(false);
+  const [searchTerm, setSearchTerm] = useState("");
   const sidebarRef = useRef<HTMLDivElement>(null);
+
+  // Filter menu items based on search term
+  const filteredMenuItems = searchTerm
+    ? navMenuItems.filter(
+        (item) =>
+          item.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+          item.children.some((child) =>
+            child.title.toLowerCase().includes(searchTerm.toLowerCase())
+          )
+      )
+    : navMenuItems;
 
   // Close sidebar when clicking outside
   useEffect(() => {
@@ -283,38 +309,30 @@ const SideBar = () => {
     };
   }, [isOpen, isPinned]);
 
+  // Toggle pin state
+  const togglePin = () => {
+    setIsPinned(!isPinned);
+    if (!isOpen) {
+      setIsOpen(true);
+    }
+  };
+
   return (
     <div className="flex h-full overflow-auto" dir="rtl">
-      {/* Menu Button */}
-      <button
+      {/* Menu Button with Animation */}
+      <motion.button
         onClick={() => setIsOpen(!isOpen)}
-        className="fixed top-4 right-4 z-50 bg-white p-2 rounded-md shadow-md hover:shadow-lg transition-shadow focus:outline-none"
+        className="fixed top-4 right-4 z-50 bg-white p-3 rounded-full shadow-lg hover:shadow-xl transition-all focus:outline-none"
+        whileHover={{ scale: 1.05 }}
+        whileTap={{ scale: 0.95 }}
         aria-label={isOpen ? "Close menu" : "Open menu"}
       >
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          className="h-6 w-6 text-blue-600"
-          fill="none"
-          viewBox="0 0 24 24"
-          stroke="currentColor"
-        >
-          {isOpen ? (
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="M6 18L18 6M6 6l12 12"
-            />
-          ) : (
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="M4 6h16M4 12h16M4 18h16"
-            />
-          )}
-        </svg>
-      </button>
+        {isOpen ? (
+          <FaTimes className="text-blue-600" size={18} />
+        ) : (
+          <FaBars className="text-blue-600" size={18} />
+        )}
+      </motion.button>
 
       {/* Backdrop */}
       <AnimatePresence>
@@ -324,7 +342,7 @@ const SideBar = () => {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.2 }}
-            className="fixed inset-0 bg-black/20 backdrop-blur-md z-30"
+            className="fixed inset-0 bg-black/10 backdrop-blur-md z-30"
             onClick={() => setIsOpen(false)}
           />
         )}
@@ -332,67 +350,132 @@ const SideBar = () => {
 
       {/* Sidebar */}
       <AnimatePresence>
-        {isOpen && (
+        {(isOpen || isPinned) && (
           <motion.div
             ref={sidebarRef}
             initial="closed"
             animate="open"
             exit="closed"
             variants={sidebarVariants}
-            className="fixed top-0 right-0 h-full z-40 bg-white shadow-lg overflow-hidden"
+            className={`fixed top-0 right-0 h-full z-40 bg-white shadow-xl overflow-hidden ${
+              isPinned ? "border-l border-gray-200" : ""
+            }`}
           >
-            <div className="h-full flex flex-col p-4">
-              <div className="mr-auto w-full gap-3 py-4 border-b border-gray-100">
-                <h1 className="text-lg font-semibold mr-28 -mt-2 text-gray-800">
-                  آبنوس پلتفورم
-                </h1>
-              </div>
-
-              {/* Navigation Menu */}
-              <div className="flex-1 overflow-y-auto py-2">
-                {navMenuItems.map((item) => (
-                  <NavItem
-                    key={item.id}
-                    item={item}
-                    setActiveChild={setActiveChild}
-                    setIsOpen={setIsOpen}
-                    activeChild={activeChild}
-                  />
-                ))}
-              </div>
-
-              {/* Footer */}
-              <div className="mt-auto pt-4 border-t border-gray-100">
-                <div className="flex items-center justify-between text-sm text-gray-500">
-                  <span>نسخه ۱.۰.۰</span>
-                  <button
-                    onClick={() => setIsOpen(false)}
-                    className="p-1.5 rounded-md hover:bg-gray-50 text-gray-400 hover:text-gray-600"
-                  >
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      className="h-5 w-5"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      stroke="currentColor"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M6 18L18 6M6 6l12 12"
-                      />
-                    </svg>
-                  </button>
+            <div className="h-full flex flex-col mt-10 p-4">
+              {/* Header */}
+              <motion.div
+                className="flex items-center justify-between py-4 border-b border-gray-100 mb-4"
+                variants={itemVariants}
+              >
+                <div className="flex items-center gap-3">
+                  <div className="bg-blue-500 text-white p-2 rounded-lg">
+                    <FaCogs size={18} />
+                  </div>
+                  <h1 className="text-lg font-semibold text-gray-800">
+                    آبنوس پلتفورم
+                  </h1>
                 </div>
+                <div className="flex items-center gap-2">
+                  <motion.button
+                    onClick={togglePin}
+                    className={`p-2 rounded-md transition-colors ${
+                      isPinned
+                        ? "bg-blue-50 text-blue-600"
+                        : "text-gray-400 hover:bg-gray-50 hover:text-gray-600"
+                    }`}
+                    whileHover={{ scale: 1.1 }}
+                    whileTap={{ scale: 0.9 }}
+                    title={isPinned ? "آزاد کردن منو" : "پین کردن منو"}
+                  >
+                    {isPinned ? (
+                      <FaThumbtack size={14} />
+                    ) : (
+                      <FaThumbtack size={14} />
+                    )}
+                  </motion.button>
+                  {!isPinned && (
+                    <motion.button
+                      onClick={() => setIsOpen(false)}
+                      className="p-2 rounded-md hover:bg-gray-50 text-gray-400 hover:text-gray-600"
+                      whileHover={{ scale: 1.1 }}
+                      whileTap={{ scale: 0.9 }}
+                    >
+                      <FaTimes size={14} />
+                    </motion.button>
+                  )}
+                </div>
+              </motion.div>
+
+              {/* Search */}
+              <motion.div className="relative mb-4" variants={itemVariants}>
+                <div className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
+                  <FaSearch className="text-gray-400" size={14} />
+                </div>
+                <input
+                  type="text"
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                  placeholder="جستجو در منو..."
+                  className="w-full pr-10 pl-4 py-2.5 bg-gray-50 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all text-sm"
+                />
+              </motion.div>
+
+              {/* Navigation Menu with Scroll */}
+              <div className="flex-1 overflow-y-auto py-2 custom-scrollbar">
+                {filteredMenuItems.length === 0 ? (
+                  <motion.div
+                    className="text-center p-4 text-gray-500 bg-gray-50 rounded-lg"
+                    variants={itemVariants}
+                  >
+                    <p>نتیجه‌ای یافت نشد</p>
+                    <p className="text-sm mt-1">
+                      لطفاً عبارت دیگری را جستجو کنید
+                    </p>
+                  </motion.div>
+                ) : (
+                  filteredMenuItems.map((item) => (
+                    <NavItem
+                      key={item.id}
+                      item={item}
+                      setActiveChild={setActiveChild}
+                      setIsOpen={setIsOpen}
+                      activeChild={activeChild}
+                      isPinned={isPinned}
+                    />
+                  ))
+                )}
               </div>
+
+              {/* Keyboard Shortcuts */}
+              <motion.div
+                className="bg-gray-50 rounded-lg p-3 mb-4 text-xs text-gray-500"
+                variants={itemVariants}
+              >
+                <p className="font-medium mb-2">میانبرهای کیبورد:</p>
+                <div className="flex justify-between items-center mb-1">
+                  <span>باز/بستن منو</span>
+                  <span className="bg-white px-2 py-1 rounded border border-gray-200">
+                    Ctrl + B
+                  </span>
+                </div>
+                <div className="flex justify-between items-center">
+                  <span>بستن منو</span>
+                  <span className="bg-white px-2 py-1 rounded border border-gray-200">
+                    Esc
+                  </span>
+                </div>
+              </motion.div>
             </div>
           </motion.div>
         )}
       </AnimatePresence>
 
       {/* Main Content */}
-      <div className="flex-1 transition-all duration-300">
+      <div
+        className={`flex-1 transition-all duration-300 ${
+          isPinned ? "mr-[280px]" : ""
+        }`}
+      >
         <main className="w-full">
           {renderChildComponent(
             activeChild,
@@ -406,4 +489,46 @@ const SideBar = () => {
   );
 };
 
-export default SideBar;
+// Add custom scrollbar styles to global CSS
+const GlobalStyles = () => {
+  useEffect(() => {
+    const style = document.createElement("style");
+    style.innerHTML = `
+      .custom-scrollbar::-webkit-scrollbar {
+        width: 6px;
+      }
+      
+      .custom-scrollbar::-webkit-scrollbar-track {
+        background: #f1f1f1;
+        border-radius: 10px;
+      }
+      
+      .custom-scrollbar::-webkit-scrollbar-thumb {
+        background: #d1d5db;
+        border-radius: 10px;
+      }
+      
+      .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+        background: #9ca3af;
+      }
+    `;
+    document.head.appendChild(style);
+
+    return () => {
+      document.head.removeChild(style);
+    };
+  }, []);
+
+  return null;
+};
+
+const SideBarWithStyles = () => {
+  return (
+    <>
+      <GlobalStyles />
+      <SideBar />
+    </>
+  );
+};
+
+export default SideBarWithStyles;

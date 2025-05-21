@@ -63,7 +63,7 @@ export async function POST(req: NextRequest) {
       try {
         logContent = await fs.readFile(logFilePath, "utf8");
       } catch (err) {
-        console.log(err)
+        console.log(err);
         // File doesn't exist yet, that's fine
       }
 
@@ -107,12 +107,10 @@ function generateTrfContent(layers: layerData[], batchNumber: number): string {
 
   // Process each order group
   Object.entries(layersByOrder).forEach(([orderKey, orderLayers]) => {
-    console.log(orderKey)
+    console.log(orderKey);
     const firstLayer = orderLayers[0];
     const customerName = firstLayer.customer?.name || "Unknown";
-    const orderNumber =
-      firstLayer.invoice?._id ||
-      `ORD${batchNumber}`;
+    const orderNumber = firstLayer.invoice?._id || `ORD${batchNumber}`;
 
     const customerNumber = firstLayer.customer?._id || "CUST001";
 

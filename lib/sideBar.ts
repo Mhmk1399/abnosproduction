@@ -5,7 +5,7 @@ export const navMenuItems = [
     title: "مدیریت انبار های تولید",
     icon: "FaBoxOpen", // Font Awesome Box Open icon
     children: [
-      { id: "addInventory", title: " افزودن انبار توبید " },
+      { id: "addInventory", title: " افزودن انبار تولید " },
       { id: "InventoryList", title: " لیست انبار ها" },
     ],
   },
@@ -28,15 +28,15 @@ export const navMenuItems = [
     ],
   },
 
-  {
-    id: "configureMicroLines",
-    title: "ساخت میکرو لاین ",
-    icon: "FaMicrochip", // Font Awesome Microchip icon
-    children: [
-      { id: "AddconfigureMicroLine", title: "افزودن میکرولاین" },
-      { id: "configureMicroLineList", title: "لیست میکرولاین" },
-    ],
-  },
+  // {
+  //   id: "configureMicroLines",
+  //   title: "ساخت میکرو لاین ",
+  //   icon: "FaMicrochip", // Font Awesome Microchip icon
+  //   children: [
+  //     { id: "AddconfigureMicroLine", title: "افزودن میکرولاین" },
+  //     { id: "configureMicroLineList", title: "لیست میکرولاین" },
+  //   ],
+  // },
   {
     id: "layers",
     title: "مدیریت لایه ها ",
@@ -56,6 +56,4 @@ export const navMenuItems = [
     icon: "FaChartLine", // Font Awesome Chart Line icon
     children: [{ id: "optimizer", title: "بهینه ساز" }],
   },
-
- 
 ];

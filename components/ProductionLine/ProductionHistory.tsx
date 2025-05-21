@@ -63,7 +63,7 @@ export default function ProductionHistory({ layerId }: ProductionHistoryProps) {
   }, [layerId, layerFromHook]);
 
   if (loading || layerLoading) {
-    return <div className="p-4 text-center">Loading production history...</div>;
+    return <div className="p-4 text-center">بارگیری تاریخچه تولید...</div>;
   }
 
   if (error) {
@@ -76,25 +76,26 @@ export default function ProductionHistory({ layerId }: ProductionHistoryProps) {
   }
 
   if (!layer) {
-    return <div className="p-4 text-center">Layer not found</div>;
+    return <div className="p-4 text-center">لایه پیدا نشد</div>;
   }
 
   return (
     <div className="bg-white rounded-lg shadow-md p-4">
       <h2 className="text-xl font-bold mb-4">
-        Production History: {layer.productionCode}
+        تاریخچه تولید: {layer.productionCode}
       </h2>
 
       <div className="mb-6 grid grid-cols-1 md:grid-cols-3 gap-4">
         <div className="bg-gray-50 p-3 rounded-lg">
-          <div className="text-sm text-gray-500">Dimensions</div>
+          <div className="text-sm text-gray-500">ابعاد</div>
           <div className="font-medium">
             {layer.width} × {layer.height}
           </div>
         </div>
 
         <div className="bg-gray-50 p-3 rounded-lg">
-          <div className="text-sm text-gray-500">Current Step</div>
+          <div className="text-sm text-gray-500">مرحله فعلی
+</div>
           <div className="font-medium">
             {typeof layer.currentStep === "object"
               ? layer.currentStep.name
@@ -103,7 +104,7 @@ export default function ProductionHistory({ layerId }: ProductionHistoryProps) {
         </div>
 
         <div className="bg-gray-50 p-3 rounded-lg">
-          <div className="text-sm text-gray-500">Production Line</div>
+          <div className="text-sm text-gray-500">خط تولید</div>
           <div className="font-medium">
             {typeof layer.productionLine === "object"
               ? layer.productionLine.name
@@ -117,7 +118,7 @@ export default function ProductionHistory({ layerId }: ProductionHistoryProps) {
           onClick={loadHistory}
           className="px-3 py-1 bg-blue-100 text-blue-700 rounded-md hover:bg-blue-200 transition-colors"
         >
-          Refresh History
+          تاریخچه را تازه کنید
         </button>
       </div>
 
@@ -129,7 +130,7 @@ export default function ProductionHistory({ layerId }: ProductionHistoryProps) {
         <div className="space-y-4">
           {history.length === 0 ? (
             <div className="text-gray-500 text-center p-4">
-              No production history available
+             سابقه تولید در دسترس نیست
             </div>
           ) : (
             history.map((execution) => (
@@ -154,12 +155,12 @@ export default function ProductionHistory({ layerId }: ProductionHistoryProps) {
                     <div>
                       <h3 className="font-medium">
                         {typeof execution.step === "object"
-                          ? execution.step.name
-                          : "Unknown Step"}
+                          ? execution?.step?.name
+                          : "مرحله ناشناخته"}
                       </h3>
 
                       <div className="text-sm text-gray-500">
-                        {new Date(execution.scannedAt).toLocaleString()}
+                        {new Date(execution.scannedAt).toLocaleDateString("fa-IR")}
                       </div>
                     </div>
                     <div
@@ -169,7 +170,7 @@ export default function ProductionHistory({ layerId }: ProductionHistoryProps) {
                           : "bg-yellow-100 text-yellow-700"
                       }`}
                     >
-                      {execution.passed ? "Completed" : "In Progress"}
+                      {execution.passed ? "تکمیل شده" : "در حال انجام"}
                     </div>
                   </div>
 
@@ -184,7 +185,7 @@ export default function ProductionHistory({ layerId }: ProductionHistoryProps) {
                     execution.treatmentsApplied.length > 0 && (
                       <div className="mt-3">
                         <div className="text-xs font-medium text-gray-500 mb-1">
-                          Treatments Applied:
+                          خدمات اعمال شده:
                         </div>
                         <div className="flex flex-wrap gap-2">
                           {execution.treatmentsApplied.map(

@@ -5,7 +5,7 @@ import DraggableItem from "./DraggableItem";
 import { DropAreaItem, InventoryData, Step } from "@/types/types";
 
 export interface DraggableItemProps {
-  item: DropAreaItem;
+  item: Step | InventoryData | DropAreaItem;
   index: number;
   type: "inventory" | "step";
   isInLine: boolean;
@@ -73,7 +73,11 @@ export default function DropArea({
           {lineItems.map((item, index) => (
             <div key={item.id}>
               <DraggableItem
-                item={item}
+                item={{
+                  ...item,
+                  Capacity: item.Capacity || 0, // Ensure Capacity is always a number
+                  location: item.location || "", // Ensure location is always a string
+                }}
                 index={index}
                 type={item.type}
                 isInLine={true}

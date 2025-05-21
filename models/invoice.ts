@@ -94,12 +94,11 @@ const invoiceSchema = new mongoose.Schema(
       default: "pending",
     },
     productuModel: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: "Product",
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Product",
     },
-    
   },
-  
+
   { timestamps: true }
 );
 export default mongoose.models.Invoice ||

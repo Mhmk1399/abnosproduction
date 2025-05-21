@@ -8,34 +8,36 @@ export function useProductLayers(): UseProductLayersReturn {
   const [error, setError] = useState<string | null>(null);
 
   // Fetch product layers
-  const { data, error: swrError, mutate: swrMutate } = useSWR<layerData[]>(
-    '/api/productLayer',
-    fetcher,
-    {
-      dedupingInterval: 2000,
-      revalidateOnFocus: false,
-    }
-  );
+  const {
+    data,
+    error: swrError,
+    mutate: swrMutate,
+  } = useSWR<layerData[]>("/api/productLayer", fetcher, {
+    dedupingInterval: 2000,
+    revalidateOnFocus: false,
+  });
 
   // Create a new product layer
-  const createProductLayer = async (productLayerData: Partial<layerData>): Promise<boolean> => {
+  const createProductLayer = async (
+    productLayerData: Partial<layerData>
+  ): Promise<boolean> => {
     try {
-      const response = await fetch('/api/productLayer', {
-        method: 'POST',
+      const response = await fetch("/api/productLayer", {
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
         body: JSON.stringify(productLayerData),
       });
 
       if (!response.ok) {
         const errorData = await response.json();
-        throw new Error(errorData.error || 'Failed to create product layer');
+        throw new Error(errorData.error || "Failed to create product layer");
       }
 
       return swrMutate().then(() => true);
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'An error occurred');
+      setError(err instanceof Error ? err.message : "An error occurred");
       return false;
     }
   };
@@ -44,48 +46,71 @@ export function useProductLayers(): UseProductLayersReturn {
   const getProductLayer = async (id: string): Promise<layerData | null> => {
     try {
       const response = await fetch(`/api/productLayer/detailed`, {
-        method: 'GET',
+        method: "GET",
         headers: {
-          'id': id,
+          id: id,
         },
       });
 
       if (!response.ok) {
         const errorData = await response.json();
-        throw new Error(errorData.error || 'Failed to fetch product layer');
+        throw new Error(errorData.error || "Failed to fetch product layer");
       }
 
       return await response.json();
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'An error occurred');
+      setError(err instanceof Error ? err.message : "An error occurred");
+      return null;
+    }
+  };
+
+  const optimizedLayers = async (id: string): Promise<layerData | null> => {
+    try {
+      const response = await fetch(`/api/productLayer/detailed`, {
+        method: "GET",
+        headers: {
+          id: id,
+        },
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || "Failed to fetch product layer");
+      }
+
+      return await response.json();
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "An error occurred");
       return null;
     }
   };
 
   // Update an existing product layer
-  const updateProductLayer = async (productLayerData: Partial<layerData>): Promise<boolean> => {
+  const updateProductLayer = async (
+    productLayerData: Partial<layerData>
+  ): Promise<boolean> => {
     try {
       if (!productLayerData._id) {
-        throw new Error('Product layer ID is required for update');
+        throw new Error("Product layer ID is required for update");
       }
 
       const response = await fetch(`/api/productLayer/detailed`, {
-        method: 'PATCH',
+        method: "PATCH",
         headers: {
-          'Content-Type': 'application/json',
-          'id': productLayerData._id,
+          "Content-Type": "application/json",
+          id: productLayerData._id,
         },
         body: JSON.stringify(productLayerData),
       });
 
       if (!response.ok) {
         const errorData = await response.json();
-        throw new Error(errorData.error || 'Failed to update product layer');
+        throw new Error(errorData.error || "Failed to update product layer");
       }
 
       return swrMutate().then(() => true);
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'An error occurred');
+      setError(err instanceof Error ? err.message : "An error occurred");
       return false;
     }
   };
@@ -94,20 +119,20 @@ export function useProductLayers(): UseProductLayersReturn {
   const deleteProductLayer = async (id: string): Promise<boolean> => {
     try {
       const response = await fetch(`/api/productLayer/detailed`, {
-        method: 'DELETE',
+        method: "DELETE",
         headers: {
-          'id': id,
+          id: id,
         },
       });
 
       if (!response.ok) {
         const errorData = await response.json();
-        throw new Error(errorData.error || 'Failed to delete product layer');
+        throw new Error(errorData.error || "Failed to delete product layer");
       }
 
       return swrMutate().then(() => true);
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'An error occurred');
+      setError(err instanceof Error ? err.message : "An error occurred");
       return false;
     }
   };
@@ -131,13 +156,23 @@ export function useProductLayers(): UseProductLayersReturn {
 }
 
 export function useProductLayersByLine(lineId: string) {
-  const { layers, isLoading, error, mutate, createProductLayer, updateProductLayer, deleteProductLayer, getProductLayer } = useProductLayers();
+  const {
+    layers,
+    isLoading,
+    error,
+    mutate,
+    createProductLayer,
+    updateProductLayer,
+    deleteProductLayer,
+    getProductLayer,
+  } = useProductLayers();
 
-  const filteredLayers = layers.filter(layer => {
+  const filteredLayers = layers.filter((layer) => {
     // Check if productionLine is an object with _id or just an id string
-    const currentLineId = typeof layer.productionLine === 'object'
-      ? layer.productionLine._id
-      : layer.productionLine;
+    const currentLineId =
+      typeof layer.productionLine === "object"
+        ? layer.productionLine._id
+        : layer.productionLine;
 
     return currentLineId === lineId;
   });
@@ -150,7 +185,7 @@ export function useProductLayersByLine(lineId: string) {
     createProductLayer,
     updateProductLayer,
     deleteProductLayer,
-    getProductLayer
+    getProductLayer,
   };
 }
 
@@ -170,17 +205,16 @@ export function useProductLayer(id: string) {
     try {
       setIsLoading(true);
       const response = await fetch(`/api/productLayer/detailed`, {
-        method: 'GET',
+        method: "GET",
         headers: {
-          'id': id,
+          id: id,
         },
       });
-
 
       if (!response.ok) {
         const errorData = await response.json();
         console.error("API error:", errorData);
-        throw new Error(errorData.error || 'Failed to fetch product layer');
+        throw new Error(errorData.error || "Failed to fetch product layer");
       }
 
       const data = await response.json();
@@ -188,13 +222,12 @@ export function useProductLayer(id: string) {
       return data;
     } catch (err) {
       console.error("Error in fetchLayer:", err);
-      setError(err instanceof Error ? err.message : 'An error occurred');
+      setError(err instanceof Error ? err.message : "An error occurred");
       return null;
     } finally {
       setIsLoading(false);
     }
   };
-
 
   // Initial fetch - using useEffect properly
   useEffect(() => {
@@ -204,20 +237,22 @@ export function useProductLayer(id: string) {
   }, [id]);
 
   // Update the layer
-  const updateLayer = async (updatedData: Partial<layerData>): Promise<boolean> => {
+  const updateLayer = async (
+    updatedData: Partial<layerData>
+  ): Promise<boolean> => {
     try {
       const response = await fetch(`/api/productLayer/detailed`, {
-        method: 'PATCH',
+        method: "PATCH",
         headers: {
-          'Content-Type': 'application/json',
-          'id': id,
+          "Content-Type": "application/json",
+          id: id,
         },
         body: JSON.stringify(updatedData),
       });
 
       if (!response.ok) {
         const errorData = await response.json();
-        throw new Error(errorData.error || 'Failed to update product layer');
+        throw new Error(errorData.error || "Failed to update product layer");
       }
 
       // Refresh the data
@@ -226,7 +261,7 @@ export function useProductLayer(id: string) {
       await globalMutate();
       return true;
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'An error occurred');
+      setError(err instanceof Error ? err.message : "An error occurred");
       return false;
     }
   };
@@ -235,15 +270,15 @@ export function useProductLayer(id: string) {
   const deleteLayer = async (): Promise<boolean> => {
     try {
       const response = await fetch(`/api/productLayer/detailed`, {
-        method: 'DELETE',
+        method: "DELETE",
         headers: {
-          'id': id,
+          id: id,
         },
       });
 
       if (!response.ok) {
         const errorData = await response.json();
-        throw new Error(errorData.error || 'Failed to delete product layer');
+        throw new Error(errorData.error || "Failed to delete product layer");
       }
 
       setLayer(null);
@@ -251,11 +286,10 @@ export function useProductLayer(id: string) {
       await globalMutate();
       return true;
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'An error occurred');
+      setError(err instanceof Error ? err.message : "An error occurred");
       return false;
     }
   };
-  
 
   return {
     layer,
@@ -263,7 +297,6 @@ export function useProductLayer(id: string) {
     error,
     mutate: fetchLayer,
     updateLayer,
-    deleteLayer
+    deleteLayer,
   };
 }
-

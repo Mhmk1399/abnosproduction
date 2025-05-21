@@ -1,9 +1,6 @@
-import { useState } from 'react';
-import useSWR from 'swr';
-import { InventoryData } from '../types/types';
-
-
-
+import { useState } from "react";
+import useSWR from "swr";
+import { InventoryData } from "../types/types";
 
 interface UseProductionInventoryReturn {
   inventories: InventoryData[];
@@ -21,37 +18,38 @@ const fetcher = (url: string) => fetch(url).then((res) => res.json());
 export function useProductionInventory(): UseProductionInventoryReturn {
   const [error, setError] = useState<string | null>(null);
 
-  const { data, error: swrError, mutate: swrMutate } = useSWR<InventoryData[]>(
-    '/api/productionInventory',
-    fetcher,
-    {
-      dedupingInterval: 2000, // Deduplicate requests within 2 seconds
-      revalidateOnFocus: false, // Don't revalidate when window gets focus
-      revalidateIfStale: true,
-      revalidateOnReconnect: true
-    }
-  );
+  const {
+    data,
+    error: swrError,
+    mutate: swrMutate,
+  } = useSWR<InventoryData[]>("/api/productionInventory", fetcher, {
+    dedupingInterval: 2000, // Deduplicate requests within 2 seconds
+    revalidateOnFocus: false, // Don't revalidate when window gets focus
+    revalidateIfStale: true,
+    revalidateOnReconnect: true,
+  });
 
   // Create a new inventory
-  const createInventory = async (inventoryData: InventoryData): Promise<boolean> => {
+  const createInventory = async (
+    inventoryData: InventoryData
+  ): Promise<boolean> => {
     try {
-      const response = await fetch('/api/productionInventory', {
-        method: 'POST',
+      const response = await fetch("/api/productionInventory", {
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
         body: JSON.stringify(inventoryData),
       });
 
       if (!response.ok) {
         const errorData = await response.json();
-        throw new Error(errorData.error || 'Failed to create inventory');
+        throw new Error(errorData.error || "Failed to create inventory");
       }
 
       return swrMutate().then(() => true);
-
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'An error occurred');
+      setError(err instanceof Error ? err.message : "An error occurred");
       return false;
     }
   };
@@ -60,32 +58,34 @@ export function useProductionInventory(): UseProductionInventoryReturn {
   const getInventory = async (id: string): Promise<InventoryData | null> => {
     try {
       const response = await fetch(`/api/productionInventory/detailed`, {
-        method: 'GET',
+        method: "GET",
         headers: {
-          'id': id,
+          id: id,
         },
       });
 
       if (!response.ok) {
         const errorData = await response.json();
-        throw new Error(errorData.error || 'Failed to fetch inventory');
+        throw new Error(errorData.error || "Failed to fetch inventory");
       }
 
       return await response.json();
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'An error occurred');
+      setError(err instanceof Error ? err.message : "An error occurred");
       return null;
     }
   };
 
   // Update an existing inventory
-  const updateInventory = async (inventoryData: InventoryData): Promise<boolean> => {
+  const updateInventory = async (
+    inventoryData: InventoryData
+  ): Promise<boolean> => {
     try {
       const response = await fetch(`/api/productionInventory/detailed`, {
-        method: 'PATCH',
+        method: "PATCH",
         headers: new Headers({
-          'Content-Type': 'application/json',
-          'id': inventoryData._id || '',
+          "Content-Type": "application/json",
+          id: inventoryData._id || "",
         }),
         body: JSON.stringify({
           name: inventoryData.name,
@@ -97,13 +97,12 @@ export function useProductionInventory(): UseProductionInventoryReturn {
 
       if (!response.ok) {
         const errorData = await response.json();
-        throw new Error(errorData.error || 'Failed to update inventory');
+        throw new Error(errorData.error || "Failed to update inventory");
       }
 
       return swrMutate().then(() => true);
-
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'An error occurred');
+      setError(err instanceof Error ? err.message : "An error occurred");
       return false;
     }
   };
@@ -111,21 +110,20 @@ export function useProductionInventory(): UseProductionInventoryReturn {
   const deleteInventory = async (id: string): Promise<boolean> => {
     try {
       const response = await fetch(`/api/productionInventory/detailed`, {
-        method: 'DELETE',
+        method: "DELETE",
         headers: {
-          'id': id,
+          id: id,
         },
       });
 
       if (!response.ok) {
         const errorData = await response.json();
-        throw new Error(errorData.error || 'Failed to delete inventory');
+        throw new Error(errorData.error || "Failed to delete inventory");
       }
 
       return swrMutate().then(() => true);
-
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'An error occurred');
+      setError(err instanceof Error ? err.message : "An error occurred");
       return false;
     }
   };

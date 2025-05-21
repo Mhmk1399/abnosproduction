@@ -23,7 +23,6 @@ const stepExecutionSchema = new mongoose.Schema(
       required: true,
     },
 
-
     scannedAt: {
       type: Date,
       default: Date.now,
@@ -31,7 +30,10 @@ const stepExecutionSchema = new mongoose.Schema(
 
     treatmentsApplied: [
       {
-        treatment: { type: mongoose.Schema.Types.ObjectId, ref: glassTreatment },
+        treatment: {
+          type: mongoose.Schema.Types.ObjectId,
+          ref: glassTreatment,
+        },
         count: Number,
         measurement: String,
       },

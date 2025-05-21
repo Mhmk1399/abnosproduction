@@ -17,27 +17,26 @@ export async function GET() {
           path: "handlesTreatments",
           model: glassTreatment,
           select: "name code",
-        }, select: "-password -__v -createdAt -updatedAt"
-
+        },
+        select: "-password -__v -createdAt -updatedAt",
       },
       {
         path: "inventory",
         model: productionInventory,
-      }
+      },
     ]);
     return NextResponse.json(productionLines, { status: 200 });
   } catch (error) {
     console.error("Error fetching production lines:", error);
-    return NextResponse.json({ error: "Failed to fetch production lines" }, { status: 500 });
+    return NextResponse.json(
+      { error: "Failed to fetch production lines" },
+      { status: 500 }
+    );
   }
 }
 
-
-
-
 export async function POST(request: NextRequest) {
   await connect();
-
 
   try {
     const body = await request.json();
@@ -48,13 +47,15 @@ export async function POST(request: NextRequest) {
       description: body.description,
       steps: body.steps,
       inventory: body.inventory,
-      active: body.active || true
-
+      active: body.active || true,
     });
     await newProductionLine.save();
     return NextResponse.json(newProductionLine, { status: 201 });
   } catch (error) {
     console.error("Error creating production line:", error);
-    return NextResponse.json({ error: "Failed to create production line" }, { status: 500 });
+    return NextResponse.json(
+      { error: "Failed to create production line" },
+      { status: 500 }
+    );
   }
 }

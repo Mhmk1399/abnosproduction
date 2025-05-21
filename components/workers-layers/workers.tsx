@@ -5,14 +5,32 @@ import { useProductLayer } from "@/hooks/useProductLayers";
 import { BarcodeService } from "@/services/barcodeService";
 import {
   FiBarChart2,
-  FiCheck,
   FiX,
   FiInfo,
   FiClock,
   FiPrinter,
   FiCheckCircle,
   FiAlertCircle,
-  FiFileText,
+  FiActivity,
+  FiAlertTriangle,
+  FiCalendar,
+  FiCheckSquare,
+  FiGrid,
+  FiHash,
+  FiHelpCircle,
+  FiInbox,
+  FiLayers,
+  FiLock,
+  FiLogIn,
+  FiLogOut,
+  FiMaximize2,
+  FiMessageSquare,
+  FiMonitor,
+  FiPackage,
+  FiSearch,
+  FiSettings,
+  FiType,
+  FiUsers,
 } from "react-icons/fi";
 import { layerData, StepExecution, TreatmentApplication } from "@/types/types";
 
@@ -161,7 +179,7 @@ export default function WorkerPage() {
       console.log("Error: Empty barcode input");
       setScanMessage({
         type: "error",
-        text: "Please scan or enter a barcode",
+        text: "لطفا اسکن کنید یا یک بارکد وارد کنید",
       });
       return;
     }
@@ -170,7 +188,7 @@ export default function WorkerPage() {
     setScannedLayerId(null);
     setScanMessage({
       type: "info",
-      text: "Searching for layer...",
+      text: "جستجو برای لایه...",
     });
     console.log("Searching for layer with barcode:", barcodeInput);
 
@@ -214,7 +232,7 @@ export default function WorkerPage() {
         console.log("No layer ID returned from API");
         setScanMessage({
           type: "error",
-          text: "Layer not found",
+          text: "لایه پیدا نشد",
         });
         return;
       }
@@ -225,7 +243,7 @@ export default function WorkerPage() {
       setScannedLayerId(data.layerId);
       setScanMessage({
         type: "success",
-        text: "Layer found",
+        text: "لایه پیدا شد",
       });
 
       // If you need to fetch additional layer details, you can do it here
@@ -254,7 +272,7 @@ export default function WorkerPage() {
       setScanMessage({
         type: "error",
         text:
-          "Failed to process barcode: " +
+          "بارکد پردازش نشد: " +
           (err && typeof err === "object" && "message" in err
             ? (err as { message?: string }).message
             : "Unknown error"),
@@ -281,7 +299,7 @@ export default function WorkerPage() {
       if (currentStepId !== stepId) {
         setScanMessage({
           type: "error",
-          text: "This layer is not currently at this step",
+          text: "این لایه در حال حاضر در این مرحله نیست",
         });
         return;
       }
@@ -295,7 +313,7 @@ export default function WorkerPage() {
       if (!productionLineId) {
         setScanMessage({
           type: "error",
-          text: "No production line assigned to this layer",
+          text: "هیچ خط تولیدی به این لایه اختصاص داده نشده است",
         });
         return;
       }
@@ -366,7 +384,7 @@ export default function WorkerPage() {
 
         setScanMessage({
           type: "success",
-          text: "Production completed for this layer!",
+          text: "تولید این لایه به پایان رسید!",
         });
       }
       // Otherwise, move to the next step
@@ -382,7 +400,7 @@ export default function WorkerPage() {
 
         setScanMessage({
           type: "success",
-          text: "Step completed, moved to next step",
+          text: "مرحله تکمیل شد، به مرحله بعد منتقل شد",
         });
       }
 
@@ -417,42 +435,40 @@ export default function WorkerPage() {
   }
 
   return (
-    <div className="min-h-screen py-8 px-4">
+    <div className="min-h-screen py-10 px-4 bg-gray-50">
       <div className="max-w-4xl mx-auto">
-        <h1 className="text-3xl font-bold mb-8 text-center text-blue-800">
+        <h1 className="text-3xl font-bold mb-8 text-center text-blue-800 flex items-center justify-center gap-3">
+          <span className="bg-blue-100 p-2 rounded-full">
+            <FiUsers className="text-blue-700" size={24} />
+          </span>
           ایستگاه کاری
         </h1>
 
         {stepId && stepName ? (
           <>
-            <div className="mb-4 flex justify-between items-center bg-white p-4 rounded-lg shadow-sm">
-              <div>
+            <div className="mb-6 flex justify-between items-center bg-white p-5 rounded-xl shadow-sm border border-gray-100">
+              <div className="flex items-center gap-2">
+                <span className="bg-blue-50 p-1.5 rounded-md">
+                  <FiActivity className="text-blue-600" size={18} />
+                </span>
                 <span className="text-gray-600">مرحله فعلی: </span>
-                <span className="font-medium text-blue-700">{stepName}</span>
+                <span className="font-medium text-blue-700 bg-blue-50 px-3 py-1 rounded-lg">
+                  {stepName}
+                </span>
               </div>
               <button
                 onClick={handleLogout}
-                className="px-4 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition-colors flex items-center gap-2"
+                className="px-4 py-2.5 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors flex items-center gap-2 shadow-sm"
               >
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  className="h-5 w-5"
-                  viewBox="0 0 20 20"
-                  fill="currentColor"
-                >
-                  <path
-                    fillRule="evenodd"
-                    d="M3 3a1 1 0 00-1 1v12a1 1 0 001 1h12a1 1 0 001-1V4a1 1 0 00-1-1H3zm5 4a1 1 0 011-1h2a1 1 0 110 2H9a1 1 0 01-1-1zm0 4a1 1 0 011-1h2a1 1 0 110 2H9a1 1 0 01-1-1z"
-                    clipRule="evenodd"
-                  />
-                </svg>
+                <FiLogOut className="h-5 w-5" />
                 تغییر مرحله
               </button>
             </div>
 
             {/* Barcode Scanner Section */}
-            <div className="bg-white p-6 rounded-xl shadow-md mb-6">
-              <h2 className="text-lg font-medium mb-4 text-blue-800">
+            <div className="bg-white p-6 rounded-xl shadow-md mb-6 border border-gray-100">
+              <h2 className="text-lg font-medium mb-4 text-blue-800 flex items-center gap-2">
+                <FiBarChart2  className="text-blue-600" size={20} />
                 اسکن بارکد
               </h2>
               <form onSubmit={handleBarcodeScan} className="flex gap-2">
@@ -464,53 +480,54 @@ export default function WorkerPage() {
                       value={barcodeInput}
                       onChange={(e) => setBarcodeInput(e.target.value)}
                       placeholder="بارکد را اسکن کنید یا وارد نمایید..."
-                      className="w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-right"
+                      className="w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-right pr-10"
                       dir="rtl"
                       autoFocus
                       disabled={!!scannedLayer}
                     />
                     <div className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
-                      <FiBarChart2 className="text-gray-400" />
+                      <FiBarChart2  className="text-gray-400" size={20} />
                     </div>
                   </div>
                 </div>
                 <button
                   type="submit"
-                  className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+                  className="px-5 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors shadow-sm flex items-center gap-2 whitespace-nowrap"
                   disabled={!!scannedLayer}
                 >
-                  <FiCheck className="inline ml-1" />
+                  <FiSearch className="inline" size={18} />
                   جستجو
                 </button>
               </form>
 
               {scanMessage && (
                 <div
-                  className={`mt-3 p-3 rounded-lg flex items-center ${
+                  className={`mt-4 p-4 rounded-lg flex items-center ${
                     scanMessage.type === "success"
-                      ? "bg-green-50 text-green-700"
+                      ? "bg-green-50 text-green-700 border border-green-200"
                       : scanMessage.type === "error"
-                      ? "bg-red-50 text-red-700"
-                      : "bg-blue-50 text-blue-700"
+                      ? "bg-red-50 text-red-700 border border-red-200"
+                      : "bg-blue-50 text-blue-700 border border-blue-200"
                   }`}
                 >
                   {scanMessage.type === "success" ? (
-                    <FiCheckCircle className="ml-2" />
+                    <FiCheckCircle className="ml-3 flex-shrink-0" size={20} />
                   ) : scanMessage.type === "error" ? (
-                    <FiX className="ml-2" />
+                    <FiAlertCircle className="ml-3 flex-shrink-0" size={20} />
                   ) : (
-                    <FiInfo className="ml-2" />
+                    <FiInfo className="ml-3 flex-shrink-0" size={20} />
                   )}
-                  {scanMessage.text}
+                  <span>{scanMessage.text}</span>
                 </div>
               )}
             </div>
 
             {/* Scanned Layer Details */}
             {scannedLayer && (
-              <div className="bg-white rounded-xl shadow-md p-6 mb-6">
+              <div className="bg-white rounded-xl shadow-md p-6 mb-6 border border-gray-100">
                 <div className="flex justify-between items-start mb-6">
-                  <h2 className="text-lg font-medium text-blue-800">
+                  <h2 className="text-lg font-medium text-blue-800 flex items-center gap-2">
+                    <FiLayers className="text-blue-600" size={20} />
                     اطلاعات لایه
                   </h2>
                   <button
@@ -523,42 +540,55 @@ export default function WorkerPage() {
                         barcodeInputRef.current.focus();
                       }
                     }}
-                    className="px-3 py-1 bg-gray-100 text-gray-600 rounded-md hover:bg-gray-200 transition-colors text-sm"
+                    className="px-3 py-1.5 bg-gray-100 text-gray-600 rounded-md hover:bg-gray-200 transition-colors text-sm flex items-center gap-1.5"
                   >
-                    <FiX className="inline ml-1" />
+                    <FiX className="inline" size={16} />
                     بستن
                   </button>
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-                  <div>
-                    <h3 className="font-medium mb-3 text-gray-700">
+                  <div className="bg-white rounded-lg border border-gray-100 shadow-sm p-4">
+                    <h3 className="font-medium mb-3 text-gray-700 flex items-center gap-2">
+                      <FiPackage className="text-gray-500" size={16} />
                       اطلاعات تولید
                     </h3>
-                    <div className="space-y-2 bg-gray-50 p-3 rounded-md">
-                      <div className="flex justify-between">
-                        <span className="text-gray-600">کد تولید:</span>
-                        <span className="font-medium">
+                    <div className="space-y-3 bg-gray-50 p-4 rounded-lg">
+                      <div className="flex justify-between items-center">
+                        <span className="text-gray-600 flex items-center gap-1.5">
+                          <FiHash size={14} />
+                          کد تولید:
+                        </span>
+                        <span className="font-medium bg-white px-2 py-1 rounded border border-gray-100">
                           {scannedLayer.productionCode}
                         </span>
                       </div>
-                      <div className="flex justify-between">
-                        <span className="text-gray-600">ابعاد:</span>
-                        <span className="font-medium">
+                      <div className="flex justify-between items-center">
+                        <span className="text-gray-600 flex items-center gap-1.5">
+                          <FiMaximize2 size={14} />
+                          ابعاد:
+                        </span>
+                        <span className="font-medium bg-white px-2 py-1 rounded border border-gray-100">
                           {scannedLayer.width} × {scannedLayer.height}
                         </span>
                       </div>
-                      <div className="flex justify-between">
-                        <span className="text-gray-600">مرحله فعلی:</span>
-                        <span className="font-medium">
+                      <div className="flex justify-between items-center">
+                        <span className="text-gray-600 flex items-center gap-1.5">
+                          <FiActivity size={14} />
+                          مرحله فعلی:
+                        </span>
+                        <span className="font-medium bg-blue-50 text-blue-700 px-2 py-1 rounded">
                           {typeof scannedLayer.currentStep === "object"
                             ? scannedLayer.currentStep?.name
                             : "نامشخص"}
                         </span>
                       </div>
-                      <div className="flex justify-between">
-                        <span className="text-gray-600">تاریخ تولید:</span>
-                        <span className="font-medium">
+                      <div className="flex justify-between items-center">
+                        <span className="text-gray-600 flex items-center gap-1.5">
+                          <FiCalendar size={14} />
+                          تاریخ تولید:
+                        </span>
+                        <span className="font-medium bg-white px-2 py-1 rounded border border-gray-100">
                           {new Date(
                             scannedLayer.productionDate
                           ).toLocaleDateString("fa-IR")}
@@ -567,25 +597,32 @@ export default function WorkerPage() {
                     </div>
                   </div>
 
-                  <div>
-                    <h3 className="font-medium mb-3 text-gray-700">
+                  <div className="bg-white rounded-lg border border-gray-100 shadow-sm p-4">
+                    <h3 className="font-medium mb-3 text-gray-700 flex items-center gap-2">
+                      <FiGrid className="text-gray-500" size={16} />
                       اطلاعات شیشه
                     </h3>
-                    <div className="space-y-2 bg-gray-50 p-3 rounded-md">
-                      <div className="flex justify-between">
-                        <span className="text-gray-600">نوع شیشه:</span>
-                        <span className="font-medium">
+                    <div className="space-y-3 bg-gray-50 p-4 rounded-lg">
+                      <div className="flex justify-between items-center">
+                        <span className="text-gray-600 flex items-center gap-1.5">
+                          <FiType size={14} />
+                          نوع شیشه:
+                        </span>
+                        <span className="font-medium bg-white px-2 py-1 rounded border border-gray-100">
                           {typeof scannedLayer.glass === "object"
                             ? scannedLayer.glass?.name
                             : "نامشخص"}
                         </span>
                       </div>
-                      <div className="flex justify-between">
-                        <span className="text-gray-600">عملیات:</span>
+                      <div className="flex justify-between items-center">
+                        <span className="text-gray-600 flex items-center gap-1.5">
+                          <FiSettings size={14} />
+                          عملیات:
+                        </span>
                         <div className="text-left">
                           {scannedLayer.treatments &&
                           scannedLayer.treatments.length > 0 ? (
-                            <div className="flex flex-wrap justify-end gap-1">
+                            <div className="flex flex-wrap justify-end gap-1.5">
                               {scannedLayer.treatments.map((treatment, idx) => {
                                 // Add a type assertion to help TypeScript understand the shape
                                 const treatmentObj =
@@ -598,7 +635,7 @@ export default function WorkerPage() {
                                 return (
                                   <span
                                     key={idx}
-                                    className="bg-blue-50 text-blue-700 text-xs px-2 py-0.5 rounded"
+                                    className="bg-blue-50 text-blue-700 text-xs px-2 py-1 rounded-md"
                                   >
                                     {treatmentObj
                                       ? treatmentObj.name
@@ -610,7 +647,9 @@ export default function WorkerPage() {
                               })}
                             </div>
                           ) : (
-                            <span className="text-gray-500">هیچ</span>
+                            <span className="text-gray-500 bg-white px-2 py-1 rounded border border-gray-100">
+                              هیچ
+                            </span>
                           )}
                         </div>
                       </div>
@@ -619,10 +658,13 @@ export default function WorkerPage() {
                 </div>
 
                 {/* Barcode */}
-                <div className="mb-6">
-                  <h3 className="font-medium mb-3 text-gray-700">بارکد</h3>
+                <div className="mb-6 bg-white rounded-lg border border-gray-100 shadow-sm p-4">
+                  <h3 className="font-medium mb-3 text-gray-700 flex items-center gap-2">
+                    <FiBarChart2  className="text-gray-500" size={16} />
+                    بارکد
+                  </h3>
                   <div className="flex justify-between items-center">
-                    <div className="bg-gray-50 p-3 rounded-md">
+                    <div className="bg-gray-50 p-4 rounded-lg border border-gray-100">
                       <img
                         src={BarcodeService.generateBarcodeDataUrl(
                           BarcodeService.generateBarcodeValue(scannedLayer._id),
@@ -634,17 +676,18 @@ export default function WorkerPage() {
                     </div>
                     <button
                       onClick={printBarcode}
-                      className="px-3 py-2 bg-blue-100 text-blue-700 rounded-md hover:bg-blue-200 transition-colors flex items-center gap-1.5"
+                      className="px-4 py-2.5 bg-blue-100 text-blue-700 rounded-lg hover:bg-blue-200 transition-colors flex items-center gap-2 shadow-sm"
                     >
-                      <FiPrinter className="inline ml-1" />
+                      <FiPrinter className="inline" size={18} />
                       چاپ بارکد
                     </button>
                   </div>
                 </div>
 
                 {/* Step Completion Form */}
-                <div className="mb-6 border-t pt-4">
-                  <h3 className="font-medium mb-3 text-gray-700">
+                <div className="mb-6 border-t border-gray-100 pt-6">
+                  <h3 className="font-medium mb-4 text-gray-700 flex items-center gap-2">
+                    <FiCheckSquare className="text-gray-500" size={16} />
                     تکمیل مرحله
                   </h3>
 
@@ -657,10 +700,15 @@ export default function WorkerPage() {
 
                     if (currentStepId !== stepId) {
                       return (
-                        <div className="bg-yellow-50 border border-yellow-200 text-yellow-700 p-4 rounded-lg">
-                          <FiAlertCircle className="inline ml-2" />
-                          این لایه در حال حاضر در مرحله دیگری قرار دارد و
-                          نمی‌تواند در این ایستگاه پردازش شود.
+                        <div className="bg-yellow-50 border border-yellow-200 text-yellow-700 p-4 rounded-lg flex items-start">
+                          <FiAlertTriangle
+                            className="inline ml-3 mt-0.5 flex-shrink-0"
+                            size={20}
+                          />
+                          <span>
+                            این لایه در حال حاضر در مرحله دیگری قرار دارد و
+                            نمی‌تواند در این ایستگاه پردازش شود.
+                          </span>
                         </div>
                       );
                     }
@@ -668,13 +716,14 @@ export default function WorkerPage() {
                     return (
                       <div>
                         <div className="mb-4">
-                          <label className="block text-sm font-medium text-gray-700 mb-1">
+                          <label className="block text-sm font-medium text-gray-700 mb-2  items-center gap-1.5">
+                            <FiMessageSquare size={14} />
                             یادداشت‌ها (اختیاری)
                           </label>
                           <textarea
                             value={completionNotes}
                             onChange={(e) => setCompletionNotes(e.target.value)}
-                            className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-right"
+                            className="w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-right"
                             rows={3}
                             placeholder="هرگونه توضیح یا یادداشت مربوط به این مرحله را وارد کنید..."
                             dir="rtl"
@@ -684,7 +733,7 @@ export default function WorkerPage() {
                         <button
                           onClick={completeStep}
                           disabled={isProcessingStep}
-                          className={`w-full px-4 py-3 rounded-lg flex items-center justify-center gap-2 ${
+                          className={`w-full px-4 py-3.5 rounded-lg flex items-center justify-center gap-2 font-medium shadow-sm ${
                             isProcessingStep
                               ? "bg-gray-300 cursor-not-allowed text-gray-600"
                               : "bg-green-600 hover:bg-green-700 text-white"
@@ -697,7 +746,7 @@ export default function WorkerPage() {
                             </>
                           ) : (
                             <>
-                              <FiCheck className="inline" />
+                              <FiCheckCircle className="inline" size={18} />
                               تکمیل مرحله و انتقال به مرحله بعد
                             </>
                           )}
@@ -708,13 +757,15 @@ export default function WorkerPage() {
                 </div>
 
                 {/* Production History */}
-                <div>
-                  <h3 className="font-medium mb-3 text-gray-700">
+                <div className="bg-white rounded-lg border border-gray-100 shadow-sm p-4">
+                  <h3 className="font-medium mb-4 text-gray-700 flex items-center gap-2">
+                    <FiClock className="text-gray-500" size={16} />
                     تاریخچه تولید
                   </h3>
                   {layerHistory.length === 0 ? (
-                    <div className="bg-gray-50 p-4 text-center rounded-md text-gray-500">
-                      تاریخچه تولید موجود نیست
+                    <div className="bg-gray-50 p-5 text-center rounded-lg text-gray-500 border border-gray-100 flex flex-col items-center justify-center">
+                      <FiInbox size={24} className="mb-2 text-gray-400" />
+                      <span>تاریخچه تولید موجود نیست</span>
                     </div>
                   ) : (
                     <div className="relative">
@@ -739,7 +790,7 @@ export default function WorkerPage() {
                               )}
                             </div>
 
-                            <div className="bg-white p-3 rounded-lg border shadow-sm">
+                            <div className="bg-white p-4 rounded-lg border shadow-sm hover:shadow-md transition-shadow">
                               <div className="flex justify-between items-start">
                                 <div
                                   className={`px-2 py-1 rounded-full text-xs ${
@@ -755,10 +806,14 @@ export default function WorkerPage() {
                                 <div>
                                   <h3 className="font-medium text-right">
                                     {typeof execution.step === "object"
-                                      ? execution.step.name
+                                      ? execution?.step?.name
                                       : "مرحله نامشخص"}
                                   </h3>
-                                  <div className="text-sm text-gray-500 text-right">
+                                  <div className="text-sm text-gray-500 text-right flex items-center justify-end gap-1 mt-1">
+                                    <FiCalendar
+                                      size={12}
+                                      className="text-gray-400"
+                                    />
                                     {new Date(
                                       execution.scannedAt
                                     ).toLocaleString("fa-IR")}
@@ -767,8 +822,11 @@ export default function WorkerPage() {
                               </div>
 
                               {execution.notes && (
-                                <div className="mt-2 text-sm bg-gray-50 p-2 rounded text-right">
-                                  <FiFileText className="inline ml-1 text-gray-500" />
+                                <div className="mt-3 text-sm bg-gray-50 p-3 rounded-lg text-right border border-gray-100">
+                                  <FiMessageSquare
+                                    className="inline ml-1.5 text-gray-500"
+                                    size={14}
+                                  />
                                   {execution.notes}
                                 </div>
                               )}
@@ -783,24 +841,19 @@ export default function WorkerPage() {
             )}
           </>
         ) : (
-          <div className="bg-white rounded-xl shadow-md p-6 max-w-md mx-auto">
-            <h2 className="text-xl font-semibold mb-4 text-center text-blue-800">
+          <div className="bg-white rounded-xl shadow-md p-8 max-w-md mx-auto border border-gray-100">
+            <h2 className="text-xl font-semibold mb-6 text-center text-blue-800 flex items-center justify-center gap-2">
+              <span className="bg-blue-100 p-1.5 rounded-full">
+                <FiLogIn className="text-blue-700" size={20} />
+              </span>
               ورود به ایستگاه کاری
             </h2>
 
-            <div className="bg-blue-50 border border-blue-200 rounded-lg p-3 mb-6 flex items-start">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                className="h-5 w-5 text-blue-500 mt-0.5 mr-1 flex-shrink-0"
-                viewBox="0 0 20 20"
-                fill="currentColor"
-              >
-                <path
-                  fillRule="evenodd"
-                  d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z"
-                  clipRule="evenodd"
-                />
-              </svg>
+            <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-6 flex items-start">
+              <FiInfo
+                className="text-blue-500 mt-0.5 ml-3 flex-shrink-0"
+                size={20}
+              />
               <span className="text-sm text-blue-700">
                 لطفا نام ایستگاه کاری و رمز عبور خود را وارد کنید. این اطلاعات
                 توسط سرپرست به شما داده شده است.
@@ -808,45 +861,24 @@ export default function WorkerPage() {
             </div>
 
             {error && (
-              <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-lg text-red-700 flex items-center">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  className="h-5 w-5 mr-2 flex-shrink-0"
-                  viewBox="0 0 20 20"
-                  fill="currentColor"
-                >
-                  <path
-                    fillRule="evenodd"
-                    d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z"
-                    clipRule="evenodd"
-                  />
-                </svg>
-                {error}
+              <div className="mb-5 p-4 bg-red-50 border border-red-200 rounded-lg text-red-700 flex items-center">
+                <FiAlertCircle className="ml-3 flex-shrink-0" size={20} />
+                <span>{error}</span>
               </div>
             )}
 
-            <form onSubmit={handleSubmit}>
-              <div className="mb-4">
+            <form onSubmit={handleSubmit} className="space-y-5">
+              <div>
                 <label
                   htmlFor="name"
-                  className="block text-sm font-medium text-gray-700 mb-1"
+                  className="block text-sm font-medium text-gray-700 mb-2  items-center gap-1.5"
                 >
+                  <FiMonitor size={14} />
                   نام ایستگاه کاری
                 </label>
                 <div className="relative">
                   <div className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      className="h-5 w-5 text-gray-400"
-                      viewBox="0 0 20 20"
-                      fill="currentColor"
-                    >
-                      <path
-                        fillRule="evenodd"
-                        d="M10 2a1 1 0 00-1 1v1a1 1 0 002 0V3a1 1 0 00-1-1zM4 4h3a3 3 0 006 0h3a2 2 0 012 2v9a2 2 0 01-2 2H4a2 2 0 01-2-2V6a2 2 0 012-2zm2.5 7a1.5 1.5 0 100-3 1.5 1.5 0 000 3zm2.45 4a2.5 2.5 0 10-4.9 0h4.9zM12 9a1 1 0 100 2h3a1 1 0 100-2h-3zm-1 4a1 1 0 011-1h2a1 1 0 110 2h-2a1 1 0 01-1-1z"
-                        clipRule="evenodd"
-                      />
-                    </svg>
+                    <FiMonitor className="text-gray-400" size={18} />
                   </div>
                   <input
                     type="text"
@@ -860,32 +892,23 @@ export default function WorkerPage() {
                     dir="rtl"
                   />
                 </div>
-                <p className="mt-1 text-xs text-gray-500">
+                <p className="mt-1.5 text-xs text-gray-500 flex items-center gap-1">
+                  <FiHelpCircle size={12} />
                   مثال: مونتاژ، بسته‌بندی، کنترل کیفیت
                 </p>
               </div>
 
-              <div className="mb-6">
+              <div>
                 <label
                   htmlFor="password"
-                  className="block text-sm font-medium text-gray-700 mb-1"
+                  className="block text-sm font-medium text-gray-700 mb-2  items-center gap-1.5"
                 >
+                  <FiLock size={14} />
                   رمز عبور
                 </label>
                 <div className="relative">
                   <div className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      className="h-5 w-5 text-gray-400"
-                      viewBox="0 0 20 20"
-                      fill="currentColor"
-                    >
-                      <path
-                        fillRule="evenodd"
-                        d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z"
-                        clipRule="evenodd"
-                      />
-                    </svg>
+                    <FiLock className="text-gray-400" size={18} />
                   </div>
                   <input
                     type="password"
@@ -899,54 +922,25 @@ export default function WorkerPage() {
                     dir="rtl"
                   />
                 </div>
-                <p className="mt-1 text-xs text-gray-500">
+                <p className="mt-1.5 text-xs text-gray-500 flex items-center gap-1">
+                  <FiHelpCircle size={12} />
                   رمز عبور توسط سرپرست به شما داده شده است
                 </p>
               </div>
 
               <button
                 type="submit"
-                className="w-full px-4 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors disabled:bg-blue-400 flex items-center justify-center gap-2"
+                className="w-full px-4 py-3.5 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors disabled:bg-blue-400 flex items-center justify-center gap-2 shadow-sm font-medium mt-6"
                 disabled={isLoading}
               >
                 {isLoading ? (
                   <>
-                    <svg
-                      className="animate-spin h-5 w-5 text-white"
-                      xmlns="http://www.w3.org/2000/svg"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                    >
-                      <circle
-                        className="opacity-25"
-                        cx="12"
-                        cy="12"
-                        r="10"
-                        stroke="currentColor"
-                        strokeWidth="4"
-                      ></circle>
-                      <path
-                        className="opacity-75"
-                        fill="currentColor"
-                        d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-                      ></path>
-                    </svg>
+                    <div className="animate-spin rounded-full h-5 w-5 border-t-2 border-b-2 border-white"></div>
                     <span>در حال ورود...</span>
                   </>
                 ) : (
                   <>
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      className="h-5 w-5"
-                      viewBox="0 0 20 20"
-                      fill="currentColor"
-                    >
-                      <path
-                        fillRule="evenodd"
-                        d="M3 3a1 1 0 011 1v12a1 1 0 11-2 0V4a1 1 0 011-1zm7.707 3.293a1 1 0 010 1.414L9.414 9H17a1 1 0 110 2H9.414l1.293 1.293a1 1 0 01-1.414 1.414l-3-3a1 1 0 010-1.414l3-3a1 1 0 011.414 0z"
-                        clipRule="evenodd"
-                      />
-                    </svg>
+                    <FiLogIn size={18} />
                     <span>ورود به ایستگاه</span>
                   </>
                 )}

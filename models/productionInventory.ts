@@ -5,7 +5,7 @@ const productionInventorySchema = new mongoose.Schema({
     type: String,
     required: true,
   },
-  Capacity:{
+  Capacity: {
     type: Number,
     required: true,
   },
@@ -14,15 +14,14 @@ const productionInventorySchema = new mongoose.Schema({
     type: String,
     required: true,
   },
-    code: {
+  code: {
     type: String,
     required: true,
     unique: true,
   },
   description: {
     type: String,
-    
-  }
+  },
 });
 
 export default mongoose.models.productionInventory ||
