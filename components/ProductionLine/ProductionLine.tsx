@@ -46,7 +46,7 @@ const ProductionLine = ({
         await deleteProductionLine(id);
         await mutate();
       } catch (error) {
-        console.error("Error deleting production line:", error);
+        console.log("Error deleting production line:", error);
       } finally {
         setIsDeleting(false);
       }

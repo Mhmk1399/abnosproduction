@@ -81,7 +81,7 @@ export default function OptimizerPage() {
 
   const handleAssignSelectedToProductionLine = async () => {
     if (selectedLayers.length === 0) {
-      alert("Please select at least one layer");
+      alert("لطفا حداقل یک لایه را انتخاب کنید");
       return;
     }
 
@@ -105,7 +105,7 @@ export default function OptimizerPage() {
             return {
               layerId,
               success: false,
-              error: "No production line assigned to layer",
+              error: "هیچ خط تولیدی به لایه اختصاص داده نشده است",
             };
           }
 
@@ -115,7 +115,7 @@ export default function OptimizerPage() {
             return {
               layerId,
               success: false,
-              error: "No steps found in the production line",
+              error: "هیچ مرحله ای در خط تولید یافت نشد",
             };
           }
 
@@ -126,7 +126,7 @@ export default function OptimizerPage() {
           });
 
           if (!success) {
-            return { layerId, success: false, error: "Failed to update layer" };
+            return { layerId, success: false, error: "لایه به روز نشد" };
           }
 
           // Create the step execution record
@@ -147,14 +147,14 @@ export default function OptimizerPage() {
             });
 
             if (!response.ok) {
-              console.error(
+              console.log(
                 "Failed to create step execution record for layer",
                 layerId
               );
               // Continue anyway since the layer was updated successfully
             }
           } catch (err) {
-            console.error(
+            console.log(
               "Error creating step execution for layer",
               layerId,
               err
@@ -184,8 +184,8 @@ export default function OptimizerPage() {
       // Refresh the data
       await mutate();
     } catch (err) {
-      console.error("Error in batch assignment:", err);
-      alert("An error occurred during batch assignment");
+      console.log("Error in batch assignment:", err);
+      alert("در حین تخصیص دسته ای خطایی رخ داد");
     } finally {
       setProcessingLayers([]);
     }
@@ -238,7 +238,7 @@ export default function OptimizerPage() {
       // Get the first step of the selected production line
       const firstStepId = getFirstStep(selectedProductionLine);
       if (!firstStepId) {
-        alert("No steps found in the selected production line");
+        alert("هیچ مرحله ای در خط تولید انتخاب شده یافت نشد");
         return false;
       }
 
@@ -250,7 +250,7 @@ export default function OptimizerPage() {
       });
 
       if (!success) {
-        alert("Failed to assign layer to production line");
+        alert("تخصیص لایه به خط تولید ناموفق بود");
         return false;
       }
 
@@ -261,7 +261,7 @@ export default function OptimizerPage() {
       await mutate();
       return true;
     } catch (err) {
-      console.error("Error assigning to production line:", err);
+      console.log("Error assigning to production line:", err);
       return false;
     } finally {
       setProcessingLayers((prev) => prev.filter((id) => id !== layerId));
@@ -270,7 +270,7 @@ export default function OptimizerPage() {
 
   const handleGenerateTrfFile = async () => {
     if (selectedLayers.length === 0) {
-      alert("Please select at least one layer");
+      alert("لطفا حداقل یک لایه را انتخاب کنید");
       return;
     }
 
@@ -292,13 +292,13 @@ export default function OptimizerPage() {
       }
 
       const result = await response.json();
-      alert(`TRF file generated successfully: ${result.fileName}`);
+      alert(`فایل TRF با موفقیت تولید شد: ${result.fileName}`);
 
       // Provide download link
       window.open(result.downloadUrl, "_blank");
     } catch (err) {
-      console.error("Error generating TRF file:", err);
-      alert("Failed to generate TRF file");
+      console.log("Error generating TRF file:", err);
+      alert("فایل TRF تولید نشد");
     }
   };
 

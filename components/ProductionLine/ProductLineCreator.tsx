@@ -129,12 +129,12 @@ export default function ProductLineCreator({
   // Handle saving the production line
   const handleSave = async () => {
     if (!lineName.trim()) {
-      setError("Production line name is required");
+      setError("نام خط تولید الزامی است");
       return;
     }
 
     if (lineItems.length === 0) {
-      setError("Production line must have at least one item");
+      setError("خط تولید باید حداقل یک مورد داشته باشد");
       return;
     }
 
@@ -176,7 +176,7 @@ export default function ProductLineCreator({
       }
 
       if (success) {
-        setSuccess("Production line saved successfully!");
+        setSuccess("خط تولید با موفقیت ذخیره شد!");
         mutate(); // Refresh the data
 
         // Call the onSave callback if provided
@@ -184,11 +184,11 @@ export default function ProductLineCreator({
           onSave(JSON.stringify(productionLineData));
         }
       } else {
-        throw new Error("Failed to save production line");
+        throw new Error("ذخیره خط تولید ناموفق بود");
       }
     } catch (err) {
-      console.error("Error saving production line:", err);
-      setError(err instanceof Error ? err.message : "An error occurred");
+      console.log("Error saving production line:", err);
+      setError(err instanceof Error ? err.message : "خطایی رخ داد");
     } finally {
       setIsSaving(false);
     }

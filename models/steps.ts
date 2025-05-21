@@ -1,6 +1,5 @@
 import mongoose from "mongoose";
 import glassTreatment from "./glassTreatment";
-import productionLine from "./productionLine";
 
 const stepSchema = new mongoose.Schema(
   {

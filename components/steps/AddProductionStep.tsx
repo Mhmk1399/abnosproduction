@@ -151,11 +151,11 @@ const AddProductionStep: React.FC<AddProductionStepProps> = ({
         setIsFormVisible(false);
       } else {
         throw new Error(
-          `Failed to ${mode === "edit" ? "update" : "create"} step`
+          `خطا در  ${mode === "edit" ? "ویرایش" : "ساختن"} مرحله`
         );
       }
     } catch (err) {
-      setError(err instanceof Error ? err.message : "An error occurred");
+      setError(err instanceof Error ? err.message : "خطایی رخ داد");
     } finally {
       setIsSubmitting(false);
     }

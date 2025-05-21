@@ -107,7 +107,7 @@ export default function WorkerPage() {
       );
       setLayerHistory(sortedHistory);
     } catch (err) {
-      console.error("Failed to load layer history:", err);
+      console.log("Failed to load layer history:", err);
     }
   };
 

@@ -37,7 +37,6 @@ export default function ProductionHistory({ layerId }: ProductionHistoryProps) {
 
       // Get the step executions for this layer
       const executions = await getStepExecutions(layerId);
-      console.log(executions, "executions");
 
       // Sort by execution date (newest first)
       const sortedExecutions = executions.sort(
@@ -48,7 +47,7 @@ export default function ProductionHistory({ layerId }: ProductionHistoryProps) {
       setHistory(sortedExecutions);
       setError(null);
     } catch (err) {
-      setError("Failed to load production history");
+      setError("سابقه تولید بارگیری نشد");
       console.error(err);
     } finally {
       setLoading(false);

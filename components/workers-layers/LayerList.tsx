@@ -51,7 +51,7 @@ export default function LayerList() {
     const printWindow = window.open("", "_blank");
 
     if (!printWindow) {
-      alert("Please allow pop-ups to print barcodes");
+      alert("لطفاً به پنجره‌های بازشو اجازه چاپ بارکد را بدهید");
       return;
     }
 
