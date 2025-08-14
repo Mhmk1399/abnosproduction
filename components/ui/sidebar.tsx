@@ -320,17 +320,18 @@ const SideBar = () => {
   return (
     <div className="flex h-full overflow-auto" dir="rtl">
       {/* Menu Button with Animation */}
+      
       <motion.button
         onClick={() => setIsOpen(!isOpen)}
-        className="fixed top-4 right-4 z-50 bg-white p-3 rounded-full shadow-lg hover:shadow-xl transition-all focus:outline-none"
+        className="fixed top-6 right-6 z-50 bg-white  rounded-full i shadow-lg hover:shadow-xl transition-all focus:outline-none"
         whileHover={{ scale: 1.05 }}
         whileTap={{ scale: 0.95 }}
         aria-label={isOpen ? "Close menu" : "Open menu"}
       >
         {isOpen ? (
-          <FaTimes className="text-blue-600" size={18} />
+          <FaTimes className="text-blue-600 mx-auto" size={22} />
         ) : (
-          <FaBars className="text-blue-600" size={18} />
+          <FaBars className="text-blue-600 mx-auto" size={22} />
         )}
       </motion.button>
 
@@ -367,7 +368,7 @@ const SideBar = () => {
                 className="flex items-center justify-between py-4 border-b border-gray-100 mb-4"
                 variants={itemVariants}
               >
-                <div className="flex items-center gap-3">
+                <div className="flex items-center gap-3 hover:cursor-pointer hover:scale-105 transition-transform " onClick={()=>{setActiveChild("welcome")}}>
                   <div className="bg-blue-500 text-white p-2 rounded-lg">
                     <FaCogs size={18} />
                   </div>

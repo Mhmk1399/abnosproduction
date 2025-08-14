@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { useProductLayers } from "@/hooks/useProductLayers";
 import { useProductionLines } from "@/hooks/useProductionLines";
 import ProductionQueue from "../ProductionLine/ProductionQueue";
+import ProductionHistory from "../ProductionLine/ProductionHistory";
 import {
   FiRefreshCw,
   FiCheckSquare,
@@ -21,6 +22,7 @@ import {
   FiBarChart2,
   FiAlertCircle,
   FiCheckCircle,
+
 } from "react-icons/fi";
 import { Step } from "@/types/types";
 
@@ -41,6 +43,7 @@ export default function OptimizerPage() {
   const [activeTab, setActiveTab] = useState<
     "unassigned" | "queue" | "history"
   >("unassigned");
+  const [showHistory, setShowHistory] = useState(false);
 
   // Filter layers that need assignment (current step is null)
   const unassignedLayers = useMemo(() => {
@@ -69,15 +72,17 @@ export default function OptimizerPage() {
     setSelectedLayers([]);
   }, [unassignedLayers.length]);
 
-  const handleSelectLayer = (id: string) => {
-    setSelectedLayers((prev) => {
-      if (prev.includes(id)) {
-        return prev.filter((layerId) => layerId !== id);
-      } else {
-        return [...prev, id];
-      }
-    });
-  };
+
+
+    const handleSelectLayer = (id: string) => {
+      setSelectedLayers((prev) => {
+        if (prev.includes(id)) {
+          return prev.filter((layerId) => layerId !== id);
+        } else {
+          return [...prev, id];
+        }
+      });
+    };
 
   const handleAssignSelectedToProductionLine = async () => {
     if (selectedLayers.length === 0) {
@@ -346,8 +351,7 @@ export default function OptimizerPage() {
               activeTab === "history"
                 ? "border-b-2 border-blue-500 text-blue-600 bg-blue-50"
                 : "text-gray-500 hover:text-gray-700 hover:bg-gray-50"
-            } ${!selectedLayerForHistory ? "opacity-60" : ""}`}
-            disabled={!selectedLayerForHistory}
+            }`}
           >
             <FiClock className="inline" size={18} />
             تاریخچه تولید
@@ -585,8 +589,8 @@ export default function OptimizerPage() {
             )}
           </>
         )}
-        {/* Production Line Selection (for Queue and History tabs) */}
-        {activeTab !== "unassigned" && (
+        {/* Production Line Selection (for Queue tab only) */}
+        {activeTab === "queue" && (
           <div className=" bg-white p-5 rounded-lg shadow-sm border border-gray-100">
             <div className="flex flex-wrap items-center gap-4">
               <div className="font-medium text-gray-700 flex items-center gap-2">
@@ -618,6 +622,107 @@ export default function OptimizerPage() {
         {activeTab === "queue" && selectedProductionLine && (
           <div className="mt-4">
             <ProductionQueue productionLineId={selectedProductionLine} />
+          </div>
+        )}
+
+        {/* History Tab */}
+        {activeTab === "history" && (
+          <div className="mt-4">
+            {showHistory && selectedLayerForHistory ? (
+              <div className="bg-white rounded-xl shadow-md p-6">
+                <div className="flex justify-between items-center mb-6">
+                  <h1 className="text-2xl font-bold text-gray-800 flex items-center gap-2">
+                    <span className="bg-blue-100 text-blue-700 p-1.5 rounded-md">
+                      <FiClock size={20} />
+                    </span>
+                    تاریخچه تولید
+                  </h1>
+                  <button
+                    onClick={() => setShowHistory(false)}
+                    className="px-4 py-2.5 bg-gray-100 hover:bg-gray-200 rounded-lg transition-colors flex items-center gap-2 shadow-sm"
+                  >
+                    <FiChevronLeft className="inline" />
+                    <span>بازگشت به لیست</span>
+                  </button>
+                </div>
+                <ProductionHistory layerId={selectedLayerForHistory} />
+              </div>
+            ) : (
+              <div className="bg-white rounded-lg shadow-sm overflow-hidden border border-gray-100">
+                <div className="p-6">
+                  <div className="bg-blue-50 border border-blue-100 p-5 rounded-lg mb-6 flex items-start">
+                    <FiInfo className="text-blue-500 mt-1 mr-2 flex-shrink-0" size={20} />
+                    <div>
+                      <p className="text-blue-800 font-medium mb-1">تاریخچه تولید لایه‌ها</p>
+                      <p className="text-blue-600 text-sm">برای مشاهده تاریخچه تولید، یک لایه را انتخاب کنید.</p>
+                    </div>
+                  </div>
+                  
+                  {layers.length === 0 ? (
+                    <div className="text-center py-12 text-gray-500">
+                      <FiLayers size={48} className="mx-auto mb-4 text-gray-300" />
+                      <p className="text-lg">هیچ لایه‌ای یافت نشد</p>
+                    </div>
+                  ) : (
+                    <div className="overflow-x-auto">
+                      <table className="min-w-full divide-y divide-gray-200">
+                        <thead>
+                          <tr className="bg-gray-50">
+                            <th className="py-3.5 px-4 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">ردیف</th>
+                            <th className="py-3.5 px-4 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">کد</th>
+                            <th className="py-3.5 px-4 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">کد تولید</th>
+                            <th className="py-3.5 px-4 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">مشتری</th>
+                            <th className="py-3.5 px-4 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">ابعاد</th>
+                            <th className="py-3.5 px-4 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">مرحله فعلی</th>
+                            <th className="py-3.5 px-4 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">عملیات</th>
+                          </tr>
+                        </thead>
+                        <tbody className="bg-white divide-y divide-gray-200">
+                          {layers.map((layer, index) => (
+                            <tr key={layer._id} className="hover:bg-gray-50 transition-colors">
+                              <td className="py-4 px-4 text-sm text-gray-900 font-medium">{index + 1}</td>
+                              <td className="py-4 px-4 text-sm text-gray-900 font-medium">{layer.code}</td>
+                              <td className="py-4 px-4 text-sm text-gray-900">{layer.productionCode}</td>
+                              <td className="py-4 px-4 text-sm text-gray-900">
+                                {typeof layer.customer === "object" ? layer.customer?.name : "نامشخص"}
+                              </td>
+                              <td className="py-4 px-4 text-sm text-gray-900 whitespace-nowrap">
+                                <span className="bg-gray-100 px-2 py-1 rounded-md">{layer.width} × {layer.height}</span>
+                              </td>
+                              <td className="py-4 px-4 text-sm text-gray-900">
+                                {typeof layer.currentStep === "object" ? (
+                                  <div className="flex items-center gap-1.5">
+                                    <span className="w-2 h-2 bg-green-500 rounded-full"></span>
+                                    {layer.currentStep?.name}
+                                  </div>
+                                ) : (
+                                  <div className="flex items-center gap-1.5">
+                                    <span className="w-2 h-2 bg-gray-400 rounded-full"></span>
+                                    نامشخص
+                                  </div>
+                                )}
+                              </td>
+                              <td className="py-4 px-4">
+                                <button
+                                  onClick={() => {
+                                    setSelectedLayerForHistory(layer._id);
+                                    setShowHistory(true);
+                                  }}
+                                  className="text-blue-600 hover:text-blue-800 py-1.5 px-3 rounded-md hover:bg-blue-50 transition-colors flex items-center gap-1.5 border border-blue-100"
+                                >
+                                  <FiClock className="inline" size={14} />
+                                  مشاهده تاریخچه
+                                </button>
+                              </td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
+                  )}
+                </div>
+              </div>
+            )}
           </div>
         )}
 

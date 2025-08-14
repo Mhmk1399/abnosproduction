@@ -2,6 +2,7 @@ import connect from "../../../../lib/data";
 import { NextRequest, NextResponse } from "next/server";
 import steps from "@/models/steps";
 import GlassTreatment from "@/models/glassTreatment";
+import bcrypt from "bcrypt";
 
 export async function GET(request: NextRequest) {
   await connect();
@@ -67,6 +68,12 @@ export async function PATCH(request: NextRequest) {
 
   try {
     const body = await request.json();
+    
+    // Hash password if it's being updated
+    if (body.password) {
+      body.password = await bcrypt.hash(body.password, 12);
+    }
+    
     const result = await steps.findByIdAndUpdate(id, body, {
       new: true,
       runValidators: true,

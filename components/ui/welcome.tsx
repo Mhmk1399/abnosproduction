@@ -7,7 +7,7 @@ import {
   FiBarChart2,
   FiUsers,
   FiTruck,
-  FiCpu,
+  FiCalendar,
   FiActivity,
   FiAward,
 } from "react-icons/fi";
@@ -131,7 +131,7 @@ const WelcomeScreen: React.FC<WelcomeScreenProps> = ({
   ];
 
   return (
-    <div className="p-4 md:p-8 text-gray-700 mt-20">
+    <div className="p-4 md:p-8 text-gray-700 mt-22">
       {/* Time and Greeting Section */}
       <motion.div
         className="mb-8"
@@ -166,7 +166,7 @@ const WelcomeScreen: React.FC<WelcomeScreenProps> = ({
             transition={{ delay: 0.4, duration: 0.5 }}
           >
             <div className="bg-indigo-100 ml-2 text-indigo-700 p-2 rounded-lg mr-3">
-              <FiCpu size={20} />
+              <FiCalendar size={20} />
             </div>
             <div>
               <p className="text-sm text-gray-500">امروز</p>
