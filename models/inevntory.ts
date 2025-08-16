@@ -35,6 +35,10 @@ const inventorySchema = new mongoose.Schema(
       type: Number,
       required: true,
     },
+    usedCount: {
+      type: Number,
+      default: 0,
+    },
     width: {
       type: Number,
     },
@@ -44,5 +48,15 @@ const inventorySchema = new mongoose.Schema(
   },
   { timestamps: true }
 );
+
+// Virtual field for available stock
+inventorySchema.virtual('availableStock').get(function() {
+  return this.count - this.usedCount;
+});
+
+// Ensure virtual fields are serialized
+inventorySchema.set('toJSON', { virtuals: true });
+inventorySchema.set('toObject', { virtuals: true });
+
 export default mongoose.models.Inventory ||
   mongoose.model("Inventory", inventorySchema);

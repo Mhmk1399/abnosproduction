@@ -84,6 +84,33 @@ export default function OptimizerPage() {
       });
     };
 
+  const updateInventoryUsage = async (layerId: string) => {
+    try {
+      const layer = unassignedLayers.find((l) => l._id === layerId);
+      if (!layer || !layer.glass) return;
+
+      const glassId = typeof layer.glass === "object" ? layer.glass._id : layer.glass;
+      const area = (layer.width * layer.height) / 1000000;
+
+      const response = await fetch("/api/inventory/updateUsage", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          glassId,
+          usedArea: area,
+        }),
+      });
+
+      if (!response.ok) {
+        console.log("Failed to update inventory usage for layer", layerId);
+      }
+    } catch (err) {
+      console.log("Error updating inventory usage:", err);
+    }
+  };
+
   const handleAssignSelectedToProductionLine = async () => {
     if (selectedLayers.length === 0) {
       alert("لطفا حداقل یک لایه را انتخاب کنید");
@@ -123,6 +150,9 @@ export default function OptimizerPage() {
               error: "هیچ مرحله ای در خط تولید یافت نشد",
             };
           }
+
+          // Update inventory usage
+          await updateInventoryUsage(layerId);
 
           // Update the layer with the first step
           const success = await updateProductLayer({
@@ -246,6 +276,9 @@ export default function OptimizerPage() {
         alert("هیچ مرحله ای در خط تولید انتخاب شده یافت نشد");
         return false;
       }
+
+      // Update inventory usage
+      await updateInventoryUsage(layerId);
 
       // Update the layer with the production line and first step
       const success = await updateProductLayer({
