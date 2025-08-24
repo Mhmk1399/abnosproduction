@@ -2,7 +2,7 @@ import connect from "../../../../lib/data";
 import { NextRequest, NextResponse } from "next/server";
 import steps from "@/models/steps";
 import GlassTreatment from "@/models/glassTreatment";
-import bcrypt from "bcrypt";
+import bcrypt from "bcryptjs";
 
 export async function GET(request: NextRequest) {
   await connect();

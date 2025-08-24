@@ -1,10 +1,10 @@
 import { NextRequest, NextResponse } from "next/server";
-import connectDB from "@/lib/mongodb";
+import connect from "@/lib/data";
 import Inventory from "@/models/inevntory";
 
 export async function POST(request: NextRequest) {
   try {
-    await connectDB();
+    await connect();
     
     const { glassId, usedArea } = await request.json();
 
