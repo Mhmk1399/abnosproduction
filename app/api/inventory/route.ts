@@ -1,17 +1,51 @@
+import { NextRequest, NextResponse } from "next/server";
 import connect from "@/lib/data";
-import { NextResponse } from "next/server";
-import inventory from "@/models/inevntory";
+import Inventory from "@/models/inevntory";
 
-export async function GET() {
-  await connect();
-
+export async function GET(request: NextRequest) {
   try {
-    const inventories = await inventory.find({}).sort({ createdAt: -1 });
-    return NextResponse.json(inventories, { status: 200 });
+    await connect();
+    
+    const { searchParams } = new URL(request.url);
+    const glassId = searchParams.get('glassId');
+    
+    if (glassId) {
+      const inventory = await Inventory.findOne({ glass: glassId });
+      if (!inventory) {
+        return NextResponse.json(
+          { error: "Inventory not found" },
+          { status: 404 }
+        );
+      }
+      
+      return NextResponse.json({
+        success: true,
+        inventory: {
+          id: inventory._id,
+          name: inventory.name,
+          count: inventory.count,
+          usedCount: inventory.usedCount,
+          availableStock: inventory.availableStock
+        }
+      });
+    }
+    
+    const inventories = await Inventory.find({});
+    return NextResponse.json({
+      success: true,
+      inventories: inventories.map(inv => ({
+        id: inv._id,
+        name: inv.name,
+        count: inv.count,
+        usedCount: inv.usedCount,
+        availableStock: inv.availableStock
+      }))
+    });
+
   } catch (error) {
-    console.error("Error fetching inventories:", error);
+    console.error("Error fetching inventory:", error);
     return NextResponse.json(
-      { error: "Failed to fetch inventories" },
+      { error: "Internal server error" },
       { status: 500 }
     );
   }

@@ -87,10 +87,16 @@ export default function OptimizerPage() {
   const updateInventoryUsage = async (layerId: string) => {
     try {
       const layer = unassignedLayers.find((l) => l._id === layerId);
-      if (!layer || !layer.glass) return;
+      console.log("Layer found:", layer);
+      
+      if (!layer || !layer.glass) {
+        console.log("No layer or glass found for layerId:", layerId);
+        return;
+      }
 
       const glassId = typeof layer.glass === "object" ? layer.glass._id : layer.glass;
-      const area = (layer.width * layer.height) / 1000000;
+      
+      console.log("Updating inventory for glassId:", glassId);
 
       const response = await fetch("/api/inventory/updateUsage", {
         method: "POST",
@@ -99,12 +105,15 @@ export default function OptimizerPage() {
         },
         body: JSON.stringify({
           glassId,
-          usedArea: area,
         }),
       });
 
       if (!response.ok) {
-        console.log("Failed to update inventory usage for layer", layerId);
+        const errorText = await response.text();
+        console.log("Failed to update inventory usage:", errorText);
+      } else {
+        const result = await response.json();
+        console.log("Inventory updated successfully:", result);
       }
     } catch (err) {
       console.log("Error updating inventory usage:", err);

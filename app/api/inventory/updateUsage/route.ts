@@ -1,23 +1,30 @@
 import { NextRequest, NextResponse } from "next/server";
-import connectDB from "@/lib/mongodb";
+import connect from "@/lib/data";
 import Inventory from "@/models/inevntory";
 
 export async function POST(request: NextRequest) {
   try {
-    await connectDB();
+    await connect();
     
-    const { glassId, usedArea } = await request.json();
+    const { glassId } = await request.json();
+    console.log("Received request - glassId:", glassId);
 
     const inventory = await Inventory.findOne({ glass: glassId });
+    console.log("Found inventory:", inventory);
+    
     if (!inventory) {
+      console.log("No inventory found for glassId:", glassId);
       return NextResponse.json(
         { error: "Inventory not found for this glass" },
         { status: 404 }
       );
     }
 
-    inventory.usedCount = (inventory.usedCount || 0) + usedArea;
+    const oldUsedCount = inventory.usedCount || 0;
+    inventory.usedCount = oldUsedCount + 1;
     await inventory.save();
+    
+    console.log("Updated inventory - old usedCount:", oldUsedCount, "new usedCount:", inventory.usedCount);
 
     return NextResponse.json({
       success: true,
