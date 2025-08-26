@@ -1,4 +1,4 @@
-import { NextRequest, NextResponse } from "next/server";
+import { NextResponse } from "next/server";
 import connect from "@/lib/data";
 import ProductLayer from "@/models/productLayer";
 import StepExecution from "@/models/StepExecution";

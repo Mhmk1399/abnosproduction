@@ -3,7 +3,7 @@ import connect from "@/lib/data";
 import { NextResponse } from "next/server";
 import Steps from "@/models/steps";
 import { v4 as uuidv4 } from "uuid";
-import bcrypt from "bcrypt";
+import bcrypt from "bcryptjs";
 import glassTreatment from "@/models/glassTreatment";
 
 export async function GET() {
