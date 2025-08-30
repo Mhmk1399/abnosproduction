@@ -11,10 +11,19 @@ import productionInventory from "@/models/productionInventory";
 import design from "@/models/design";
 import { isValidObjectId } from "mongoose";
 
-export async function GET() {
+export async function GET(request: NextRequest) {
   try {
     await connect();
-    const productLayers = await ProductLayer.find({}).populate([
+    
+    const { searchParams } = new URL(request.url);
+    const productionCode = searchParams.get('productionCode');
+    
+    let query = {};
+    if (productionCode) {
+      query = { productionCode: productionCode }; // Exact match
+    }
+    
+    const productLayers = await ProductLayer.find(query).populate([
       {
         path: "glass",
         model: glass,
