@@ -1,7 +1,8 @@
 import mongoose from "mongoose";
 import glassTreatment from "./glassTreatment";
+import productLayer from "./productLayer";
 
-const stepSchema = new mongoose.Schema(
+const stepSchema: mongoose.Schema = new mongoose.Schema(
   {
     name: {
       type: String,
@@ -30,6 +31,12 @@ const stepSchema = new mongoose.Schema(
       {
         type: mongoose.Schema.Types.ObjectId,
         ref: glassTreatment,
+      },
+    ],
+    productlayers: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: productLayer,
       },
     ],
 
