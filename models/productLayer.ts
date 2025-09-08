@@ -1,22 +1,14 @@
 import mongoose from "mongoose";
-import glass from "@/models/glass";
-import glassTreatment from "@/models/glassTreatment";
-import product from "@/models/product";
-import invoice from "@/models/invoice";
-import productionLine from "@/models/productionLine";
-import steps from "@/models/steps";
-import productionInventory from "@/models/productionInventory";
-import design from "@/models/design";
 
 const productLayerSchema = new mongoose.Schema(
   {
     productionCode: { type: String, required: true, index: true }, // barcode or unique layer ID
-    glass: { type: mongoose.Schema.Types.ObjectId, ref: glass },
+    glass: { type: mongoose.Schema.Types.ObjectId, ref: "Glass" },
     treatments: [
       {
         treatment: {
           type: mongoose.Schema.Types.ObjectId,
-          ref: glassTreatment,
+          ref: "GlassTreatment",
         },
         count: Number,
         measurement: String,
@@ -24,22 +16,22 @@ const productLayerSchema = new mongoose.Schema(
     ],
     width: { type: Number, required: true },
     height: { type: Number, required: true },
-    product: { type: mongoose.Schema.Types.ObjectId, ref: product },
-    invoice: { type: mongoose.Schema.Types.ObjectId, ref: invoice },
+    product: { type: mongoose.Schema.Types.ObjectId, ref: "Product" },
+    invoice: { type: mongoose.Schema.Types.ObjectId, ref: "Invoice" },
     productionLine: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: productionLine,
+      ref: "productionLine",
     },
     productionDate: { type: Date, required: true },
 
-    currentStep: { type: mongoose.Schema.Types.ObjectId, ref: steps },
+    currentStep: { type: mongoose.Schema.Types.ObjectId, ref: "Step" },
     currentInventory: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: productionInventory,
+      ref: "ProductionInventory",
     },
 
     productionNotes: String,
-    designNumber: { type: mongoose.Schema.Types.ObjectId, ref: design },
+    designNumber: { type: mongoose.Schema.Types.ObjectId, ref: "Design" },
   },
   { timestamps: true }
 );

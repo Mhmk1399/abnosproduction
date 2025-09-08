@@ -23,7 +23,7 @@ export default function RootLayout({
   return (
     <html lang="fa">
       <body className={` ${vazir.variable} antialiased`}>
-        {/* <SideBar /> */}
+        <SideBar />
 
         {children}
         <Toaster />

@@ -1,6 +1,4 @@
 import mongoose from "mongoose";
-import steps from "./steps";
-import productionInventory from "./productionInventory";
 const productionLineSchema = new mongoose.Schema(
   {
     name: {
@@ -19,7 +17,7 @@ const productionLineSchema = new mongoose.Schema(
       {
         step: {
           type: mongoose.Schema.Types.ObjectId,
-          ref: steps,
+          ref: "Step",
         },
         sequence: {
           type: Number,
@@ -33,7 +31,7 @@ const productionLineSchema = new mongoose.Schema(
     },
     inventory: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: productionInventory,
+      ref: "ProductionInventory",
     }
   },
   { timestamps: true }

@@ -1,6 +1,4 @@
 import mongoose from "mongoose";
-import glassTreatment from "./glassTreatment";
-import productLayer from "./productLayer";
 
 const stepSchema: mongoose.Schema = new mongoose.Schema(
   {
@@ -30,13 +28,13 @@ const stepSchema: mongoose.Schema = new mongoose.Schema(
     handlesTreatments: [
       {
         type: mongoose.Schema.Types.ObjectId,
-        ref: glassTreatment,
+        ref: "GlassTreatment",
       },
     ],
     productlayers: [
       {
         type: mongoose.Schema.Types.ObjectId,
-        ref: productLayer,
+        ref: "ProductLayer",
       },
     ],
 

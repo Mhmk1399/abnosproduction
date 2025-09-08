@@ -1,0 +1,341 @@
+<REL> 02.11
+<ORD> [object Ob CUST001    Unknown                                  [object Object]                                                                                                                                                                                              07/01/2009 07/01/2009 FRIDAY                                  
+<POS> 1     ID25     0000 1     50    40    110                       000 00 00 00 0 0 00000 0
+<TXT> 1-PROD-0a0dac-1                                                                   ABNOOS JAM KARAJ                                                                                                                                                    PROD-0a0dac-1                                                                                                                                                      
+<SHP> 1     50    40    0
+<POS> 2     ID25     0000 1     230   230   110                       000 00 00 00 0 0 00000 0
+<TXT> 2-PROD-0a0e84-1                                                                   ABNOOS JAM KARAJ                                                                                                                                                    PROD-0a0e84-1                                                                                                                                                      
+<SHP> 2     230   230   0
+<ORD> [object Ob CUST001    Unknown                                  [object Object]                                                                                                                                                                                              02/01/2009 02/01/2009 SUNDAY                                  
+<POS> 1     ID25     0000 1     670   670   110                       000 00 00 00 0 0 00000 0
+<TXT> 1-PROD-146413-1                                                                   ABNOOS JAM KARAJ                                                                                                                                                    PROD-146413-1                                                                                                                                                      
+<SHP> 1     670   670   0
+<POS> 2     ID25     0000 1     230   230   110                       000 00 00 00 0 0 00000 0
+<TXT> 2-PROD-f66687-1                                                                   ABNOOS JAM KARAJ                                                                                                                                                    PROD-f66687-1                                                                                                                                                      
+<SHP> 2     230   230   0
+<ORD> [object Ob CUST001    Unknown                                  [object Object]                                                                                                                                                                                              03/01/2009 03/01/2009 MONDAY                                  
+<POS> 1     11025    0000 1     10010 10010 110                       000 00 00 00 0 0 00000 0
+<TXT> 1-PROD-c94c03-1                                                                   ABNOOS JAM KARAJ                                                                                                                                                    PROD-c94c03-1                                                                                                                                                      
+<SHP> 1     10010 10010 0
+<GL1> شیشه 10 میل ساده     10    0
+<POS> 2     11025    0000 1     10010 10010 110                       000 00 00 00 0 0 00000 0
+<TXT> 2-PROD-c94c0a-1                                                                   ABNOOS JAM KARAJ                                                                                                                                                    PROD-c94c0a-1                                                                                                                                                      
+<SHP> 2     10010 10010 0
+<GL1> شیشه 10 میل ساده     10    0
+<ORD> [object Ob CUST001    Unknown                                  [object Object]                                                                                                                                                                                              04/01/2009 04/01/2009 TUESDAY                                 
+<POS> 1     11025    0000 1     10010 10010 110                       000 00 00 00 0 0 00000 0
+<TXT> 1-PROD-30a2c6-1                                                                   ABNOOS JAM KARAJ                                                                                                                                                    PROD-30a2c6-1                                                                                                                                                      
+<SHP> 1     10010 10010 0
+<GL1> شیشه 10 میل ساده     10    0
+<POS> 2     11025    0000 1     20000 20000 110                       000 00 00 00 0 0 00000 0
+<TXT> 2-PROD-30a4be-1                                                                   ABNOOS JAM KARAJ                                                                                                                                                    PROD-30a4be-1                                                                                                                                                      
+<SHP> 2     20000 20000 0
+<GL1> شیشه 10 میل ساده     10    0
+<POS> 3     ID25     0000 1     560   58760 110                       000 00 00 00 0 0 00000 0
+<TXT> 3-PROD-30a9cb-1                                                                   ABNOOS JAM KARAJ                                                                                                                                                    PROD-30a9cb-1                                                                                                                                                      
+<SHP> 3     560   58760 0
+<ORD> [object Ob CUST001    Unknown                                  [object Object]                                                                                                                                                                                              07/01/2009 07/01/2009 FRIDAY                                  
+<POS> 1     10425    0000 1     10010 10010 104                       000 00 00 00 0 0 00000 0
+<TXT> 1-PROD-0eef19-1                                                                   ABNOOS JAM KARAJ                                                                                                                                                    PROD-0eef19-1                                                                                                                                                      
+<SHP> 1     10010 10010 0
+<GL1> 4 میل ساده           10    0
+<POS> 2     10425    0000 1     10010 10010 104                       000 00 00 00 0 0 00000 0
+<TXT> 2-PROD-0eef47-1                                                                   ABNOOS JAM KARAJ                                                                                                                                                    PROD-0eef47-1                                                                                                                                                      
+<SHP> 2     10010 10010 0
+<GL1> 4 میل ساده           10    0
+<POS> 3     10425    0000 1     10010 10001 104                       000 00 00 00 0 0 00000 0
+<TXT> 3-PROD-0eef8c-1                                                                   ABNOOS JAM KARAJ                                                                                                                                                    PROD-0eef8c-1                                                                                                                                                      
+<SHP> 3     10010 10001 0
+<GL1> 4 میل ساده           10    0
+<POS> 4     10425    0000 1     10010 10010 104                       000 00 00 00 0 0 00000 0
+<TXT> 4-PROD-0eefcc-1                                                                   ABNOOS JAM KARAJ                                                                                                                                                    PROD-0eefcc-1                                                                                                                                                      
+<SHP> 4     10010 10010 0
+<GL1> 4 میل ساده           10    0
+<POS> 5     10425    0000 1     10010 10010 104                       000 00 00 00 0 0 00000 0
+<TXT> 5-PROD-0ef08f-1                                                                   ABNOOS JAM KARAJ                                                                                                                                                    PROD-0ef08f-1                                                                                                                                                      
+<SHP> 5     10010 10010 0
+<GL1> 4 میل ساده           10    0
+<POS> 6     10425    0000 1     20000 20000 104                       000 00 00 00 0 0 00000 0
+<TXT> 6-PROD-178ea4-1                                                                   ABNOOS JAM KARAJ                                                                                                                                                    PROD-178ea4-1                                                                                                                                                      
+<SHP> 6     20000 20000 0
+<GL1> 4 میل ساده           10    0
+<POS> 7     10425    0000 1     30000 30000 104                       000 00 00 00 0 0 00000 0
+<TXT> 7-PROD-178ee4-1                                                                   ABNOOS JAM KARAJ                                                                                                                                                    PROD-178ee4-1                                                                                                                                                      
+<SHP> 7     30000 30000 0
+<GL1> 4 میل ساده           10    0
+<POS> 8     10425    0000 1     20000 10010 104                       000 00 00 00 0 0 00000 0
+<TXT> 8-PROD-178f67-1                                                                   ABNOOS JAM KARAJ                                                                                                                                                    PROD-178f67-1                                                                                                                                                      
+<SHP> 8     20000 10010 0
+<GL1> 4 میل ساده           10    0
+<POS> 9     10425    0000 1     10010 10010 104                       000 00 00 00 0 0 00000 0
+<TXT> 9-PROD-1790f6-1                                                                   ABNOOS JAM KARAJ                                                                                                                                                    PROD-1790f6-1                                                                                                                                                      
+<SHP> 9     10010 10010 0
+<GL1> 4 میل ساده           10    0
+<POS> 10    10425    0000 1     10010 10010 104                       000 00 00 00 0 0 00000 0
+<TXT> 10-PROD-4a8636-1                                                                  ABNOOS JAM KARAJ                                                                                                                                                    PROD-4a8636-1                                                                                                                                                      
+<SHP> 10    10010 10010 0
+<GL1> 4 میل ساده           10    0
+<POS> 11    10425    0000 1     20000 20000 104                       000 00 00 00 0 0 00000 0
+<TXT> 11-PROD-4a872d-1                                                                  ABNOOS JAM KARAJ                                                                                                                                                    PROD-4a872d-1                                                                                                                                                      
+<SHP> 11    20000 20000 0
+<GL1> 4 میل ساده           10    0
+<POS> 12    10425    0000 1     10010 10010 104                       000 00 00 00 0 0 00000 0
+<TXT> 12-PROD-4a898a-1                                                                  ABNOOS JAM KARAJ                                                                                                                                                    PROD-4a898a-1                                                                                                                                                      
+<SHP> 12    10010 10010 0
+<GL1> 4 میل ساده           10    0
+<POS> 13    11025    0000 1     10010 10010 110                       000 00 00 00 0 0 00000 0
+<TXT> 13-PROD-578182-1                                                                  ABNOOS JAM KARAJ                                                                                                                                                    PROD-578182-1                                                                                                                                                      
+<SHP> 13    10010 10010 0
+<GL1> شیشه 10 میل ساده     10    0
+<POS> 14    10425    0000 1     10010 10010 104                       000 00 00 00 0 0 00000 0
+<TXT> 14-PROD-5781e0-1                                                                  ABNOOS JAM KARAJ                                                                                                                                                    PROD-5781e0-1                                                                                                                                                      
+<SHP> 14    10010 10010 0
+<GL1> 4 میل ساده           10    0
+<POS> 15    10425    0000 1     10010 10010 104                       000 00 00 00 0 0 00000 0
+<TXT> 15-PROD-5782a7-1                                                                  ABNOOS JAM KARAJ                                                                                                                                                    PROD-5782a7-1                                                                                                                                                      
+<SHP> 15    10010 10010 0
+<GL1> 4 میل ساده           10    0
+<POS> 16    10425    0000 1     10010 10010 104                       000 00 00 00 0 0 00000 0
+<TXT> 16-PROD-57832b-1                                                                  ABNOOS JAM KARAJ                                                                                                                                                    PROD-57832b-1                                                                                                                                                      
+<SHP> 16    10010 10010 0
+<GL1> 4 میل ساده           10    0
+<POS> 17    11025    0000 1     20000 10010 110                       000 00 00 00 0 0 00000 0
+<TXT> 17-PROD-ca7f01-1                                                                  ABNOOS JAM KARAJ                                                                                                                                                    PROD-ca7f01-1                                                                                                                                                      
+<SHP> 17    20000 10010 0
+<GL1> شیشه 10 میل ساده     10    0
+<POS> 18    10425    0000 1     80010 20000 104                       000 00 00 00 0 0 00000 0
+<TXT> 18-PROD-ca7f01-2                                                                  ABNOOS JAM KARAJ                                                                                                                                                    PROD-ca7f01-2                                                                                                                                                      
+<SHP> 18    80010 20000 0
+<GL1> 4 میل ساده           10    0
+<POS> 19    ID25     0000 1     10010 20000 110                       000 00 00 00 0 0 00000 0
+<TXT> 19-PROD-ca7f81-1                                                                  ABNOOS JAM KARAJ                                                                                                                                                    PROD-ca7f81-1                                                                                                                                                      
+<SHP> 19    10010 20000 0
+<POS> 20    ID25     0000 1     20000 20000 110                       000 00 00 00 0 0 00000 0
+<TXT> 20-PROD-ca7f81-2                                                                  ABNOOS JAM KARAJ                                                                                                                                                    PROD-ca7f81-2                                                                                                                                                      
+<SHP> 20    20000 20000 0
+<POS> 21    10425    0000 1     10010 10010 104                       000 00 00 00 0 0 00000 0
+<TXT> 21-PROD-ca851b-1                                                                  ABNOOS JAM KARAJ                                                                                                                                                    PROD-ca851b-1                                                                                                                                                      
+<SHP> 21    10010 10010 0
+<GL1> 4 میل ساده           10    0
+<ORD> [object Ob CUST001    Unknown                                  [object Object]                                                                                                                                                                                              02/01/2009 02/01/2009 SUNDAY                                  
+<POS> 1     ID25     0000 1     20000 20000 110                       000 00 00 00 0 0 00000 0
+<TXT> 1-PROD-981fb6-1                                                                   ABNOOS JAM KARAJ                                                                                                                                                    PROD-981fb6-1                                                                                                                                                      
+<SHP> 1     20000 20000 0
+<POS> 2     ID25     0000 1     20000 20000 110                       000 00 00 00 0 0 00000 0
+<TXT> 2-PROD-982021-1                                                                   ABNOOS JAM KARAJ                                                                                                                                                    PROD-982021-1                                                                                                                                                      
+<SHP> 2     20000 20000 0
+<ORD> 0087       CUST001    Unknown                                  0087                                                                                                                                                                                                         07/01/2009 07/01/2009 FRIDAY                                  
+<POS> 1     10425    0000 1     10010 10010 104                       000 00 00 00 0 0 00000 0
+<TXT> 1-PROD-37d603-1                                                                   ABNOOS JAM KARAJ                                                                                                                                                    PROD-37d603-1                                                                                                                                                      
+<SHP> 1     10010 10010 0
+<GL1> 4 میل ساده           10    0
+<ORD> 0088       CUST001    Unknown                                  0088                                                                                                                                                                                                         07/01/2009 07/01/2009 FRIDAY                                  
+<POS> 1     10425    0000 1     10010 10010 104                       000 00 00 00 0 0 00000 0
+<TXT> 1-PROD-37d94c-1                                                                   ABNOOS JAM KARAJ                                                                                                                                                    PROD-37d94c-1                                                                                                                                                      
+<SHP> 1     10010 10010 0
+<GL1> 4 میل ساده           10    0
+<POS> 2     11025    0000 1     10010 10010 110                       000 00 00 00 0 0 00000 0
+<TXT> 2-PROD-37d94c-2                                                                   ABNOOS JAM KARAJ                                                                                                                                                    PROD-37d94c-2                                                                                                                                                      
+<SHP> 2     10010 10010 0
+<GL1> شیشه 10 میل ساده     10    0
+<ORD> 0089       CUST001    Unknown                                  0089                                                                                                                                                                                                         07/01/2009 07/01/2009 FRIDAY                                  
+<POS> 1     10425    0000 1     10010 10010 104                       000 00 00 00 0 0 00000 0
+<TXT> 1-PROD-37d989-1                                                                   ABNOOS JAM KARAJ                                                                                                                                                    PROD-37d989-1                                                                                                                                                      
+<SHP> 1     10010 10010 0
+<GL1> 4 میل ساده           10    0
+<ORD> 0090       CUST001    Unknown                                  0090                                                                                                                                                                                                         07/01/2009 07/01/2009 FRIDAY                                  
+<POS> 1     10425    0000 1     10010 10010 104                       000 00 00 00 0 0 00000 0
+<TXT> 1-PROD-37d9d3-1                                                                   ABNOOS JAM KARAJ                                                                                                                                                    PROD-37d9d3-1                                                                                                                                                      
+<SHP> 1     10010 10010 0
+<GL1> 4 میل ساده           10    0
+<POS> 2     11025    0000 1     10010 10010 110                       000 00 00 00 0 0 00000 0
+<TXT> 2-PROD-37d9d3-2                                                                   ABNOOS JAM KARAJ                                                                                                                                                    PROD-37d9d3-2                                                                                                                                                      
+<SHP> 2     10010 10010 0
+<GL1> شیشه 10 میل ساده     10    0
+<ORD> 0091       CUST001    Unknown                                  0091                                                                                                                                                                                                         07/01/2009 07/01/2009 FRIDAY                                  
+<POS> 1     10425    0000 1     10010 10010 104                       000 00 00 00 0 0 00000 0
+<TXT> 1-PROD-37da1f-1                                                                   ABNOOS JAM KARAJ                                                                                                                                                    PROD-37da1f-1                                                                                                                                                      
+<SHP> 1     10010 10010 0
+<GL1> 4 میل ساده           10    0
+<ORD> 0092       CUST001    Unknown                                  0092                                                                                                                                                                                                         07/01/2009 07/01/2009 FRIDAY                                  
+<POS> 1     11025    0000 1     10010 10010 110                       000 00 00 00 0 0 00000 0
+<TXT> 1-PROD-37da6b-1                                                                   ABNOOS JAM KARAJ                                                                                                                                                    PROD-37da6b-1                                                                                                                                                      
+<SHP> 1     10010 10010 0
+<GL1> شیشه 10 میل ساده     10    0
+<ORD> 0093       CUST001    Unknown                                  0093                                                                                                                                                                                                         07/01/2009 07/01/2009 FRIDAY                                  
+<POS> 1     10425    0000 1     10010 10010 104                       000 00 00 00 0 0 00000 0
+<TXT> 1-PROD-37dabb-1                                                                   ABNOOS JAM KARAJ                                                                                                                                                    PROD-37dabb-1                                                                                                                                                      
+<SHP> 1     10010 10010 0
+<GL1> 4 میل ساده           10    0
+<ORD> 0094       CUST001    Unknown                                  0094                                                                                                                                                                                                         07/01/2009 07/01/2009 FRIDAY                                  
+<POS> 1     10425    0000 1     10010 10010 104                       000 00 00 00 0 0 00000 0
+<TXT> 1-PROD-37db45-1                                                                   ABNOOS JAM KARAJ                                                                                                                                                    PROD-37db45-1                                                                                                                                                      
+<SHP> 1     10010 10010 0
+<GL1> 4 میل ساده           10    0
+<ORD> 0095       CUST001    Unknown                                  0095                                                                                                                                                                                                         07/01/2009 07/01/2009 FRIDAY                                  
+<POS> 1     10425    0000 1     50010 50010 104                       000 00 00 00 0 0 00000 0
+<TXT> 1-PROD-37db8d-1                                                                   ABNOOS JAM KARAJ                                                                                                                                                    PROD-37db8d-1                                                                                                                                                      
+<SHP> 1     50010 50010 0
+<GL1> 4 میل ساده           10    0
+<ORD> 0096       CUST001    Unknown                                  0096                                                                                                                                                                                                         07/01/2009 07/01/2009 FRIDAY                                  
+<POS> 1     10425    0000 1     15230 56210 104                       000 00 00 00 0 0 00000 0
+<TXT> 1-PROD-37dbd9-1                                                                   ABNOOS JAM KARAJ                                                                                                                                                    PROD-37dbd9-1                                                                                                                                                      
+<SHP> 1     15230 56210 0
+<GL1> 4 میل ساده           10    0
+<ORD> 0097       CUST001    Unknown                                  0097                                                                                                                                                                                                         07/01/2009 07/01/2009 FRIDAY                                  
+<POS> 1     11025    0000 1     58758 85859 110                       000 00 00 00 0 0 00000 0
+<TXT> 1-PROD-37dc36-1                                                                   ABNOOS JAM KARAJ                                                                                                                                                    PROD-37dc36-1                                                                                                                                                      
+<SHP> 1     58758 85859 0
+<GL1> شیشه 10 میل ساده     10    0
+<ORD> 0098       CUST001    Unknown                                  0098                                                                                                                                                                                                         07/01/2009 07/01/2009 FRIDAY                                  
+<POS> 1     10425    0000 1     45645 56457 104                       000 00 00 00 0 0 00000 0
+<TXT> 1-PROD-37dc93-1                                                                   ABNOOS JAM KARAJ                                                                                                                                                    PROD-37dc93-1                                                                                                                                                      
+<SHP> 1     45645 56457 0
+<GL1> 4 میل ساده           10    0
+<ORD> 0099       CUST001    Unknown                                  0099                                                                                                                                                                                                         07/01/2009 07/01/2009 FRIDAY                                  
+<POS> 1     10425    0000 1     32432 34325 104                       000 00 00 00 0 0 00000 0
+<TXT> 1-PROD-37dcf1-1                                                                   ABNOOS JAM KARAJ                                                                                                                                                    PROD-37dcf1-1                                                                                                                                                      
+<SHP> 1     32432 34325 0
+<GL1> 4 میل ساده           10    0
+<ORD> 0100       CUST001    Unknown                                  0100                                                                                                                                                                                                         07/01/2009 07/01/2009 FRIDAY                                  
+<POS> 1     11025    0000 1     56660 7900  110                       000 00 00 00 0 0 00000 0
+<TXT> 1-PROD-37dd51-1                                                                   ABNOOS JAM KARAJ                                                                                                                                                    PROD-37dd51-1                                                                                                                                                      
+<SHP> 1     56660 7900  0
+<GL1> شیشه 10 میل ساده     10    0
+<ORD> 0101       CUST001    Unknown                                  0101                                                                                                                                                                                                         07/01/2009 07/01/2009 FRIDAY                                  
+<POS> 1     10425    0000 1     10001 10010 104                       000 00 00 00 0 0 00000 0
+<TXT> 1-PROD-37ddc6-1                                                                   ABNOOS JAM KARAJ                                                                                                                                                    PROD-37ddc6-1                                                                                                                                                      
+<SHP> 1     10001 10010 0
+<GL1> 4 میل ساده           10    0
+<ORD> 0102       CUST001    Unknown                                  0102                                                                                                                                                                                                         07/01/2009 07/01/2009 FRIDAY                                  
+<POS> 1     10425    0000 1     20001 20001 104                       000 00 00 00 0 0 00000 0
+<TXT> 1-PROD-37de2a-1                                                                   ABNOOS JAM KARAJ                                                                                                                                                    PROD-37de2a-1                                                                                                                                                      
+<SHP> 1     20001 20001 0
+<GL1> 4 میل ساده           10    0
+<ORD> 0103       CUST001    Unknown                                  0103                                                                                                                                                                                                         07/01/2009 07/01/2009 FRIDAY                                  
+<POS> 1     10425    0000 1     10010 10010 104                       000 00 00 00 0 0 00000 0
+<TXT> 1-PROD-37de90-1                                                                   ABNOOS JAM KARAJ                                                                                                                                                    PROD-37de90-1                                                                                                                                                      
+<SHP> 1     10010 10010 0
+<GL1> 4 میل ساده           10    0
+<ORD> 0104       CUST001    Unknown                                  0104                                                                                                                                                                                                         07/01/2009 07/01/2009 FRIDAY                                  
+<POS> 1     10425    0000 1     10010 10010 104                       000 00 00 00 0 0 00000 0
+<TXT> 1-PROD-37deea-1                                                                   ABNOOS JAM KARAJ                                                                                                                                                    PROD-37deea-1                                                                                                                                                      
+<SHP> 1     10010 10010 0
+<GL1> 4 میل ساده           10    0
+<ORD> 0105       CUST001    Unknown                                  0105                                                                                                                                                                                                         07/01/2009 07/01/2009 FRIDAY                                  
+<POS> 1     10425    0000 1     50010 20000 104                       000 00 00 00 0 0 00000 0
+<TXT> 1-PROD-37df5b-1                                                                   ABNOOS JAM KARAJ                                                                                                                                                    PROD-37df5b-1                                                                                                                                                      
+<SHP> 1     50010 20000 0
+<GL1> 4 میل ساده           10    0
+<POS> 2     11025    0000 1     45900 86670 110                       000 00 00 00 0 0 00000 0
+<TXT> 2-PROD-37df5b-2                                                                   ABNOOS JAM KARAJ                                                                                                                                                    PROD-37df5b-2                                                                                                                                                      
+<SHP> 2     45900 86670 0
+<GL1> شیشه 10 میل ساده     10    0
+<POS> 3     10425    0000 1     23240 23240 104                       000 00 00 00 0 0 00000 0
+<TXT> 3-PROD-37df5b-3                                                                   ABNOOS JAM KARAJ                                                                                                                                                    PROD-37df5b-3                                                                                                                                                      
+<SHP> 3     23240 23240 0
+<GL1> 4 میل ساده           10    0
+<ORD> 0106       CUST001    Unknown                                  0106                                                                                                                                                                                                         07/01/2009 07/01/2009 FRIDAY                                  
+<POS> 1     10425    0000 1     23232 23232 104                       000 00 00 00 0 0 00000 0
+<TXT> 1-PROD-37dfcb-1                                                                   ABNOOS JAM KARAJ                                                                                                                                                    PROD-37dfcb-1                                                                                                                                                      
+<SHP> 1     23232 23232 0
+<GL1> 4 میل ساده           10    0
+<ORD> 0107       CUST001    Unknown                                  0107                                                                                                                                                                                                         07/01/2009 07/01/2009 FRIDAY                                  
+<POS> 1     10425    0000 1     55560 55560 104                       000 00 00 00 0 0 00000 0
+<TXT> 1-PROD-37e050-1                                                                   ABNOOS JAM KARAJ                                                                                                                                                    PROD-37e050-1                                                                                                                                                      
+<SHP> 1     55560 55560 0
+<GL1> 4 میل ساده           10    0
+<ORD> 0108       CUST001    Unknown                                  0108                                                                                                                                                                                                         07/01/2009 07/01/2009 FRIDAY                                  
+<POS> 1     11025    0000 1     2010  50010 110                       000 00 00 00 0 0 00000 0
+<TXT> 1-PROD-37e092-1                                                                   ABNOOS JAM KARAJ                                                                                                                                                    PROD-37e092-1                                                                                                                                                      
+<SHP> 1     2010  50010 0
+<GL1> شیشه 10 میل ساده     10    0
+<ORD> 0109       CUST001    Unknown                                  0109                                                                                                                                                                                                         07/01/2009 07/01/2009 FRIDAY                                  
+<POS> 1     11025    0000 1     65655 15156 110                       000 00 00 00 0 0 00000 0
+<TXT> 1-PROD-37e108-1                                                                   ABNOOS JAM KARAJ                                                                                                                                                    PROD-37e108-1                                                                                                                                                      
+<SHP> 1     65655 15156 0
+<GL1> شیشه 10 میل ساده     10    0
+<ORD> 0110       CUST001    Unknown                                  0110                                                                                                                                                                                                         07/01/2009 07/01/2009 FRIDAY                                  
+<POS> 1     10425    0000 1     40001 40001 104                       000 00 00 00 0 0 00000 0
+<TXT> 1-PROD-37e19d-1                                                                   ABNOOS JAM KARAJ                                                                                                                                                    PROD-37e19d-1                                                                                                                                                      
+<SHP> 1     40001 40001 0
+<GL1> 4 میل ساده           10    0
+<ORD> 0111       CUST001    Unknown                                  0111                                                                                                                                                                                                         07/01/2009 07/01/2009 FRIDAY                                  
+<POS> 1     11025    0000 1     52525 52530 110                       000 00 00 00 0 0 00000 0
+<TXT> 1-PROD-37e286-1                                                                   ABNOOS JAM KARAJ                                                                                                                                                    PROD-37e286-1                                                                                                                                                      
+<SHP> 1     52525 52530 0
+<GL1> شیشه 10 میل ساده     10    0
+<ORD> 0112       CUST001    Unknown                                  0112                                                                                                                                                                                                         07/01/2009 07/01/2009 FRIDAY                                  
+<POS> 1     11025    0000 1     860   85860 110                       000 00 00 00 0 0 00000 0
+<TXT> 1-PROD-37e336-1                                                                   ABNOOS JAM KARAJ                                                                                                                                                    PROD-37e336-1                                                                                                                                                      
+<SHP> 1     860   85860 0
+<GL1> شیشه 10 میل ساده     10    0
+<ORD> 0113       CUST001    Unknown                                  0113                                                                                                                                                                                                         07/01/2009 07/01/2009 FRIDAY                                  
+<POS> 1     10425    0000 1     25900 45655 104                       000 00 00 00 0 0 00000 0
+<TXT> 1-PROD-37e551-1                                                                   ABNOOS JAM KARAJ                                                                                                                                                    PROD-37e551-1                                                                                                                                                      
+<SHP> 1     25900 45655 0
+<GL1> 4 میل ساده           10    0
+<ORD> 0114       CUST001    Unknown                                  0114                                                                                                                                                                                                         07/01/2009 07/01/2009 FRIDAY                                  
+<POS> 1     10425    0000 1     20210 20210 104                       000 00 00 00 0 0 00000 0
+<TXT> 1-PROD-37e639-1                                                                   ABNOOS JAM KARAJ                                                                                                                                                    PROD-37e639-1                                                                                                                                                      
+<SHP> 1     20210 20210 0
+<GL1> 4 میل ساده           10    0
+<ORD> 0115       CUST001    Unknown                                  0115                                                                                                                                                                                                         07/01/2009 07/01/2009 FRIDAY                                  
+<POS> 1     10425    0000 1     30000 50010 104                       000 00 00 00 0 0 00000 0
+<TXT> 1-PROD-37e706-1                                                                   ABNOOS JAM KARAJ                                                                                                                                                    PROD-37e706-1                                                                                                                                                      
+<SHP> 1     30000 50010 0
+<GL1> 4 میل ساده           10    0
+<ORD> 0116       CUST001    Unknown                                  0116                                                                                                                                                                                                         07/01/2009 07/01/2009 FRIDAY                                  
+<POS> 1     11025    0000 1     44330 3240  110                       000 00 00 00 0 0 00000 0
+<TXT> 1-PROD-37e7d6-1                                                                   ABNOOS JAM KARAJ                                                                                                                                                    PROD-37e7d6-1                                                                                                                                                      
+<SHP> 1     44330 3240  0
+<GL1> شیشه 10 میل ساده     10    0
+<ORD> 0117       CUST001    Unknown                                  0117                                                                                                                                                                                                         07/01/2009 07/01/2009 FRIDAY                                  
+<POS> 1     10425    0000 1     18586 58586 104                       000 00 00 00 0 0 00000 0
+<TXT> 1-PROD-37ec4d-1                                                                   ABNOOS JAM KARAJ                                                                                                                                                    PROD-37ec4d-1                                                                                                                                                      
+<SHP> 1     18586 58586 0
+<GL1> 4 میل ساده           10    0
+<ORD> 0118       CUST001    Unknown                                  0118                                                                                                                                                                                                         07/01/2009 07/01/2009 FRIDAY                                  
+<POS> 1     10425    0000 1     85860 52530 104                       000 00 00 00 0 0 00000 0
+<TXT> 1-PROD-37ef4e-1                                                                   ABNOOS JAM KARAJ                                                                                                                                                    PROD-37ef4e-1                                                                                                                                                      
+<SHP> 1     85860 52530 0
+<GL1> 4 میل ساده           10    0
+<ORD> 0119       CUST001    Unknown                                  0119                                                                                                                                                                                                         07/01/2009 07/01/2009 FRIDAY                                  
+<POS> 1     10425    0000 1     10010 10010 104                       000 00 00 00 0 0 00000 0
+<TXT> 1-PROD-833298-1                                                                   ABNOOS JAM KARAJ                                                                                                                                                    PROD-833298-1                                                                                                                                                      
+<SHP> 1     10010 10010 0
+<GL1> 4 میل ساده           10    0
+<ORD> 0120       CUST001    Unknown                                  0120                                                                                                                                                                                                         07/01/2009 07/01/2009 FRIDAY                                  
+<POS> 1     10425    0000 1     10010 10010 104                       000 00 00 00 0 0 00000 0
+<TXT> 1-PROD-86fd9b-1                                                                   ABNOOS JAM KARAJ                                                                                                                                                    PROD-86fd9b-1                                                                                                                                                      
+<SHP> 1     10010 10010 0
+<GL1> 4 میل ساده           10    0
+<POS> 2     11025    0000 1     10010 10010 110                       000 00 00 00 0 0 00000 0
+<TXT> 2-PROD-86fd9b-2                                                                   ABNOOS JAM KARAJ                                                                                                                                                    PROD-86fd9b-2                                                                                                                                                      
+<SHP> 2     10010 10010 0
+<GL1> شیشه 10 میل ساده     10    0
+<ORD> 0121       CUST001    Unknown                                  0121                                                                                                                                                                                                         07/01/2009 07/01/2009 FRIDAY                                  
+<POS> 1     10425    0000 1     10010 10010 104                       000 00 00 00 0 0 00000 0
+<TXT> 1-PROD-86fdce-1                                                                   ABNOOS JAM KARAJ                                                                                                                                                    PROD-86fdce-1                                                                                                                                                      
+<SHP> 1     10010 10010 0
+<GL1> 4 میل ساده           10    0
+<ORD> 0122       CUST001    Unknown                                  0122                                                                                                                                                                                                         02/01/2009 02/01/2009 SUNDAY                                  
+<POS> 1     10425    0000 1     10010 10010 104                       000 00 00 00 0 0 00000 0
+<TXT> 1-PROD-4017b3-1                                                                   ABNOOS JAM KARAJ                                                                                                                                                    PROD-4017b3-1                                                                                                                                                      
+<SHP> 1     10010 10010 0
+<GL1> 4 میل ساده           10    0
+<ORD> 0123       CUST001    Unknown                                  0123                                                                                                                                                                                                         02/01/2009 02/01/2009 SUNDAY                                  
+<POS> 1     10425    0000 1     33340 33340 104                       000 00 00 00 0 0 00000 0
+<TXT> 1-PROD-401823-1                                                                   ABNOOS JAM KARAJ                                                                                                                                                    PROD-401823-1                                                                                                                                                      
+<SHP> 1     33340 33340 0
+<GL1> 4 میل ساده           10    0
+<ORD> 0124       CUST001    Unknown                                  0124                                                                                                                                                                                                         02/01/2009 02/01/2009 SUNDAY                                  
+<POS> 1     10425    0000 1     67680 76768 104                       000 00 00 00 0 0 00000 0
+<TXT> 1-PROD-401851-1                                                                   ABNOOS JAM KARAJ                                                                                                                                                    PROD-401851-1                                                                                                                                                      
+<SHP> 1     67680 76768 0
+<GL1> 4 میل ساده           10    0
+<ORD> 0125       CUST001    Unknown                                  0125                                                                                                                                                                                                         02/01/2009 02/01/2009 SUNDAY                                  
+<POS> 1     11025    0000 1     10010 10010 110                       000 00 00 00 0 0 00000 0
+<TXT> 1-PROD-dd4290-1                                                                   ABNOOS JAM KARAJ                                                                                                                                                    PROD-dd4290-1                                                                                                                                                      
+<SHP> 1     10010 10010 0
+<GL1> شیشه 10 میل ساده     10    0
