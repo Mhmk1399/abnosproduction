@@ -3,8 +3,7 @@ import { useRef, useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { navMenuItems } from "../../lib/sideBar";
 import WelcomeScreen from "./welcome";
-import AddInventoryForm from "../inventory/addInventory";
-import InventoryList from "../inventory/inventoryList";
+import ProductionInventoryManager from "../inventory/ProductionInventoryManager";
 import WorkerPage from "../workers-layers/workers";
 import OptimizerPage from "../workers-layers/optimaizer";
 import AddProductionStep from "../steps/AddProductionStep";
@@ -213,10 +212,9 @@ const renderChildComponent = (
             activeChild={childId}
           />
         );
-      case "addInventory":
-        return <AddInventoryForm />;
       case "InventoryList":
-        return <InventoryList />;
+        return <ProductionInventoryManager />;
+
       case "ProductionLinesPage":
         return <ProductionLine setActiveChild={setActiveChild} />;
       case "configure":
@@ -320,7 +318,7 @@ const SideBar = () => {
   return (
     <div className="flex h-full overflow-auto" dir="rtl">
       {/* Menu Button with Animation */}
-      
+
       <motion.button
         onClick={() => setIsOpen(!isOpen)}
         className="fixed top-6 right-6 z-50 bg-white  rounded-full i shadow-lg hover:shadow-xl transition-all focus:outline-none"
@@ -368,7 +366,12 @@ const SideBar = () => {
                 className="flex items-center justify-between py-4 border-b border-gray-100 mb-4"
                 variants={itemVariants}
               >
-                <div className="flex items-center gap-3 hover:cursor-pointer hover:scale-105 transition-transform " onClick={()=>{setActiveChild("welcome")}}>
+                <div
+                  className="flex items-center gap-3 hover:cursor-pointer hover:scale-105 transition-transform "
+                  onClick={() => {
+                    setActiveChild("welcome");
+                  }}
+                >
                   <div className="bg-blue-500 text-white p-2 rounded-lg">
                     <FaCogs size={18} />
                   </div>

@@ -92,8 +92,8 @@ export function useDynamicForm(
   const handleChange = (
     e: React.ChangeEvent<
       HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement
-    >
-    // field: FormField
+    >,
+    field: FormField
   ) => {
     const { name, type } = e.target;
     let value;

@@ -20,21 +20,29 @@ const ENABLE_BUMP_FOR_KINDS = new Set<ExportKind>(["NORMAL", "WATERJET"]);
 const ADD_DIMENSION_MM = 1;
 // Standard sheet sizes (mm) — Delphi whitelist
 const STANDARD_SIZES = new Set([
-  1100,1125,1250,1605,1800,1900,2000,2100,2200,2250,2400,2500,2600,3000,3180,3195,3200,3210
+  1100, 1125, 1250, 1605, 1800, 1900, 2000, 2100, 2200, 2250, 2400, 2500, 2600,
+  3000, 3180, 3195, 3200, 3210,
 ]);
 // Delphi-like color names indexed by weekday (1..7); we also use a couple of fixed codes
 const DAY_COLOR_ARRAY = [
-  "",            // 0 (unused)
-  "SATURDAY",    // 1
-  "SUNDAY",      // 2
-  "MONDAY",      // 3
-  "TUESDAY",     // 4
-  "WEDNESDAY",   // 5
-  "THURSDAY",    // 6
-  "FRIDAY"       // 7
+  "", // 0 (unused)
+  "SATURDAY", // 1
+  "SUNDAY", // 2
+  "MONDAY", // 3
+  "TUESDAY", // 4
+  "WEDNESDAY", // 5
+  "THURSDAY", // 6
+  "FRIDAY", // 7
 ];
 
-type ExportKind = "NORMAL" | "OLGOO" | "PISHS" | "OJRATI" | "WATERJET" | "AUTOCAD" | "WATERJET_OLGOO";
+type ExportKind =
+  | "NORMAL"
+  | "OLGOO"
+  | "PISHS"
+  | "OJRATI"
+  | "WATERJET"
+  | "AUTOCAD"
+  | "WATERJET_OLGOO";
 
 /* =========================
    Route
@@ -42,10 +50,10 @@ type ExportKind = "NORMAL" | "OLGOO" | "PISHS" | "OJRATI" | "WATERJET" | "AUTOCA
 export async function POST(req: NextRequest) {
   try {
     const { selectedLayers } = await req.json();
-    console.log(`🔧 TRF Generator: Received ${selectedLayers?.length || 0} layers`);
+    console.log(`🔧 TRF Generator: Received ${selectedLayers || 0} layers`);
 
     if (!Array.isArray(selectedLayers) || selectedLayers.length === 0) {
-      console.log('❌ TRF Generator: No valid layers provided');
+      console.log("❌ TRF Generator: No valid layers provided");
       return NextResponse.json(
         { error: "No layers provided or invalid data format" },
         { status: 400 }
@@ -60,9 +68,13 @@ export async function POST(req: NextRequest) {
     await fs.mkdir(dirPath, { recursive: true });
     const filePath = path.join(dirPath, fileName);
 
-    console.log(`📝 TRF Generator: Generating content for ${selectedLayers.length} layers`);
+    console.log(
+      `📝 TRF Generator: Generating content for ${selectedLayers.length} layers`
+    );
     const trfContent = generateTrfContent(selectedLayers as layerData[]);
-    console.log(`💾 TRF Generator: Writing ${trfContent.length} chars to ${fileName}`);
+    console.log(
+      `💾 TRF Generator: Writing ${trfContent.length} chars to ${fileName}`
+    );
 
     await fs.writeFile(filePath, trfContent, "utf8");
 
@@ -76,7 +88,11 @@ export async function POST(req: NextRequest) {
           fileName,
           count: selectedLayers.length,
         }) + "\n";
-      await fs.appendFile(path.join(logsDir, "trf-generation.log"), logLine, "utf8");
+      await fs.appendFile(
+        path.join(logsDir, "trf-generation.log"),
+        logLine,
+        "utf8"
+      );
     } catch (e) {
       console.error("log append failed", e);
     }
@@ -114,41 +130,50 @@ function generateTrfContent(layers: layerData[]): string {
 
   // group by "order" (invoice). We avoid Mongo ObjectIds in output; for grouping only we can use them.
   const groups = groupByInvoice(layers);
-  console.log(`📦 TRF Content: Grouped into ${Object.keys(groups).length} orders:`, Object.keys(groups));
+  console.log(
+    `📦 TRF Content: Grouped into ${Object.keys(groups).length} orders:`,
+    Object.keys(groups)
+  );
 
   Object.values(groups).forEach((orderLayers, groupIndex) => {
-    console.log(`\n🎯 Processing Order ${groupIndex + 1}/${Object.keys(groups).length} with ${orderLayers.length} layers`);
-    
+    console.log(
+      `\n🎯 Processing Order ${groupIndex + 1}/${
+        Object.keys(groups).length
+      } with ${orderLayers.length} layers`
+    );
+
     // sort deterministically by productionCode (or createdAt if present)
-    orderLayers.sort((a, b) => safeStr(a.productionCode).localeCompare(safeStr(b.productionCode)));
+    orderLayers.sort((a, b) =>
+      safeStr(a.productionCode).localeCompare(safeStr(b.productionCode))
+    );
 
     const first = orderLayers[0];
     console.log(`📊 First layer data:`, {
       productionCode: first?.productionCode,
-      invoice: first?.invoice ? { code: first.invoice.code, _id: first.invoice._id } : 'none',
+      invoice: first?.invoice
+        ? { code: first.invoice.code, _id: first.invoice._id }
+        : "none",
       designNumber: first?.designNumber,
-      customer: first?.invoice?.customer ? { name: first.invoice.customer.name, code: first.invoice.customer.code } : 'none'
+      customer: first?.invoice?.customer
+        ? {
+            name: first.invoice.customer.name,
+            code: first.invoice.customer.code,
+          }
+        : "none",
     });
 
     // ---- Build <ORD> line (Delphi-style with what we have) ----
     // ORDER number: try invoice.code, else designNumber, else a readable prefix of productionCode
-    const ordNo =
-      safeStr(first?.invoice?.code) ||
-      safeStr(first?.designNumber?._id || first?.designNumber) ||
-      safeStr(first?.productionCode).slice(0, 10) ||
-      "ORD";
+    const ordNo = safeStr(first?.productionCode);
     // CUST_NUM / CUST_NAME (fallbacks, since we only have productLayer)
-    const custNum = safeStr(first?.invoice?.customer?.code) || "CUST001";
+    const custNum = safeStr(first?.invoice?.customer) || "CUST001";
     const custName =
       safeStr(first?.invoice?.customer?.englishName) ||
       safeStr(first?.invoice?.customer?.name) ||
       "Unknown";
 
     // TEXT1 (Delphi used MapNo); we’ll use a stable order token
-    const text1 =
-      safeStr(first?.invoice?.code) ||
-      safeStr(first?.designNumber?._id || first?.designNumber) ||
-      safeStr(first?.productionCode);
+    const text1 = safeStr(first?.designNumber?.code);
 
     // TEXT2: WATERJET / OJRATI derived from treatments on any layer in this order
     const hasWaterjet = orderLayers.some(hasTreatmentCode("WATERJET"));
@@ -169,16 +194,19 @@ function generateTrfContent(layers: layerData[]): string {
     // DEL_AREA = color name (Delphi puts aColor)
     const delArea = colorName;
 
-    content += `<ORD> ${padRight(ordNo, 10)} ${padRight(custNum, 10)} ${padRight(
-      custName,
-      40
-    )} ${padRight(text1, 40)} ${padRight(text2, 40)} ${padRight(
-      text3,
-      40
-    )} ${padRight(text4, 40)} ${padRight(text5, 40)} ${padRight(
-      prdDate,
+    content += `<ORD> ${padRight(ordNo, 10)} ${padRight(
+      custNum,
       10
-    )} ${padRight(delDate, 10)} ${padRight(delArea, 40)}\r\n`;
+    )} ${padRight(custName, 40)} ${padRight(text1, 40)} ${padRight(
+      text2,
+      40
+    )} ${padRight(text3, 40)} ${padRight(text4, 40)} ${padRight(
+      text5,
+      40
+    )} ${padRight(prdDate, 10)} ${padRight(delDate, 10)} ${padRight(
+      delArea,
+      40
+    )}\r\n`;
 
     // ---- POS/TXT/SHP/GL1 per layer ----
     orderLayers.forEach((layer, idx) => {
@@ -186,8 +214,8 @@ function generateTrfContent(layers: layerData[]): string {
 
       // ID_NUM: Delphi used EAbbreviate + last two of ImPrepareDate.
       // We’ll use glass code abbrev + last two digits of year from productionDate.
-      const yr2 = format(toDate(layer.productionDate) ?? new Date(), "yy");
-      const idNum = (safeStr(layer.glass?.code) || "ID") + yr2;
+
+      const idNum = safeStr(layer.glass?.code) || "ID";
 
       // QTY: not present on ProductLayer; default 1
       const qty = String((layer as any).qty ?? 1);
@@ -204,13 +232,16 @@ function generateTrfContent(layers: layerData[]): string {
       const height10 = adjustDimToN10(kind, num(layer.height));
 
       // GLASS1: optimizer code – we’ll use glass.code, else thickness as string
-      const glass1 = safeStr(layer.glass?.code) || safeStr(layer.glass?.thickness) || "110";
+      const glass1 = safeStr(layer.glass?.thickness) || "110";
 
       // POS
-      content += `<POS> ${padRight(itemNum, 5)} ${padRight(idNum, 8)} 0000 ${padRight(
-        qty,
+      content += `<POS> ${padRight(itemNum, 5)} ${padRight(
+        idNum,
+        8
+      )} 0000 ${padRight(qty, 5)} ${padRight(width10, 5)} ${padRight(
+        height10,
         5
-      )} ${padRight(width10, 5)} ${padRight(height10, 5)} ${padRight(
+      )} ${padRight(
         glass1,
         5
       )}                     000 00 00 00 0 0 00000 0\r\n`;
@@ -247,7 +278,10 @@ function generateTrfContent(layers: layerData[]): string {
       if (layer.glass) {
         const glassName = safeStr(layer.glass.name) || "FLOAT";
         const thickness = safeStr(layer.glass.thickness) || "10";
-        content += `<GL1> ${padRight(glassName, 20)} ${padRight(thickness, 5)} 0\r\n`;
+        content += `<GL1> ${padRight(glassName, 20)} ${padRight(
+          thickness,
+          5
+        )} 0\r\n`;
       }
     });
   });
@@ -262,19 +296,22 @@ function generateTrfContent(layers: layerData[]): string {
 function groupByInvoice(layers: layerData[]): Record<string, layerData[]> {
   console.log(`🔄 Grouping ${layers.length} layers by invoice...`);
   const groups: Record<string, layerData[]> = {};
-  
+
   for (const layer of layers) {
     // Prefer a human code if present, otherwise fall back to invoice _id safely for grouping only
     const key =
       safeStr((layer as any).invoice?.code) ||
       safeStr((layer as any).invoice?._id) ||
       // final fallback: cluster by product or productionDate
-      `grp-${safeStr(layer.product?._id || layer.product) || ""}-${format(toDate(layer.productionDate) ?? new Date(), "yyyyMMdd")}`;
+      `grp-${safeStr(layer.product?._id || layer.product) || ""}-${format(
+        toDate(layer.productionDate) ?? new Date(),
+        "yyyyMMdd"
+      )}`;
 
     console.log(`  📌 Layer ${layer.productionCode} → Group: ${key}`);
     (groups[key] ||= []).push(layer);
   }
-  
+
   console.log(`✅ Created ${Object.keys(groups).length} groups`);
   return groups;
 }

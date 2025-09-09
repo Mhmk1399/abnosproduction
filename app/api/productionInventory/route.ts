@@ -32,6 +32,7 @@ export async function POST(request: NextRequest) {
       code: code,
       Capacity: body.Capacity,
       location: body.location,
+      shapeCode: body.shapeCode,
       description: body.description,
     });
     await newInventory.save();

@@ -4,9 +4,11 @@ export interface InventoryData {
   location: string;
   description?: string;
   code?: string;
+  shapeCode?: string;
   _id?: string;
   id?: string;
 }
+
 ////////////////////////////////////////////////////////////////////////////
 ////step interface and types and its hooks and its dragableprops
 

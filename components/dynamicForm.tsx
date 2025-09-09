@@ -123,7 +123,7 @@ const DynamicForm: React.FC<DynamicFormProps> = ({
                       </option>
                       {field.options?.map((option, i) => (
                         <option
-                          key={i}
+                          key={`${field.name}-${option.value}-${i}`}
                           value={option.value}
                           disabled={option.disabled}
                         >
@@ -149,7 +149,7 @@ const DynamicForm: React.FC<DynamicFormProps> = ({
                     >
                       {field.options?.map((option, i) => (
                         <option
-                          key={i}
+                          key={`${field.name}-multi-${option.value}-${i}`}
                           value={option.value}
                           disabled={option.disabled}
                         >
@@ -177,7 +177,7 @@ const DynamicForm: React.FC<DynamicFormProps> = ({
                   return (
                     <div className="space-y-2">
                       {field.options?.map((option, i) => (
-                        <label key={i} className="flex items-center space-x-2">
+                        <label key={`${field.name}-radio-${option.value}-${i}`} className="flex items-center space-x-2">
                           <input
                             type="radio"
                             name={field.name}
@@ -231,6 +231,7 @@ const DynamicForm: React.FC<DynamicFormProps> = ({
 
       <div className="flex justify-start space-x-4">
         <button
+          key="submit-button"
           type="submit"
           className="px-6 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors"
         >
@@ -238,6 +239,7 @@ const DynamicForm: React.FC<DynamicFormProps> = ({
         </button>
 
         <button
+          key="cancel-button"
           type="button"
           onClick={() => {
             resetForm();

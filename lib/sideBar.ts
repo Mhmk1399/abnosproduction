@@ -4,10 +4,7 @@ export const navMenuItems = [
     id: "inventories",
     title: "مدیریت انبار های تولید",
     icon: "FaBoxOpen", // Font Awesome Box Open icon
-    children: [
-      { id: "addInventory", title: " افزودن انبار تولید " },
-      { id: "InventoryList", title: " لیست انبار ها" },
-    ],
+    children: [{ id: "InventoryList", title: " لیست انبار ها" }],
   },
   {
     id: "steps",
