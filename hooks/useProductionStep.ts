@@ -1,6 +1,11 @@
 import { useState } from "react";
 import useSWR from "swr";
-import { glasstreatments, Step, UseProductionStepReturn } from "../types/types";
+import {
+  glasstreatments,
+  PaginationData,
+  Step,
+  UseProductionStepReturn,
+} from "../types/types";
 
 const fetcher = (url: string) => fetch(url).then((res) => res.json());
 
@@ -13,12 +18,16 @@ export function useProductionStep(): UseProductionStepReturn {
     data,
     error: swrError,
     mutate: swrMutate,
-  } = useSWR<Step[]>("/api/steps", fetcher, {
-    dedupingInterval: 2000, // Deduplicate requests within 2 seconds
-    revalidateOnFocus: false, // Don't revalidate when window gets focus
-    revalidateIfStale: true,
-    revalidateOnReconnect: true,
-  });
+  } = useSWR<{ steps: Step[]; pagination?: PaginationData }>(
+    "/api/steps",
+    fetcher,
+    {
+      dedupingInterval: 2000, // Deduplicate requests within 2 seconds
+      revalidateOnFocus: false, // Don't revalidate when window gets focus
+      revalidateIfStale: true,
+      revalidateOnReconnect: true,
+    }
+  );
 
   // Create a new Step
 
@@ -145,11 +154,14 @@ export function useProductionStep(): UseProductionStepReturn {
 
   const mutate = async (): Promise<Step[]> => {
     const result = await swrMutate();
-    return result ?? [];
+    if (result && Array.isArray(result.steps)) {
+      return result.steps;
+    }
+    return [];
   };
 
   return {
-    steps: data || [],
+    steps: data?.steps || [],
     isLoading: !error && !data,
     error: swrError ? swrError.message : error,
     mutate,

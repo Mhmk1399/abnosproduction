@@ -1,3 +1,12 @@
+export interface PaginationData {
+  currentPage: number;
+  totalPages: number;
+  totalItems: number;
+  itemsPerPage: number;
+  hasNextPage: boolean;
+  hasPrevPage: boolean;
+}
+
 export interface InventoryData {
   name: string;
   Capacity: number;

@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { useProductionInventory } from "@/hooks/useProductionInventory";
 import DynamicTable from "@/components/dynamicTable";
 import { FormField, TableColumn, FilterField } from "@/types/typesofdynamics";
@@ -13,10 +13,34 @@ interface ProductionInventoryTableProps {
 }
 
 const ProductionInventoryTable: React.FC<ProductionInventoryTableProps> = ({
-  onEdit,
   onDelete,
 }) => {
   const { inventories, isLoading, mutate } = useProductionInventory();
+  const [products, setProducts] = useState<{ label: string; value: string }[]>(
+    []
+  );
+  console.log(inventories);
+
+  useEffect(() => {
+    const fetchProducts = async () => {
+      try {
+        const response = await fetch("/api/products");
+        const data = await response.json();
+        if (response.ok && data) {
+          const productOptions = (
+            Array.isArray(data) ? data : data.data || []
+          ).map((product: any) => ({
+            label: product.name,
+            value: product._id,
+          }));
+          setProducts(productOptions);
+        }
+      } catch (error) {
+        console.error("Error fetching products:", error);
+      }
+    };
+    fetchProducts();
+  }, []);
 
   const formFields: FormField[] = [
     {
@@ -41,15 +65,47 @@ const ProductionInventoryTable: React.FC<ProductionInventoryTableProps> = ({
       validation: [{ type: "required", message: "موقعیت الزامی است" }],
     },
     {
+      name: "code",
+      label: "کد",
+      type: "text",
+      placeholder: "کد انبار را وارد کنید",
+      validation: [{ type: "required", message: "کد الزامی است" }],
+    },
+    {
+      name: "productwidth",
+      label: "عرض محصول",
+      type: "number",
+      placeholder: "عرض محصول را وارد کنید",
+    },
+    {
+      name: "productheight",
+      label: "ارتفاع محصول",
+      type: "number",
+      placeholder: "ارتفاع محصول را وارد کنید",
+    },
+    {
+      name: "productthikness",
+      label: "ضخامت محصول",
+      type: "number",
+      placeholder: "ضخامت محصول را وارد کنید",
+    },
+    {
       name: "shapeCode",
       label: "شکل",
       type: "select",
       placeholder: "شکل را انتخاب کنید",
       validation: [{ type: "required", message: "شکل الزامی است" }],
-      options: SHAPES.map(shape => ({
+      options: SHAPES.map((shape) => ({
         label: shape.name,
         value: shape.code,
       })),
+    },
+    {
+      name: "products",
+      label: "محصولات",
+      type: "multiselect",
+      placeholder: "محصولات را انتخاب کنید",
+      options: products,
     },
     {
       name: "description",
@@ -66,11 +122,7 @@ const ProductionInventoryTable: React.FC<ProductionInventoryTableProps> = ({
       header: "نام انبار",
       sortable: true,
     },
-    {
-      key: "code",
-      header: "کد انبار",
-      sortable: true,
-    },
+
     {
       key: "Capacity",
       header: "ظرفیت",
@@ -80,6 +132,33 @@ const ProductionInventoryTable: React.FC<ProductionInventoryTableProps> = ({
       key: "location",
       header: "موقعیت",
       sortable: true,
+    },
+    {
+      key: "productthikness",
+      header: "ضخامت",
+      sortable: true,
+      render: (value) => {
+        console.log("productthikness value:", value);
+        return value !== null && value !== undefined ? value.toString() : "-";
+      },
+    },
+    {
+      key: "productheight",
+      header: "ارتفاع",
+      sortable: true,
+      render: (value) => {
+        console.log("productheight value:", value);
+        return value !== null && value !== undefined ? value.toString() : "-";
+      },
+    },
+    {
+      key: "productwidth",
+      header: "عرض",
+      sortable: true,
+      render: (value) => {
+        console.log("productwidth value:", value);
+        return value !== null && value !== undefined ? value.toString() : "-";
+      },
     },
     {
       key: "shapeCode",
@@ -104,13 +183,15 @@ const ProductionInventoryTable: React.FC<ProductionInventoryTableProps> = ({
       },
     },
     {
-      key: "createdAt",
-      header: "تاریخ ایجاد",
-      sortable: true,
+      key: "products",
+      header: "محصولات",
       render: (value) => {
-        return value
-          ? new Date(value as string).toLocaleDateString("fa-IR")
-          : "-";
+        if (Array.isArray(value) && value.length > 0) {
+          return value
+            .map((product: any) => product.name || product)
+            .join(", ");
+        }
+        return "-";
       },
     },
   ];
@@ -162,6 +243,12 @@ const ProductionInventoryTable: React.FC<ProductionInventoryTableProps> = ({
       toast.error("خطا در حذف انبار");
     }
   };
+
+  // Debug logging
+  console.log("Inventories data:", inventories);
+  if (inventories && inventories.length > 0) {
+    console.log("First inventory item:", inventories[0]);
+  }
 
   return (
     <DynamicTable

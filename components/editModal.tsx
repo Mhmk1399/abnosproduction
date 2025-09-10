@@ -54,22 +54,18 @@ const DynamicUpdateForm: React.FC<DynamicUpdateFormProps> = ({
   const [isSubmitting, setIsSubmitting] = useState(false);
   // Submission function using the Fetch API.
   const submissionFunction = async (data: FormValues): Promise<Response> => {
-    const headers: Record<string, string> = {};
-    let body: string | FormData;
-
-    // Add the ID to the data object for the update operation
-    const dataWithId: FormValues = {
-      ...data,
-      _id: itemId,
+    const headers: Record<string, string> = {
+      "id": itemId, // Add ID to headers
     };
+    let body: string | FormData;
 
     if (encType === "application/json") {
       headers["Content-Type"] = "application/json";
-      body = JSON.stringify(dataWithId);
+      body = JSON.stringify(data); // Don't include ID in body
     } else {
       // For multipart/form-data, create a FormData object
       const formData = new FormData();
-      Object.entries(dataWithId).forEach(([key, value]) => {
+      Object.entries(data).forEach(([key, value]) => {
         if (value !== null && value !== undefined) {
           if (value instanceof File || value instanceof FileList) {
             if (value instanceof FileList) {

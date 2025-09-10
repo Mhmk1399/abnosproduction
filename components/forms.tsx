@@ -103,6 +103,9 @@ export function useDynamicForm(
       value = (e.target as HTMLInputElement).checked;
     } else if (type === "file") {
       value = (e.target as HTMLInputElement).files;
+    } else if ((e.target as HTMLSelectElement).multiple) {
+      const selectElement = e.target as HTMLSelectElement;
+      value = Array.from(selectElement.selectedOptions, option => option.value);
     } else {
       value = e.target.value;
     }

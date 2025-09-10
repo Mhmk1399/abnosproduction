@@ -27,6 +27,17 @@ const productionInventorySchema = new mongoose.Schema({
       28, 29, 30,
     ],
   },
+  productwidth: {
+    type: Number,
+  },
+  productheight: { type: Number },
+  productthikness: { type: Number },
+  products: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Product",
+    },
+  ],
   description: {
     type: String,
   },

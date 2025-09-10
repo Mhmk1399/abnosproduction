@@ -18,8 +18,7 @@ const DynamicForm: React.FC<DynamicFormProps> = ({
   encType = "application/json",
   className = "",
   initialValues = {},
-  // transformFormData,
-  // transformData,
+ 
 }) => {
   const {
     formValues,
@@ -51,6 +50,7 @@ const DynamicForm: React.FC<DynamicFormProps> = ({
     e.preventDefault();
     if (!validateForm()) return;
     await handleSubmit(async (data) => {
+      console.log(data,"asdasdasd")
       const response = await submissionFunction(data);
       if (response.ok) {
         if (onSuccess) {

@@ -23,10 +23,6 @@ const glassTreatmentSchema = new mongoose.Schema(
         required: true,
       },
     },
-    invoice: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "Invoice",
-    },
   },
   { timestamps: true }
 );

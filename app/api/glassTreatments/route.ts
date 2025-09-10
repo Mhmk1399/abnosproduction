@@ -6,7 +6,7 @@ export async function GET() {
   await connect();
   try {
     const treatments = await glassTreatment.find({});
-    return NextResponse.json(treatments, { status: 200 });
+    return NextResponse.json(treatments);
   } catch (error) {
     console.error("Error fetching treatments:", error);
     return NextResponse.json(

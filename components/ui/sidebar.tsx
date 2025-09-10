@@ -6,8 +6,7 @@ import WelcomeScreen from "./welcome";
 import ProductionInventoryManager from "../inventory/ProductionInventoryManager";
 import WorkerPage from "../workers-layers/workers";
 import OptimizerPage from "../workers-layers/optimaizer";
-import AddProductionStep from "../steps/AddProductionStep";
-import ProductionStepsView from "../steps/ProductionStepsView";
+import ProductionStepsManager from "../steps/ProductionStepsManager";
 import { NavMenuItem, MenuItemChild } from "../../types/types";
 import {
   FaBoxOpen,
@@ -226,9 +225,8 @@ const renderChildComponent = (
       case "WorkerPage":
         return <WorkerPage />;
       case "ProductionStepsView":
-        return <ProductionStepsView />;
-      case "AddProductionStep":
-        return <AddProductionStep />;
+        return <ProductionStepsManager />;
+
       default:
         return (
           <WelcomeScreen

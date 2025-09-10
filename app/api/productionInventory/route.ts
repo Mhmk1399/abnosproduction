@@ -9,6 +9,10 @@ export async function GET() {
     // Add await to resolve the promise and get the actual data
     const inventories = await productionInventory
       .find()
+      .populate({
+        path: "products",
+        model: "Product",
+      })
       .sort({ createdAt: -1 })
       .lean();
 
@@ -26,17 +30,30 @@ export async function POST(request: NextRequest) {
   await connect();
   try {
     const body = await request.json();
-    const code = `${body.name}-${uuidv4().substring(0, 8)}`;
-    const newInventory = new productionInventory({
+    console.log("Received body:", body);
+    
+    const code = body.code || `${uuidv4().substring(0, 8)}`;
+    console.log("Generated code:", code);
+    
+    const inventoryData = {
       name: body.name,
       code: code,
       Capacity: body.Capacity,
       location: body.location,
       shapeCode: body.shapeCode,
+      productwidth: body.productwidth ? Number(body.productwidth) : undefined,
+      productheight: body.productheight ? Number(body.productheight) : undefined,
+      productthikness: body.productthikness ? Number(body.productthikness) : undefined,
+      products: body.products || [],
       description: body.description,
-    });
-    await newInventory.save();
-    return NextResponse.json(newInventory, { status: 201 });
+    };
+    console.log("Inventory data to save:", inventoryData);
+    
+    const newInventory = new productionInventory(inventoryData);
+    const savedInventory = await newInventory.save();
+    console.log("Saved inventory:", savedInventory);
+    
+    return NextResponse.json(savedInventory, { status: 201 });
   } catch (error) {
     console.error("Error creating inventory:", error);
     return NextResponse.json(

@@ -62,6 +62,7 @@ const DynamicTable: React.FC<DynamicTableProps> = ({
   };
 
   const sortedData = useMemo(() => {
+    if (!Array.isArray(data)) return [];
     if (!sortConfig) return data;
     const sorted = [...data].sort((a, b) => {
       const aVal = a[sortConfig.key];

@@ -12,7 +12,7 @@ export const navMenuItems = [
     icon: "FaListOl", // Font Awesome List Ordered icon
     children: [
       { id: "ProductionStepsView", title: "لیست ایستگاه های تولید" },
-      { id: "AddProductionStep", title: "ساخت ایستگاه تولید" },
+  
     ],
   },
   {

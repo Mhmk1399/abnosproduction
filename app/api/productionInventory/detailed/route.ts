@@ -62,7 +62,11 @@ export async function DELETE(request: NextRequest) {
 
 export async function PATCH(request: NextRequest) {
   const id = request.headers.get("id") || "";
+  console.log("Received ID:", id);
+  console.log("All headers:", Object.fromEntries(request.headers.entries()));
+  
   if (!id) {
+    console.log("No ID provided in headers");
     return NextResponse.json(
       { error: "Inventory ID is required" },
       { status: 400 }
@@ -71,6 +75,7 @@ export async function PATCH(request: NextRequest) {
   await connect();
   try {
     const body = await request.json();
+    console.log("Request body:", body);
     const result = await productionInventory.findByIdAndUpdate(id, body, {
       new: true,
       runValidators: true,
