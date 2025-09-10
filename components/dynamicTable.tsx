@@ -20,7 +20,7 @@ import {
   FilterField,
   FilterValues,
 } from "@/types/typesofdynamics";
-import { translateField } from "@/utiles/fieldTranslations";
+import { translateField } from "@/utils/fieldTranslations";
 
 const DynamicTable: React.FC<DynamicTableProps> = ({
   columns,
