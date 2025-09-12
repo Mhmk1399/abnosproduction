@@ -63,6 +63,21 @@ const fetcher = async (
       data: result.providerReports || [],
       pagination: result.pagination || null,
     };
+  } else if (result.inventories) {
+    return {
+      data: result.inventories || [],
+      pagination: result.pagination || null,
+    };
+  } else if (result.steps) {
+    return {
+      data: result.steps || [],
+      pagination: result.pagination || null,
+    };
+  } else if (result.layers) {
+    return {
+      data: result.layers || [],
+      pagination: result.pagination || null,
+    };
   } else {
     return { data: result.data || [], pagination: result.pagination || null };
   }

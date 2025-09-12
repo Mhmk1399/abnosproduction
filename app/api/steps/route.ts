@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import Step from "@/models/steps";
 import connect from "@/lib/data";
 import { v4 as uuidv4 } from "uuid";
+import glassTreatment from "@/models/glassTreatment";
 
 export async function GET(request: NextRequest) {
   try {
@@ -10,7 +11,10 @@ export async function GET(request: NextRequest) {
     const id = searchParams.get("id");
 
     if (id) {
-      const step = await Step.findById(id);
+      const step = await Step.findById(id).populate({
+        path: "handlesTreatments",
+        model: glassTreatment,
+      });
 
       if (!step) {
         return NextResponse.json({ error: "Step not found" }, { status: 404 });
@@ -21,23 +25,28 @@ export async function GET(request: NextRequest) {
     // Get query parameters for pagination and filtering
     const page = parseInt(searchParams.get("page") || "1");
     const limit = parseInt(searchParams.get("limit") || "10");
-    const nameFilter = searchParams.get("nameFilter");
-    const codeFilter = searchParams.get("codeFilter");
-    const typeFilter = searchParams.get("typeFilter");
+    const name = searchParams.get("name");
+    const code = searchParams.get("code");
+    const type = searchParams.get("type");
+    const requiresScan = searchParams.get("requiresScan");
 
     // Build filter object
     const filter: any = {};
 
-    if (nameFilter) {
-      filter.name = { $regex: nameFilter, $options: "i" };
+    if (name) {
+      filter.name = { $regex: name, $options: "i" };
     }
 
-    if (codeFilter) {
-      filter.code = { $regex: codeFilter, $options: "i" };
+    if (code) {
+      filter.code = { $regex: code, $options: "i" };
     }
 
-    if (typeFilter) {
-      filter.type = typeFilter;
+    if (type) {
+      filter.type = type;
+    }
+
+    if (requiresScan !== null && requiresScan !== undefined) {
+      filter.requiresScan = requiresScan === 'true';
     }
 
     // Calculate pagination
@@ -48,7 +57,14 @@ export async function GET(request: NextRequest) {
     const totalPages = Math.ceil(totalRecords / limit);
 
     // Fetch steps with pagination and filtering
-    const steps = await Step.find(filter);
+    const steps = await Step.find(filter)
+      .populate({
+        path: "handlesTreatments",
+        model: glassTreatment,
+      })
+      .sort({ createdAt: -1 })
+      .skip(skip)
+      .limit(limit);
 
     return NextResponse.json({
       steps,

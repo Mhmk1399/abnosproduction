@@ -68,12 +68,12 @@ export async function PATCH(request: NextRequest) {
 
   try {
     const body = await request.json();
-    
+
     // Hash password if it's being updated
     if (body.password) {
       body.password = await bcrypt.hash(body.password, 12);
     }
-    
+
     const result = await steps.findByIdAndUpdate(id, body, {
       new: true,
       runValidators: true,

@@ -1,10 +1,24 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
-import { useProductionStep } from "@/hooks/useProductionStep";
-import DynamicTable from "@/components/dynamicTable";
-import { FormField, TableColumn, FilterField } from "@/types/typesofdynamics";
+import { useState, useRef, useEffect } from "react";
+import DynamicTable from "@/components/dynamiccomponents/DynamicTable";
+import DynamicModal from "@/components/dynamiccomponents/DynamicModal";
+import { TableConfig, DynamicTableRef } from "@/types/tables";
+import { ModalConfig } from "@/components/dynamiccomponents/DynamicModal";
 import toast from "react-hot-toast";
+
+export interface ProductionStep extends Record<string, unknown> {
+  _id: string;
+  name: string;
+  code?: string;
+  type: string;
+  requiresScan: boolean;
+  handlesTreatments?: any[];
+  password?: string;
+  description?: string;
+  createdAt?: Date;
+  updatedAt?: Date;
+}
 
 interface ProductionStepsTableProps {
   onEdit: (id: string) => void;
@@ -14,17 +28,21 @@ interface ProductionStepsTableProps {
 const ProductionStepsTable: React.FC<ProductionStepsTableProps> = ({
   onDelete,
 }) => {
-  const { steps, isLoading, mutate } = useProductionStep();
-  console.log(steps);
+  const [selectedStep, setSelectedStep] = useState<ProductionStep | null>(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [modalConfig, setModalConfig] = useState<ModalConfig>({
+    title: "",
+    type: "view",
+  });
   const [treatments, setTreatments] = useState<
     { label: string; value: string }[]
   >([]);
+  const tableRef = useRef<DynamicTableRef>(null);
 
   useEffect(() => {
     const fetchTreatments = async () => {
       try {
         const response = await fetch("/api/glassTreatments");
-        console.log(response);
         const data = await response.json();
         if (response.ok && data) {
           const treatmentOptions = (
@@ -42,169 +60,225 @@ const ProductionStepsTable: React.FC<ProductionStepsTableProps> = ({
     fetchTreatments();
   }, []);
 
-  const formFields: FormField[] = [
-    {
-      name: "name",
-      label: "نام مرحله",
-      type: "text",
-      placeholder: "نام مرحله را وارد کنید",
-      validation: [{ type: "required", message: "نام مرحله الزامی است" }],
-    },
-    {
-      name: "code",
-      label: "کد مرحله",
-      type: "text",
-      placeholder: "کد مرحله را وارد کنید (اختیاری)",
-    },
-    {
-      name: "type",
-      label: "نوع مرحله",
-      type: "select",
-      placeholder: "نوع مرحله را انتخاب کنید",
-      options: [
-        { label: "تولید", value: "step" },
-        { label: "استقرار", value: "shelf" },
+  const handleView = (step: ProductionStep) => {
+    setSelectedStep(step);
+    setModalConfig({
+      title: `مشاهده اطلاعات مرحله ${step.name}`,
+      type: "view",
+      size: "md",
+      fields: [
+        { key: "name", label: "نام مرحله" },
+        { key: "code", label: "کد" },
+        { key: "type", label: "نوع" },
+        { key: "requiresScan", label: "نیاز به اسکن" },
+        { key: "description", label: "توضیحات" },
       ],
-    },
-    {
-      name: "requiresScan",
-      label: "نیاز به اسکن",
-      type: "checkbox",
-    },
-    {
-      name: "handlesTreatments",
-      label: "خدمات مرتبط",
-      type: "multiselect",
-      placeholder: "خدمات مرتبط را انتخاب کنید",
-      options: treatments,
-    },
-    {
-      name: "password",
-      label: "رمز عبور",
-      type: "password",
-      placeholder: "رمز عبور را وارد کنید (اختیاری)",
-    },
-    {
-      name: "description",
-      label: "توضیحات",
-      type: "textarea",
-      placeholder: "توضیحات مرحله را وارد کنید (اختیاری)",
-      rows: 3,
-    },
-  ];
+      onClose: () => {
+        setIsModalOpen(false);
+        setSelectedStep(null);
+      },
+    });
+    setIsModalOpen(true);
+  };
 
-  const tableColumns: TableColumn[] = [
-    {
-      key: "name",
-      header: "نام مرحله",
-      sortable: true,
-    },
-    {
-      key: "code",
-      header: "کد",
-      sortable: true,
-    },
-    {
-      key: "type",
-      header: "نوع",
-      sortable: true,
-      render: (value) => {
-        return value === "step"
-          ? "تولید"
-          : value === "shelf"
-          ? "استقرار"
-          : value || "-";
-      },
-    },
-    {
-      key: "requiresScan",
-      header: "نیاز به اسکن",
-      render: (value) => {
-        return value ? "بله" : "خیر";
-      },
-    },
-    {
-      key: "handlesTreatments",
-      header: "خدمات مرتبط",
-      render: (value) => {
-        if (Array.isArray(value) && value.length > 0) {
-          return value
-            .map((treatment: any) => treatment.name || treatment)
-            .join(", ");
-        }
-        return "-";
-      },
-    },
-    {
-      key: "description",
-      header: "توضیحات",
-      render: (value) => {
-        const desc = value as string;
-        return desc
-          ? desc.length > 50
-            ? `${desc.substring(0, 50)}...`
-            : desc
-          : "-";
-      },
-    },
-  ];
-
-  const filterFields: FilterField[] = [
-    {
-      key: "name",
-      label: "نام مرحله",
-      type: "text",
-      placeholder: "جستجو در نام مرحله...",
-    },
-    {
-      key: "type",
-      label: "نوع مرحله",
-      type: "select",
-      placeholder: "انتخاب نوع",
-      options: [
-        { label: "تولید", value: "step" },
-        { label: "استقرار", value: "shelf" },
-      ],
-    },
-  ];
-
-  const handleDelete = async (id: string) => {
-    try {
-      const response = await fetch("/api/steps/detailed", {
-        method: "DELETE",
-        headers: {
-          "Content-Type": "application/json",
-          id: id,
+  const handleEdit = (step: ProductionStep) => {
+    setSelectedStep(step);
+    setModalConfig({
+      title: `ویرایش مرحله ${step.name}`,
+      type: "edit",
+      size: "md",
+      endpoint: `/api/steps/detailed`,
+      method: "PATCH",
+      fields: [
+        {
+          key: "name",
+          label: "نام مرحله",
+          type: "text",
+          required: true,
+          placeholder: "نام مرحله را وارد کنید",
         },
-      });
+        {
+          key: "code",
+          label: "کد مرحله",
+          type: "text",
+          placeholder: "کد مرحله را وارد کنید",
+        },
+        {
+          key: "type",
+          label: "نوع مرحله",
+          type: "select",
+          required: true,
+          options: [
+            { label: "تولید", value: "step" },
+            { label: "استقرار", value: "shelf" },
+          ],
+        },
+        {
+          key: "requiresScan",
+          label: "نیاز به اسکن",
+          type: "checkbox",
+        },
+        {
+          key: "handlesTreatments",
+          label: "خدمات مرتبط",
+          type: "multiselect",
+          options: treatments,
+        },
+        {
+          key: "password",
+          label: "رمز عبور",
+          type: "password",
+          placeholder: "رمز عبور را وارد کنید",
+        },
+        {
+          key: "description",
+          label: "توضیحات",
+          type: "textarea",
+        },
+      ],
+      onSuccess: () => {
+        toast.success("مرحله با موفقیت بروزرسانی شد");
+        setIsModalOpen(false);
+        setSelectedStep(null);
+        if (tableRef.current) {
+          tableRef.current.refreshData();
+        }
+      },
+      onError: (error) => {
+        toast.error(`خطا در بروزرسانی مرحله: ${error}`);
+      },
+      onClose: () => {
+        setIsModalOpen(false);
+        setSelectedStep(null);
+      },
+    });
+    setIsModalOpen(true);
+  };
 
-      if (response.ok) {
+  const handleDelete = (step: ProductionStep) => {
+    setSelectedStep(step);
+    setModalConfig({
+      title: `حذف مرحله`,
+      type: "delete",
+      endpoint: `/api/steps/detailed`,
+      method: "DELETE",
+      onSuccess: () => {
         toast.success("مرحله با موفقیت حذف شد");
-        mutate();
-        onDelete(id);
-      } else {
-        toast.error("خطا در حذف مرحله");
-      }
-    } catch (error) {
-      console.error("Error deleting step:", error);
-      toast.error("خطا در حذف مرحله");
-    }
+        setIsModalOpen(false);
+        setSelectedStep(null);
+        onDelete(step._id);
+        if (tableRef.current) {
+          tableRef.current.refreshData();
+        }
+      },
+      onError: (error) => {
+        toast.error(`خطا در حذف مرحله: ${error}`);
+      },
+      onClose: () => {
+        setIsModalOpen(false);
+        setSelectedStep(null);
+      },
+    });
+    setIsModalOpen(true);
+  };
+
+  const tableConfig: TableConfig = {
+    title: "مدیریت مراحل تولید",
+    description: "لیست مراحل تولید",
+    endpoint: "/api/steps",
+    enableFilters: true,
+    columns: [
+      {
+        key: "name",
+        label: "نام مرحله",
+        sortable: true,
+        filterable: true,
+        filterType: "text",
+      },
+      {
+        key: "code",
+        label: "کد",
+        sortable: true,
+        filterable: true,
+        filterType: "text",
+      },
+      {
+        key: "type",
+        label: "نوع",
+        sortable: true,
+        filterable: true,
+        filterType: "select",
+        filterOptions: [
+          { label: "تولید", value: "step" },
+          { label: "استقرار", value: "shelf" },
+        ],
+        render: (value) => {
+          return value === "step"
+            ? "تولید"
+            : value === "shelf"
+            ? "استقرار"
+            : value || "-";
+        },
+      },
+      {
+        key: "requiresScan",
+        label: "نیاز به اسکن",
+        filterable: true,
+        filterType: "select",
+        filterOptions: [
+          { label: "بله", value: "true" },
+          { label: "خیر", value: "false" },
+        ],
+        render: (value, row) => {
+          return value ? "بله" : "خیر";
+        },
+      },
+      {
+        key: "handlesTreatments",
+        label: "خدمات مرتبط",
+        render: (value) => {
+          if (Array.isArray(value) && value.length > 0) {
+            return value
+              .map((treatment: any) => treatment.name || treatment)
+              .join(", ");
+          }
+          return "-";
+        },
+      },
+      {
+        key: "description",
+        label: "توضیحات",
+        render: (value) => {
+          const desc = value as string;
+          return desc && desc.length > 50
+            ? `${desc.substring(0, 50)}...`
+            : desc || "-";
+        },
+      },
+    ],
+    actions: {
+      view: true,
+      edit: true,
+      delete: true,
+    },
+    onView: handleView,
+    onEdit: handleEdit,
+    onDelete: handleDelete,
   };
 
   return (
-    <DynamicTable
-      columns={tableColumns}
-      data={steps}
-      loading={isLoading}
-      formFields={formFields}
-      endpoint="/api/steps/detailed"
-      formTitle="ویرایش مرحله"
-      formSubtitle="لطفا اطلاعات مرحله را ویرایش کنید"
-      onRefresh={mutate}
-      onDelete={handleDelete}
-      showActions={true}
-      filterFields={filterFields}
-    />
+    <div className="container mx-auto py-8" dir="rtl">
+      <DynamicTable ref={tableRef} config={tableConfig} />
+
+      {isModalOpen && (
+        <DynamicModal
+          isOpen={isModalOpen}
+          config={modalConfig}
+          itemId={selectedStep?._id}
+          initialData={selectedStep || undefined}
+        />
+      )}
+    </div>
   );
 };
 

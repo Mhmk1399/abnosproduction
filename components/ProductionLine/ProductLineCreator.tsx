@@ -83,9 +83,9 @@ export default function ProductLineCreator({
 
       let originalItem;
       if (itemType === "step") {
-        originalItem = steps.find((s) => s._id === itemId);
+        originalItem = steps && Array.isArray(steps) ? steps.find((s) => s._id === itemId) : undefined;
       } else if (itemType === "inventory") {
-        originalItem = inventories.find((i) => i._id === itemId);
+        originalItem = inventories && Array.isArray(inventories) ? inventories.find((i) => i._id === itemId) : undefined;
       }
 
       if (originalItem) {
@@ -309,11 +309,11 @@ export default function ProductLineCreator({
           </h2>
           <div className="bg-white p-5 rounded-xl shadow-sm h-[500px] overflow-y-auto border border-gray-100">
             <div className="space-y-3">
-              {steps.map((step) => (
+              {steps && Array.isArray(steps) ? steps.map((step) => (
                 <DraggableItemSource key={step._id} item={step} type="step" />
-              ))}
+              )) : null}
             </div>
-            {steps.length === 0 && (
+            {(!steps || steps.length === 0) && (
               <div className="text-gray-500 text-center py-8 border border-dashed border-gray-300 rounded-lg font-vazir bg-gray-50 flex flex-col items-center justify-center gap-2">
                 <FiAlertCircle className="text-gray-400 text-2xl" />
                 <p className="font-vazir">هیچ مرحله‌ای موجود نیست</p>
@@ -331,15 +331,15 @@ export default function ProductLineCreator({
           </h2>
           <div className="bg-white p-5 rounded-xl shadow-sm h-[500px] overflow-y-auto border border-gray-100">
             <div className="space-y-3">
-              {inventories.map((inventory) => (
+              {inventories && Array.isArray(inventories) ? inventories.map((inventory) => (
                 <DraggableItemSource
                   key={inventory._id}
                   item={inventory}
                   type="inventory"
                 />
-              ))}
+              )) : null}
             </div>
-            {inventories.length === 0 && (
+            {(!inventories || inventories.length === 0) && (
               <div className="text-gray-500 text-center py-8 border border-dashed border-gray-300 rounded-lg font-vazir bg-gray-50 flex flex-col items-center justify-center gap-2">
                 <FiAlertCircle className="text-gray-400 text-2xl" />
                 <p className="font-vazir">هیچ موجودی‌ای موجود نیست</p>

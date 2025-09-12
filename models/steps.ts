@@ -24,6 +24,10 @@ const stepSchema: mongoose.Schema = new mongoose.Schema(
       type: Boolean,
       default: true,
     },
+    dependencies: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref:"steps"
+    },
     // Types of treatments this step performs
     handlesTreatments: [
       {

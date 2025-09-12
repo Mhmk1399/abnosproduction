@@ -1,8 +1,8 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import DynamicForm from "@/components/dynamicForm";
-import { FormField } from "@/types/typesofdynamics";
+import DynamicForm from "@/components/dynamiccomponents/DynamicForm";
+import { FormConfig } from "@/types/form";
 import toast from "react-hot-toast";
 
 interface ProductionStepsFormProps {
@@ -20,7 +20,6 @@ const ProductionStepsForm: React.FC<ProductionStepsFormProps> = ({
     const fetchTreatments = async () => {
       try {
         const response = await fetch("/api/glassTreatments");
-        console.log(response);
         const data = await response.json();
         if (response.ok && data) {
           const treatmentOptions = (
@@ -38,80 +37,70 @@ const ProductionStepsForm: React.FC<ProductionStepsFormProps> = ({
     fetchTreatments();
   }, []);
 
-  const formFields: FormField[] = [
-    {
-      name: "name",
-      label: "نام مرحله",
-      type: "text",
-      placeholder: "نام مرحله را وارد کنید",
-      validation: [{ type: "required", message: "نام مرحله الزامی است" }],
+  const formConfig: FormConfig = {
+    title: "افزودن مرحله جدید",
+    description: "لطفا اطلاعات مرحله را وارد کنید",
+    endpoint: "/api/steps",
+    method: "POST",
+    fields: [
+      {
+        name: "name",
+        label: "نام مرحله",
+        type: "text",
+        required: true,
+        placeholder: "نام مرحله را وارد کنید",
+      },
+      {
+        name: "code",
+        label: "کد مرحله",
+        type: "text",
+        placeholder: "کد مرحله را وارد کنید (اختیاری)",
+      },
+      {
+        name: "type",
+        label: "نوع مرحله",
+        type: "select",
+        placeholder: "نوع مرحله را انتخاب کنید",
+        options: [
+          { label: "تولید", value: "step" },
+          { label: "استقرار", value: "shelf" },
+        ],
+      },
+      {
+        name: "requiresScan",
+        label: "نیاز به اسکن",
+        type: "checkbox",
+      },
+      {
+        name: "handlesTreatments",
+        label: "خدمات مرتبط",
+        type: "select",
+        placeholder: "خدمات مرتبط را انتخاب کنید",
+        options: treatments,
+      },
+      {
+        name: "password",
+        label: "رمز عبور",
+        type: "password",
+        placeholder: "رمز عبور را وارد کنید (اختیاری)",
+      },
+      {
+        name: "description",
+        label: "توضیحات",
+        type: "textarea",
+        placeholder: "توضیحات مرحله را وارد کنید (اختیاری)",
+      },
+    ],
+    onSuccess: () => {
+      toast.success("مرحله با موفقیت ثبت شد");
+      onSuccess();
     },
-    {
-      name: "code",
-      label: "کد مرحله",
-      type: "text",
-      placeholder: "کد مرحله را وارد کنید (اختیاری)",
+    onError: (error) => {
+      toast.error(error || "خطا در ثبت مرحله");
     },
-    {
-      name: "type",
-      label: "نوع مرحله",
-      type: "select",
-      placeholder: "نوع مرحله را انتخاب کنید",
-      options: [
-        { label: "تولید", value: "step" },
-        { label: "استقرار", value: "shelf" },
-      ],
-    },
-    {
-      name: "requiresScan",
-      label: "نیاز به اسکن",
-      type: "checkbox",
-    },
-    {
-      name: "handlesTreatments",
-      label: "خدمات مرتبط",
-      type: "multiselect",
-      placeholder: "خدمات مرتبط را انتخاب کنید",
-      options: treatments,
-    },
-    {
-      name: "password",
-      label: "رمز عبور",
-      type: "password",
-      placeholder: "رمز عبور را وارد کنید (اختیاری)",
-    },
-    {
-      name: "description",
-      label: "توضیحات",
-      type: "textarea",
-      placeholder: "توضیحات مرحله را وارد کنید (اختیاری)",
-      rows: 3,
-    },
-  ];
-
-  const handleFormSuccess = (data: any) => {
-    toast.success("مرحله با موفقیت ثبت شد");
-    onSuccess();
   };
 
-  const handleFormError = (error: Error) => {
-    toast.error(error.message || "خطا در ثبت مرحله");
-  };
-
-  return (
-    <DynamicForm
-      title="افزودن مرحله جدید"
-      subtitle="لطفا اطلاعات مرحله را وارد کنید"
-      fields={formFields}
-      endpoint="/api/steps"
-      method="POST"
-      submitButtonText="ذخیره مرحله"
-      cancelButtonText="پاک کردن"
-      onSuccess={handleFormSuccess}
-      onError={handleFormError}
-      resetAfterSubmit={true}
-    />
-  );
+  return <DynamicForm config={formConfig} />;
 };
 
 export default ProductionStepsForm;

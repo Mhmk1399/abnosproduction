@@ -27,8 +27,7 @@ import {
 } from "react-icons/fa";
 import CreateProductionLine from "../ProductionLine/CreateProductionLine";
 import ProductionLine from "../ProductionLine/ProductionLine";
-import LayerList from "../workers-layers/LayerList";
-
+import LayerManager from "../workers-layers/LayerManager";
 const iconMap = {
   FaBoxOpen,
   FaIndustry,
@@ -219,7 +218,7 @@ const renderChildComponent = (
       case "configure":
         return <CreateProductionLine />;
       case "layer":
-        return <LayerList />;
+        return <LayerManager />;
       case "optimizer":
         return <OptimizerPage />;
       case "WorkerPage":

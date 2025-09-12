@@ -3,20 +3,81 @@ import connect from "@/lib/data";
 import productionInventory from "@/models/productionInventory";
 import { v4 as uuidv4 } from "uuid";
 
-export async function GET() {
-  await connect();
+export async function GET(request: NextRequest) {
   try {
-    // Add await to resolve the promise and get the actual data
-    const inventories = await productionInventory
-      .find()
+    await connect();
+    const { searchParams } = new URL(request.url);
+    const id = searchParams.get("id");
+
+    if (id) {
+      const inventory = await productionInventory.findById(id)
+        .populate({
+          path: "products",
+          model: "Product",
+        });
+      if (!inventory) {
+        return NextResponse.json({ error: "Inventory not found" }, { status: 404 });
+      }
+      return NextResponse.json(inventory);
+    }
+
+    // Get query parameters for pagination and filtering
+    const page = parseInt(searchParams.get('page') || '1');
+    const limit = parseInt(searchParams.get('limit') || '10');
+    const name = searchParams.get('name');
+    const location = searchParams.get('location');
+    const code = searchParams.get('code');
+    const shapeCode = searchParams.get('shapeCode');
+
+    // Build filter object
+    const filter: any = {};
+
+    if (name) {
+      filter.name = { $regex: name, $options: 'i' };
+    }
+
+    if (location) {
+      filter.location = { $regex: location, $options: 'i' };
+    }
+
+    if (code) {
+      filter.code = { $regex: code, $options: 'i' };
+    }
+
+    if (shapeCode) {
+      filter.shapeCode = shapeCode;
+    }
+
+    // Calculate pagination
+    const skip = (page - 1) * limit;
+
+    // Get total count for pagination
+    const totalRecords = await productionInventory.countDocuments(filter);
+    const totalPages = Math.ceil(totalRecords / limit);
+
+    // Fetch inventories with pagination and filtering
+    const inventories = await productionInventory.find(filter)
       .populate({
         path: "products",
         model: "Product",
       })
       .sort({ createdAt: -1 })
-      .lean();
+      .skip(skip)
+      .limit(limit);
 
-    return NextResponse.json(inventories, { status: 200 });
+
+
+    const response = {
+      inventories,
+      pagination: {
+        currentPage: page,
+        totalPages,
+        totalRecords,
+        recordsPerPage: limit,
+      },
+    };
+    
+    return NextResponse.json(response);
   } catch (error) {
     console.error("Error fetching inventories:", error);
     return NextResponse.json(

@@ -10,19 +10,16 @@ const stepExecutionSchema = new mongoose.Schema(
       ref: productLayer,
       required: true,
     },
-
     step: {
       type: mongoose.Schema.Types.ObjectId,
       ref: steps,
       required: true,
     },
-
     productionLine: {
       type: mongoose.Schema.Types.ObjectId,
       ref: productionLine,
       required: true,
     },
-
     scannedAt: {
       type: Date,
       default: Date.now,

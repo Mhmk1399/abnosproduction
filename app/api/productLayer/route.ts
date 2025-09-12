@@ -1,68 +1,131 @@
-import { NextRequest, NextResponse } from "next/server";
 import connect from "@/lib/data";
-import ProductLayer from "@/models/productLayer";
+import { NextRequest, NextResponse } from "next/server";
 import glass from "@/models/glass";
 import glassTreatment from "@/models/glassTreatment";
 import product from "@/models/product";
+
+import productLayer from "@/models/productLayer";
 import invoice from "@/models/invoice";
-import productionLine from "@/models/productionLine";
+import { isValidObjectId } from "mongoose";
 import steps from "@/models/steps";
 import productionInventory from "@/models/productionInventory";
 import design from "@/models/design";
-import { isValidObjectId } from "mongoose";
 
 export async function GET(request: NextRequest) {
   try {
     await connect();
-
     const { searchParams } = new URL(request.url);
-    const productionCode = searchParams.get("productionCode");
+    const id = searchParams.get("id");
 
-    let query = {};
-    if (productionCode) {
-      query = { productionCode: productionCode }; // Exact match
+    if (id) {
+      const layer = await productLayer.findById(id).populate([
+        { path: "glass", model: glass, select: "name code" },
+        { path: "treatments.treatment", model: glassTreatment },
+        { path: "product", model: product },
+        { path: "invoice", model: invoice },
+        { path: "produtionSteps.step", model: steps },
+        { path: "currentStep", model: steps },
+        { path: "currentInventory", model: productionInventory },
+        { path: "designNumber", model: design },
+        { path: "customer", model: "Customer" },
+      ]);
+      if (!layer) {
+        return NextResponse.json({ error: "Layer not found" }, { status: 404 });
+      }
+      return NextResponse.json(layer);
     }
 
-    const productLayers = await ProductLayer.find(query).populate([
-      {
-        path: "glass",
-        model: glass,
-        select: "name code",
+    // Get query parameters for pagination and filtering
+    const page = parseInt(searchParams.get("page") || "1");
+    const limit = parseInt(searchParams.get("limit") || "10");
+    const productionCode = searchParams.get("productionCode");
+    const width = searchParams.get("width");
+    const height = searchParams.get("height");
+    const productionDateFrom = searchParams.get("productionDateFrom");
+    const productionDateTo = searchParams.get("productionDateTo");
+    const currentStep = searchParams.get("currentStep");
+    const currentInventory = searchParams.get("currentInventory");
+
+    console.log('ProductLayer API - Query params:', {
+      page, limit, productionCode, width, height, 
+      productionDateFrom, productionDateTo, currentStep, currentInventory
+    });
+
+    // Build filter object
+    const filter: any = {};
+
+    if (productionCode) {
+      filter.productionCode = { $regex: productionCode, $options: "i" };
+    }
+
+    if (width) {
+      filter.width = Number(width);
+    }
+
+    if (height) {
+      filter.height = Number(height);
+    }
+
+    if (currentStep) {
+      filter.currentStep = currentStep;
+    }
+
+    if (currentInventory) {
+      filter.currentInventory = currentInventory;
+    }
+
+    if (productionDateFrom || productionDateTo) {
+      filter.productionDate = {};
+      if (productionDateFrom) {
+        filter.productionDate.$gte = new Date(productionDateFrom);
+      }
+      if (productionDateTo) {
+        filter.productionDate.$lte = new Date(productionDateTo);
+      }
+    }
+
+    console.log('ProductLayer API - Filter object:', filter);
+
+    // Calculate pagination
+    const skip = (page - 1) * limit;
+
+    // Get total count for pagination
+    const totalRecords = await productLayer.countDocuments(filter);
+    const totalPages = Math.ceil(totalRecords / limit);
+
+    // Fetch layers with pagination and filtering
+    const layers = await productLayer
+      .find(filter)
+      .populate([
+        { path: "glass", model: glass, select: "name code" },
+        { path: "treatments.treatment", model: glassTreatment },
+        { path: "product", model: product },
+        { path: "invoice", model: invoice },
+        { path: "produtionSteps.step", model: steps },
+        { path: "currentStep", model: steps },
+        { path: "currentInventory", model: productionInventory },
+        { path: "designNumber", model: design },
+        { path: "customer", model: "Customer" },
+      ])
+      .sort({ createdAt: -1 })
+      .skip(skip)
+      .limit(limit);
+
+
+
+    const response = {
+      layers,
+      pagination: {
+        currentPage: page,
+        totalPages,
+        totalRecords,
+        recordsPerPage: limit,
       },
-      {
-        path: "treatments.treatment",
-        model: glassTreatment,
-      },
-      {
-        path: "product",
-        model: product,
-      },
-      {
-        path: "invoice",
-        model: invoice,
-      },
-      {
-        path: "productionLine",
-        model: productionLine,
-        populate: {
-          path: "steps.step",
-          model: steps,
-        },
-      },
-      {
-        path: "currentStep",
-        model: steps,
-      },
-      {
-        path: "currentInventory",
-        model: productionInventory,
-      },
-      {
-        path: "designNumber",
-        model: design,
-      },
-    ]);
-    return NextResponse.json(productLayers, { status: 200 });
+    };
+
+   
+
+    return NextResponse.json(response);
   } catch (error) {
     console.error("Error fetching product layers:", error);
     return NextResponse.json(
@@ -125,9 +188,23 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    if (body.productionLine && !isValidObjectId(body.productionLine)) {
+    if (body.layerNumber && (typeof body.layerNumber !== "number" || body.layerNumber <= 0)) {
       return NextResponse.json(
-        { error: "Invalid production line ID" },
+        { error: "Valid layer number is required" },
+        { status: 400 }
+      );
+    }
+
+    if (body.thiknes && (typeof body.thiknes !== "number" || body.thiknes <= 0)) {
+      return NextResponse.json(
+        { error: "Valid thickness is required" },
+        { status: 400 }
+      );
+    }
+
+    if (!body.dueDate) {
+      return NextResponse.json(
+        { error: "Due date is required" },
         { status: 400 }
       );
     }
@@ -196,13 +273,21 @@ export async function POST(request: NextRequest) {
       }
     }
 
-    if (body.productionLine) {
-      const lineExists = await productionLine.findById(body.productionLine);
-      if (!lineExists) {
-        return NextResponse.json(
-          { error: "Referenced production line not found" },
-          { status: 404 }
-        );
+    // Validate produtionSteps array
+    if (body.produtionSteps && Array.isArray(body.produtionSteps)) {
+      for (const prodStep of body.produtionSteps) {
+        if (!prodStep.step || !isValidObjectId(prodStep.step)) {
+          return NextResponse.json(
+            { error: "Invalid step ID in produtionSteps array" },
+            { status: 400 }
+          );
+        }
+        if (typeof prodStep.sequence !== "number") {
+          return NextResponse.json(
+            { error: "Invalid sequence in produtionSteps array" },
+            { status: 400 }
+          );
+        }
       }
     }
 
@@ -217,7 +302,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Create the product layer
-    const productLayer = await ProductLayer.create(body);
+    const productLayers = await productLayer.create(body);
     return NextResponse.json(productLayer, { status: 201 });
   } catch (error) {
     console.error("Error creating product layer:", error);

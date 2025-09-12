@@ -36,8 +36,10 @@ export function useProductionLines(): UseProductionLinesReturn {
         throw new Error("Failed to fetch steps");
       }
       const data = await response.json();
-      setSteps(data);
-      return data;
+      console.log('useProductionLines - Steps API response:', data);
+      const stepsData = data.steps || data || [];
+      setSteps(stepsData);
+      return stepsData;
     } catch (err) {
       setError(err instanceof Error ? err.message : "An error occurred");
       return [];
@@ -55,8 +57,10 @@ export function useProductionLines(): UseProductionLinesReturn {
         throw new Error("Failed to fetch production inventories");
       }
       const data = await response.json();
-      setInventories(data);
-      return data;
+      console.log('useProductionLines - Inventories API response:', data);
+      const inventoriesData = data.inventories || data || [];
+      setInventories(inventoriesData);
+      return inventoriesData;
     } catch (err) {
       setError(err instanceof Error ? err.message : "An error occurred");
       return [];

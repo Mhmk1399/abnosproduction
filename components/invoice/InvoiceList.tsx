@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import DynamicTable from "../dynamicTable";
+import DynamicTable from "../dynamiccomponents/DynamicTable";
 import {
   FilterField,
   Layer,
@@ -75,7 +75,11 @@ const InvoiceList: React.FC<InvoiceListProps> = ({ onRefresh }) => {
       sortable: false,
       render: (value: any, row: any) => {
         if (row.treatments && Array.isArray(row.treatments)) {
-          return row.treatments.map((t: any) => t.treatment?.name || "نامشخص").join(", ") || "ندارد";
+          return (
+            row.treatments
+              .map((t: any) => t.treatment?.name || "نامشخص")
+              .join(", ") || "ندارد"
+          );
         }
         return "ندارد";
       },
