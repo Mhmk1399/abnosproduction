@@ -11,6 +11,10 @@ const sideMaterialSchema = new mongoose.Schema(
       required: true,
       unique: true,
     },
+    weight: {
+      type: Number,
+      required: false,
+    },
     ServiceFee: {
       serviceFeeType: {
         type: String,
@@ -26,6 +30,10 @@ const sideMaterialSchema = new mongoose.Schema(
     invoice: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Invoice",
+    },
+    detailedAcount: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "DetailedAccount",
     },
   },
   { timestamps: true }

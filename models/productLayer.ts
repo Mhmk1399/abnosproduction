@@ -41,6 +41,16 @@ const productLayerSchema = new mongoose.Schema(
       type: mongoose.Schema.Types.ObjectId,
       ref: "ProductionInventory",
     },
+    status: {
+      type: String,
+      enum: [
+        "notOptimized",
+        "inproductionSteps",
+        "stockedininventory",
+        "delivered",
+        "stoped",
+      ],
+    },
     productionNotes: String,
   },
   { timestamps: true }

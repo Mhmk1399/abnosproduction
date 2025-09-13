@@ -37,27 +37,44 @@ const ProductionStepsTable: React.FC<ProductionStepsTableProps> = ({
   const [treatments, setTreatments] = useState<
     { label: string; value: string }[]
   >([]);
+  const [availableSteps, setAvailableSteps] = useState<
+    { label: string; value: string }[]
+  >([]);
   const tableRef = useRef<DynamicTableRef>(null);
 
   useEffect(() => {
-    const fetchTreatments = async () => {
+    const fetchOptions = async () => {
       try {
-        const response = await fetch("/api/glassTreatments");
-        const data = await response.json();
-        if (response.ok && data) {
+        // Fetch treatments
+        const treatmentsResponse = await fetch("/api/glassTreatments");
+        const treatmentsData = await treatmentsResponse.json();
+        if (treatmentsResponse.ok && treatmentsData) {
           const treatmentOptions = (
-            Array.isArray(data) ? data : data.data || []
+            Array.isArray(treatmentsData)
+              ? treatmentsData
+              : treatmentsData.data || []
           ).map((treatment: any) => ({
             label: treatment.name,
             value: treatment._id,
           }));
           setTreatments(treatmentOptions);
         }
+
+        // Fetch available steps
+        const stepsResponse = await fetch("/api/steps");
+        const stepsData = await stepsResponse.json();
+        if (stepsResponse.ok && stepsData.steps) {
+          const stepOptions = stepsData.steps.map((step: any) => ({
+            label: step.name,
+            value: step._id,
+          }));
+          setAvailableSteps(stepOptions);
+        }
       } catch (error) {
-        console.error("Error fetching treatments:", error);
+        console.error("Error fetching options:", error);
       }
     };
-    fetchTreatments();
+    fetchOptions();
   }, []);
 
   const handleView = (step: ProductionStep) => {
@@ -119,9 +136,15 @@ const ProductionStepsTable: React.FC<ProductionStepsTableProps> = ({
           type: "checkbox",
         },
         {
+          key: "dependencies",
+          label: "مرحله وابسته",
+          type: "select",
+          options: availableSteps,
+        },
+        {
           key: "handlesTreatments",
           label: "خدمات مرتبط",
-          type: "multiselect",
+          type: "select",
           options: treatments,
         },
         {
@@ -212,7 +235,7 @@ const ProductionStepsTable: React.FC<ProductionStepsTableProps> = ({
           { label: "تولید", value: "step" },
           { label: "استقرار", value: "shelf" },
         ],
-        render: (value) => {
+        render: (value:unknown,row: Record<string, unknown>) => {
           return value === "step"
             ? "تولید"
             : value === "shelf"
@@ -231,6 +254,17 @@ const ProductionStepsTable: React.FC<ProductionStepsTableProps> = ({
         ],
         render: (value, row) => {
           return value ? "بله" : "خیر";
+        },
+      },
+      {
+        key: "dependencies.name",
+        label: "مرحله وابسته",
+        render: (value, row) => {
+          const step = row as any;
+          return typeof step.dependencies === "object" &&
+            step.dependencies?.name
+            ? step.dependencies.name
+            : "-";
         },
       },
       {

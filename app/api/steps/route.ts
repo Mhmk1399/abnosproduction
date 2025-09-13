@@ -11,10 +11,17 @@ export async function GET(request: NextRequest) {
     const id = searchParams.get("id");
 
     if (id) {
-      const step = await Step.findById(id).populate({
-        path: "handlesTreatments",
-        model: glassTreatment,
-      });
+      const step = await Step.findById(id).populate([
+        {
+          path: "handlesTreatments",
+          model: glassTreatment,
+        },
+        {
+          path: "dependencies",
+          model: Step,
+          select: "name code",
+        },
+      ]);
 
       if (!step) {
         return NextResponse.json({ error: "Step not found" }, { status: 404 });
@@ -58,10 +65,17 @@ export async function GET(request: NextRequest) {
 
     // Fetch steps with pagination and filtering
     const steps = await Step.find(filter)
-      .populate({
-        path: "handlesTreatments",
-        model: glassTreatment,
-      })
+      .populate([
+        {
+          path: "handlesTreatments",
+          model: glassTreatment,
+        },
+        {
+          path: "dependencies",
+          model: Step,
+          select: "name code",
+        },
+      ])
       .sort({ createdAt: -1 })
       .skip(skip)
       .limit(limit);

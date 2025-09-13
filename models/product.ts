@@ -27,10 +27,15 @@ const productSchema = new mongoose.Schema(
         ref: "SideMaterial",
       },
     ],
-    productLine: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "ProductionLine",
-    },
+    productLine: 
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "ProductionLine",
+      },
+    detailedAcount:{
+      type:mongoose.Schema.Types.ObjectId,
+      ref:"DetailedAccount",
+    }
   },
   { timestamps: true }
 );
